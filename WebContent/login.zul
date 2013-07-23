@@ -1,4 +1,4 @@
-<?page title="待办事项系统"?>
+<?page title="Zk Full Demo"?>
 <window title="登录" border="normal" width="220px" mode="modal"
           xmlns:h="http://www.w3.org/1999/xhtml"
           apply="org.hxzon.demo.zk.web.LoginComposer">
