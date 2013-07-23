@@ -1,0 +1,60 @@
+<?page title="Edit Customer" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <window id="editCustomerWin" title="Edit Customer" border="normal">
+
+        <zscript><![CDATA[
+    import org.zk.demo.managecustomers.Customer;
+    import org.zk.demo.managecustomers.CustomerService;
+    ;
+    public void submit() {
+        int l_custId = Integer.valueOf(myCustId.getValue());
+        Customer cust = new Customer();
+        cust.setId(l_custId);
+        cust.setName(customerName.getValue());
+        cust.setDate(new java.sql.Date(date.getValue().getTime()));
+        cust.setDeleted(deleted.isChecked());
+        CustomerService custSvc = new CustomerService();
+        custSvc.updateCustomer(cust);
+        Executions.getCurrent().sendRedirect("index.zul");
+        editCustomerWin.detach();
+    }
+]]>
+</zscript>
+
+        <zscript><![CDATA[
+    CustomerService custSvc = new CustomerService();
+    String customerId = (String) Executions.getCurrent().getArg().get("custId");
+    Customer cust = custSvc.getCustomer(customerId);
+]]>
+     </zscript>
+        <grid fixedLayout="true" width="450px">
+            <rows>
+                <row>
+                    <label value="Customer Name" />
+                    <textbox id="customerName" constraint="no empty" value="${cust.name }" />
+                </row>
+                <row>
+                    <label value="Date" />
+                    <datebox id="date" constraint="no empty" value="${cust.date }" />
+                </row>
+                <row>
+                    <textbox id="myCustId" visible="false" value="${cust.id }" />
+                </row>
+                <row>
+                    <label value="Delete?" />
+                    <hbox>
+                        <checkbox id="deleted" name="deleted" checked="${cust.deleted}" />
+                        <label value="whats this?" style="font:9;cursor:help;valign:center" popup="help" />
+                    </hbox>
+                    <popup id="help" width="400px">
+                        <html>Checking this box will enable soft delete of the record.</html>
+                    </popup>
+                </row>
+                <row>
+                    <button label="Save" onClick="submit()" />
+                    <button label="Cancel" onClick="editCustomerWin.detach()" />
+                </row>
+            </rows>
+        </grid>
+    </window>
+</zk>

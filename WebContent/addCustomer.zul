@@ -1,0 +1,38 @@
+<?page title="Add Customer" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <window id="addCustomerWin" title="Register New Customer" border="normal">
+        <zscript><![CDATA[
+    import org.zk.demo.managecustomers.Customer;
+    import org.zk.demo.managecustomers.CustomerService;
+    void submit() throws Exception {
+        Customer cust = new Customer();
+        cust.setName(customerName.getValue());
+        java.util.Date utilDate = date.getValue();
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        cust.setDate(sqlDate);
+        CustomerService custSvc = new CustomerService();
+        custSvc.addCustomer(cust);
+        Executions.getCurrent().sendRedirect("index.zul");
+        addCustomerWin.detach();
+
+    }
+]]>
+     </zscript>
+        <grid fixedLayout="true" width="450px">
+            <rows>
+                <row>
+                    <label value="Customer Name" />
+                    <textbox id="customerName" constraint="no empty" />
+                </row>
+                <row>
+                    <label value="Date" />
+                    <datebox id="date" constraint="no empty" />
+                </row>
+                <row>
+                    <button label="Save" onClick="submit()" />
+                    <button label="Cancel" onClick="addCustomerWin.detach()" />
+                </row>
+            </rows>
+        </grid>
+    </window>
+</zk>

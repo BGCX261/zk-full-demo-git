@@ -1,0 +1,81 @@
+<?page id="manageCust" title="Manage Customers" cacheable="false" 
+    language="xul/html" zscriptLanguage="Java" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <zscript><![CDATA[
+    import java.sql.*;
+    import org.zk.demo.managecustomers.CustomerService;
+    import org.zkoss.zk.ui.event.EventListener;
+    List myList;
+    int custCount;
+    public void submit() {
+        CustomerService custSvc = new CustomerService();
+        myList = custSvc.getAllCustomers();
+    }
+    public void showEdit(String custId) throws Exception {
+        System.out.println("cust id"+custId);
+        Map args = new HashMap();
+        args.put("custId", custId);
+        Window win = (Window) Executions.createComponents("editCustomer.zul", null,
+                args);
+        win.setAttribute("custId", custId);
+        win.doModal();
+        win.setTitle("Enter Customer Data");
+        win.setClosable(true);
+        win.setMaximizable(true);
+    }
+]]>
+    </zscript>
+    <window id="win" border="normal" width="810px" minheight="300">
+        <caption label="Manage Customers" />
+        <borderlayout height="30px">
+            <north border="none">
+                <menubar id="menubar" width="800px">
+                    <menu label="Manage Customers">
+                        <menupopup>
+                            <menuitem label="Register New Customer">
+                                <attribute name="onClick"><![CDATA[
+    Window win = (Window) Executions.createComponents("addCustomer.zul", null,
+            null);
+    win.doModal();
+    win.setTitle("Enter Customer Data");
+    win.setClosable(true);
+    win.setMaximizable(true);
+]]></attribute>
+                            </menuitem>
+                            <menuseparator />
+                            <menuitem label="Exit"
+                                onClick="win.detach()" />
+                        </menupopup>
+                    </menu>
+                </menubar>
+            </north>
+        </borderlayout>
+
+        <vbox>
+        <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit"?>
+            <zscript><![CDATA[
+    CustomerService custSvc = new CustomerService();
+    myList = custSvc.getAllCustomers();
+    custCount = custSvc.getCustomerCount();
+    
+]]></zscript>
+            <listbox id="customerList" model="@{myList}" mold="paging" pageSize="5"
+                multiple="true" width="800px"
+                rows="${custCount}">
+                <listhead sizable="true">
+                    <listheader label="Id" sort="auto(id)"/>
+                    <listheader label="Name" sort="auto(name)"/>
+                    <listheader label="Active Date" sort="auto(date)"/>
+                    <listheader label="Deleted?" />
+                </listhead>
+                <listitem self="@{each=myList}" onClick="showEdit(self.getLabel())">
+                    <listcell label="@{myList.id}" />
+                    <listcell label="@{myList.name}" />
+                    <listcell label="@{myList.date}" />
+                    <listcell label="@{myList.deleted}"/>
+                </listitem>
+            </listbox>
+        </vbox>
+
+    </window>
+</zk>
