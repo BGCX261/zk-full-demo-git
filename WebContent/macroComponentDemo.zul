@@ -1,0 +1,9 @@
+<?component name="macro1" macroURI="/includedMacro.zul"?>
+<zk>
+    <macro1 />
+    <separator height="30px"></separator>
+    <hlayout>
+        <macro1 title="Monitor" desc="The new HDMI monitor" img="/images/item1.jpg" />
+        <macro1 title="Cell" desc="This is zPhone" img="/images/item2.jpg" />
+    </hlayout>
+</zk>

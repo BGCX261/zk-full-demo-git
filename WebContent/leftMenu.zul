@@ -1,4 +1,3 @@
-<?page?>
     <tree id="tree" apply="org.hxzon.demo.zk.web.LeftMenuComposer">
         <treechildren>
             <treeitem>
