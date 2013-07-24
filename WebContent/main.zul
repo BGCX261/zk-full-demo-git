@@ -1,5 +1,5 @@
 <?page title="Zk Full Demo"?>
-<borderlayout >
+<borderlayout>
     <north height="100px" splittable="true" collapsible="true">
         <div vflex="1" style="background:#f2f2f2;">Zk Full Demo</div>
     </north>
@@ -7,15 +7,15 @@
         <include src="/leftMenu.zul" />
     </west>
     <center border="0" >
-    <tabbox width="250px" id="main">
-        <tabs id="mainTabs">
-        <tab label="Tab 1" closable="true" />
-        </tabs>
-    <tabpanels id="mainTappanels">
-        <tabpanel>
-        <image src="/images/welcome.png"/>
-        </tabpanel>
-    </tabpanels>
-</tabbox>
+    	<tabbox id="main">
+	        <tabs id="mainTabs">
+	        	<tab label="Tab 1" closable="true" />
+	        </tabs>
+	    	<tabpanels id="mainTabpanels">
+		        <tabpanel>
+		        	<image src="/images/welcome.png"/>
+		        </tabpanel>
+	    	</tabpanels>
+		</tabbox>
     </center>
- </borderlayout>
+</borderlayout>

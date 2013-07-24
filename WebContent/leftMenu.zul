@@ -12,7 +12,7 @@
                 <treechildren>
                     <treeitem>
                         <treerow>
-                            <treecell label="Menu 2.1" />
+                            <treecell label="tabDemo" id="tabDemo"/>
                         </treerow>
                     </treeitem>
                     <treeitem>

@@ -1,4 +1,4 @@
-<tabbox width="250px">
+<tabbox>
     <tabs>
         <tab label="Tab 1" closable="true" />
         <tab label="Tab 2" closable="true" />

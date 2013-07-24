@@ -23,11 +23,12 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.West;
+
 //import org.zkoss.zkex.zul.West;
 
-public class FileExplorerComposer extends GenericForwardComposer {
+@SuppressWarnings("serial")
+public class FileExplorerComposer extends GenericForwardComposer<Component> {
 
-    private static final long serialVersionUID = 1L;
     Tree explorerTree;
     Listbox explorerBox;
     West west;
@@ -52,8 +53,6 @@ public class FileExplorerComposer extends GenericForwardComposer {
     }
 
     class ExploerTreeModel extends AbstractTreeModel<File> {
-
-        private static final long serialVersionUID = 1L;
 
         public ExploerTreeModel(File root) {
             super(root);
