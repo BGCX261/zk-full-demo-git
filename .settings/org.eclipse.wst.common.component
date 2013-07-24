@@ -3,6 +3,7 @@
     <wb-module deploy-name="zkFullDemo">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/WebContent/WEB-INF/zul"/>
         <property name="context-root" value="zkFullDemo"/>
         <property name="java-output-path" value="/zkFullDemo/WebContent/WEB-INF/classes"/>
     </wb-module>

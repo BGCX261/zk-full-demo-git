@@ -1,4 +1,4 @@
-package org.hxzon.demo.zk.other;
+package org.hxzon.demo.zk.web;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -8,7 +8,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.AbstractTreeModel;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Filedownload;
@@ -27,11 +28,14 @@ import org.zkoss.zul.West;
 //import org.zkoss.zkex.zul.West;
 
 @SuppressWarnings("serial")
-public class FileExplorerComposer extends GenericForwardComposer<Component> {
+public class FileExplorerComposer extends SelectorComposer<Component> {
 
-    Tree explorerTree;
-    Listbox explorerBox;
-    West west;
+    @Wire(".explorerTree")
+    private Tree explorerTree;
+    @Wire(".explorerBox")
+    private Listbox explorerBox;
+    @Wire(".west")
+    private West west;
 
     String root = ".";
 
@@ -49,7 +53,6 @@ public class FileExplorerComposer extends GenericForwardComposer<Component> {
         explorerTree.addEventListener(Events.ON_SELECT, new DirectorySelectListener());
         explorerBox.setItemRenderer(new ExploerBoxRenderer());
         west.setTitle(root);
-
     }
 
     class ExploerTreeModel extends AbstractTreeModel<File> {

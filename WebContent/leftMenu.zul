@@ -10,34 +10,18 @@
                     <treecell label="Menu 2" />
                 </treerow>
                 <treechildren>
-                    <treeitem>
-                        <treerow>
-                            <treecell label="tabDemo" id="tabDemo"/>
-                        </treerow>
-                    </treeitem>
-                    <treeitem>
-                        <treerow>
-                            <treecell label="Menu 2.2" />
-                        </treerow>
-                    </treeitem>
+                    <treeitem label="tabDemo" value="/tabDemo.zul" />
+                    <treeitem label="fileExplorer" value="/fileExplorer.zul" />
                 </treechildren>
             </treeitem>
-            <treeitem label="Menu 3" />
+            <treeitem label="macroComponentDemo" value="macroComponentDemo.zul" />
             <treeitem>
                 <treerow>
                     <treecell label="Menu 4" />
                 </treerow>
                 <treechildren>
-                    <treeitem>
-                        <treerow>
-                            <treecell label="Menu 4.1" />
-                        </treerow>
-                    </treeitem>
-                    <treeitem>
-                        <treerow>
-                            <treecell label="Menu 4.2" />
-                        </treerow>
-                    </treeitem>
+                    <treeitem label="Menu 4.1" />
+                    <treeitem label="uploadImage" value="uploadImage.zul"/>
                 </treechildren>
             </treeitem>
             <treeitem>
