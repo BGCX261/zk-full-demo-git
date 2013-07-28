@@ -1,16 +1,20 @@
 <zk>
-    <window width="100%" height="100%" apply="org.hxzon.demo.zk.web.FileExplorerComposer">
-        <borderlayout>
-            <west sclass="west" size="300px" splittable="true" flex="true" collapsible="true" title=""> 
-                <tree sclass="explorerTree" zclass="z-dottree" >
+    <panel height="400px" sizable="true" apply="org.hxzon.demo.zk.web.FileExplorerComposer">
+        <panelchildren>
+        <borderlayout >
+            <west sclass="west" size="300px" splittable="true" collapsible="true" title="">
+                <vlayout>
+                <textbox sclass="path"/> 
+                <tree sclass="explorerTree" zclass="z-dottree" vflex="true" hflex="true" >
                     <treecols sizable="true">
                         <treecol label="Name"/>
                         <treecol label="Files"/>
                     </treecols>
                 </tree>
+                </vlayout>
             </west>
-            <center flex="true">
-                <listbox sclass="explorerBox" >
+            <center >
+                <listbox sclass="explorerBox" vflex="true" hflex="true">
                     <listhead sizable="true">
                         <listheader label="Name"/>
                         <listheader label="Size"/>
@@ -20,5 +24,6 @@
                 </listbox>
             </center>
         </borderlayout>
-    </window>
+        </panelchildren>
+    </panel>
 </zk>

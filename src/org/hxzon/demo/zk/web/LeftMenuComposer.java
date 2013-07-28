@@ -29,12 +29,16 @@ public class LeftMenuComposer extends SelectorComposer<Component> {
             return;
         }
         //page path,parent,args
-        Component tabDemo = Executions.createComponents(path, null, null);
+        Component newTabContent = Executions.createComponents(path, null, null);
+        addTab(label, newTabContent);
+    }
+
+    private void addTab(String label, Component newTabContent) {
         Tab newTab = new Tab(label);
         newTab.setClosable(true);
         newTab.setSelected(true);
         Tabpanel newTabpanel = new Tabpanel();
-        newTabpanel.appendChild(tabDemo);
+        newTabpanel.appendChild(newTabContent);
         //error
         //Tabbox tabbox = (Tabbox) page.getFellow("main");
         //tabbox.insertBefore(newTab, null);
@@ -46,32 +50,4 @@ public class LeftMenuComposer extends SelectorComposer<Component> {
         tabpanels.insertBefore(newTabpanel, null);
     }
 
-//    public void onClick$newTabDemo(Event event) {
-//        Tab newTab = new Tab("newTab");
-//        newTab.setClosable(true);
-//        Tabpanel newTabpanel = new Tabpanel();
-//        newTabpanel.appendChild(new Label("hello"));
-//        //
-//        Tabs tabs = (Tabs) page.getFellow("mainTabs");
-//        Tabpanels tabpanels = (Tabpanels) page.getFellow("mainTabpanels");
-//        tabs.insertBefore(newTab, null);
-//        tabpanels.insertBefore(newTabpanel, null);
-//    }
-//
-//    public void onClick$tabDemo(Event event) {
-//        //page path,parent,args
-//        Component tabDemo = Executions.createComponents("/tabDemo.zul", null, null);
-//        Tab newTab = new Tab("tabDemo");
-//        newTab.setClosable(true);
-//        Tabpanel newTabpanel = new Tabpanel();
-//        newTabpanel.appendChild(tabDemo);
-//        //error
-//        //Tabbox tabbox = (Tabbox) page.getFellow("main");
-//        //tabbox.insertBefore(newTab, null);
-//        //tabbox.insertBefore(newTabpanel, null);
-//        Tabs tabs = (Tabs) page.getFellow("mainTabs");
-//        Tabpanels tabpanels = (Tabpanels) page.getFellow("mainTabpanels");
-//        tabs.insertBefore(newTab, null);
-//        tabpanels.insertBefore(newTabpanel, null);
-//    }
 }

@@ -1,15 +1,15 @@
 <?page title="Zk Full Demo"?>
-<borderlayout>
+<borderlayout width="100%" height="100%">
     <north height="100px" splittable="true" collapsible="true">
         <div vflex="1" style="background:#f2f2f2;">Zk Full Demo</div>
     </north>
     <west width="200px" splittable="true" collapsible="true">
         <include src="/leftMenu.zul" />
     </west>
-    <center border="0" >
+    <center >
     	<tabbox id="main">
 	        <tabs id="mainTabs">
-	        	<tab label="Tab 1" closable="true" />
+	        	<tab label="Tab 1" />
 	        </tabs>
 	    	<tabpanels id="mainTabpanels">
 		        <tabpanel>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="srcService"/>
+	<classpathentry kind="src" path="hxzon_util"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_03">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
@@ -43,7 +45,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/java-lib/lib/zk-6.5.1.1/zk.jar">
+	<classpathentry kind="lib" path="D:/java-lib/lib/zk-6.5.1.1/zk.jar" sourcepath="D:/java-lib/sources/zk-6.5.1.1/zk-sources.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
@@ -58,7 +60,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/java-lib/lib/zk-6.5.1.1/zul.jar">
+	<classpathentry kind="lib" path="D:/java-lib/lib/zk-6.5.1.1/zul.jar" sourcepath="D:/java-lib/sources/zk-6.5.1.1/zul-sources.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
@@ -68,5 +70,51 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-aop-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-aspects-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-beans-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-context-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-context-support-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-core-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-expression-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-jdbc-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-orm-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-test-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-tx-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-3.2.0/spring-web-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-d/aopalliance.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-d/aspectjrt.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/spring-d/aspectjweaver.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/zk-spring-3.1.1/zkspring-core.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-4.1.9/hibernate-commons-annotations-4.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-4.1.9/hibernate-core-4.1.9.Final.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-d/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-d/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-d/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-d/javassist-3.17.1-GA.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-d/jboss-logging-3.1.0.GA.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-d/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-o/c3p0/c3p0-0.9.1.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-o/c3p0/hibernate-c3p0-4.1.9.Final.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/log/jcl-over-slf4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/log/jul-to-slf4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/log/log4j-over-slf4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/log/logback-classic-0.9.24.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/log/logback-core-0.9.24.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/log/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/common/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/common/commons-math-2.2.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/common/joda-time-2.1.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/common/mail.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/common/commons-compress-1.1.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/commonPOI/poi-3.8-20120326.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/commonPOI/poi-ooxml-3.8-20120326.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/commonPOI/poi-ooxml-schemas-3.8-20120326.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/commonPOI/poi-scratchpad-3.8-20120326.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/common/ognl-3.0.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/common/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-validator-4.3.1/hibernate-validator-4.3.1.Final.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-validator-4.3.1/hibernate-validator-annotation-processor-4.3.1.Final.jar"/>
+	<classpathentry kind="lib" path="D:/java-lib/lib/hibernate-validator-d/validation-api-1.0.0.GA.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

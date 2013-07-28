@@ -2,7 +2,7 @@
         <treechildren>
             <treeitem>
                 <treerow>
-                    <treecell label="newTabDemo" id="newTabDemo"/>
+                    <treecell label="newTabDemo" />
                 </treerow>
             </treeitem>
             <treeitem>
