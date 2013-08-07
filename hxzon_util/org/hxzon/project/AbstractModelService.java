@@ -55,7 +55,7 @@ public class AbstractModelService<M> implements ModelService<M> {
     }
 
     public List<M> findAll() {
-        return dao.list(modelClass);
+        return dao.list(modelClass, -1, -1);
     }
 
     public List<M> findAll(long first, long size) {

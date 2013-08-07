@@ -1,5 +1,6 @@
 package org.hxzon.project;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,21 +11,33 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractHibernateDao implements Dao {
 
-    protected abstract int doExecute(final String hql);
+    //sql
+    protected abstract int doSqlExecute(final String sql, Object... params);
 
-    protected abstract int doExecuteSql(final String sql);
+    protected abstract long doSqlCount(String sql, Object... params);
 
-    protected abstract List<?> doQuery(final String hql, final long first, final long size);
+    protected abstract List<?> doSqlList(String sql, long first, long size, Object... params);
 
-    protected abstract <M> List<M> doGetList(Class<M> clazz, String select, String whereAdnOrderBy, long first, long size);
+    protected abstract <M> List<M> doSqlList(Class<M> clazz, boolean entity, String sql, long first, long size, Object... params);
+
+    protected abstract <M> List<M> doSqlList(Constructor<M> constructor, String sql, long first, long size, Object... params);
+
+    protected abstract <M> List<M> doSqlList(MyHibernateResultTransformer<M> transformer, String sql, long first, long size, Object... params);
+
+    //list
+    protected abstract int doExecute(final String hql, Object... params);
+
+    protected abstract List<?> doGetList(final String hql, final long first, final long size, Object... params);
+
+    protected abstract <M> List<M> doGetList(Class<M> clazz, String select, String whereAdnOrderBy, long first, long size, Object... params);
 
     protected abstract <M> List<M> doGetLikeExample(final M example, List<String> fields, final long first, final long size);
 
-    protected abstract <M> M doGetOne(Class<M> clazz, String select, String whereAndOrderBy, boolean checkOnlyOne);
-
     protected abstract <M> List<M> doGetLikeString(final Class<M> clazz, final String like, final List<String> fields, final long first, final long size);
 
-    protected abstract <M> long doCount(Class<M> clazz, String where);
+    protected abstract <M> M doGetOne(Class<M> clazz, String select, String whereAndOrderBy, boolean checkOnlyOne, Object... params);
+
+    protected abstract <M> long doCount(Class<M> clazz, String where, Object... params);
 
     protected abstract <M> long doCountLikeExample(final M example, final List<String> fields);
 
@@ -40,80 +53,69 @@ public abstract class AbstractHibernateDao implements Dao {
     public AbstractHibernateDao() {
     }
 
-    //sql,hql
-    public int executeSql(final String sql) {
-        return doExecuteSql(sql);
+    //===========================
+
+    //sql
+    public int sqlExecute(final String sql, Object... params) {
+        return doSqlExecute(sql, params);
     }
 
-    public int execute(String hql) {
-        return doExecute(hql);
+    public long sqlCount(String sql, Object... params) {
+        return doSqlCount(sql, params);
     }
 
-    public List<?> query(String hql, long first, long size) {
-        return doQuery(hql, first, size);
+    public List<?> sqlList(String sql, long first, long size, Object... params) {
+        return doSqlList(sql, first, size, params);
     }
 
-    public List<?> query(String hql) {
-        return doQuery(hql, -1, -1);
+    public <M> List<M> sqlList(Class<M> clazz, boolean entity, String sql, long first, long size, Object... params) {
+        return doSqlList(clazz, entity, sql, first, size, params);
     }
 
-    // all
-
-    // one
-    public <M> M one(Class<M> clazz, String select, String whereAndOrderBy, boolean checkOnlyOne) {
-        return doGetOne(clazz, select, whereAndOrderBy, checkOnlyOne);
+    public <M> List<M> sqlList(Constructor<M> constructor, String sql, long first, long size, Object... params) {
+        return doSqlList(constructor, sql, first, size, params);
     }
 
-    public <M> M one(Class<M> clazz, String select, String whereAndOrderBy) {
-        return doGetOne(clazz, select, whereAndOrderBy, true);
-    }
-
-    public <M> M one(Class<M> clazz, String whereAndOrderBy) {
-        return doGetOne(clazz, null, whereAndOrderBy, true);
-    }
-
-    public <M> M first(Class<M> clazz, String select, String whereAndOrderBy) {
-        return doGetOne(clazz, select, whereAndOrderBy, false);
-    }
-
-    public <M> M first(Class<M> clazz, String whereAndOrderBy) {
-        return doGetOne(clazz, null, whereAndOrderBy, false);
+    public <M> List<M> sqlList(MyHibernateResultTransformer<M> transformer, String sql, long first, long size, Object... params) {
+        return doSqlList(transformer, sql, first, size, params);
     }
 
     //list
-    public <M> List<M> list(Class<M> clazz, String select, String whereAndOrderBy, long first, long size) {
-        return doGetList(clazz, select, whereAndOrderBy, first, size);
+    public int execute(String hql, Object... params) {
+        return doExecute(hql, params);
     }
 
-    public <M> List<M> list(Class<M> clazz, String select, String whereAndOrderBy) {
-        return doGetList(clazz, select, whereAndOrderBy, -1, -1);
+    public List<?> list(String hql, long first, long size, Object... params) {
+        return doGetList(hql, first, size, params);
     }
 
-    public <M> List<M> list(Class<M> clazz, String whereAndOrderBy, long first, long size) {
-        return doGetList(clazz, null, whereAndOrderBy, first, size);
+    public <M> List<M> list(Class<M> clazz, String select, String whereAndOrderBy, long first, long size, Object... params) {
+        return doGetList(clazz, select, whereAndOrderBy, first, size, params);
     }
 
-    public <M> List<M> list(Class<M> clazz, String whereAndOrderBy) {
-        return doGetList(clazz, null, whereAndOrderBy, -1, -1);
-    }
-
-    public <M> List<M> list(Class<M> clazz) {
-        return doGetList(clazz, null, null, -1, -1);
+    public <M> List<M> list(Class<M> clazz, String whereAndOrderBy, long first, long size, Object... params) {
+        return doGetList(clazz, null, whereAndOrderBy, first, size, params);
     }
 
     public <M> List<M> list(Class<M> clazz, long first, long size) {
         return doGetList(clazz, null, null, first, size);
     }
 
-    public <M> List<M> listByProperty(Class<M> clazz, String fieldName, Object fieldValue) {
-        return listByProperty(clazz, fieldName, fieldValue, -1, -1);
+    public <M> List<M> listByProperty(Class<M> clazz, String fieldName, Object fieldValue, long first, long size) {
+        return doGetList(clazz, null, " where p." + fieldName + " = :" + fieldName, first, size, fieldName, fieldValue);
     }
 
-    public <M> List<M> listByProperty(Class<M> clazz, String fieldName, Object fieldValue, long first, long size) {
-        if (fieldValue instanceof String) {
-            fieldValue = "'" + OgnlUtil.escape((String) fieldValue) + "'";
-        }
-        return doGetList(clazz, null, " where p." + fieldName + " = " + fieldValue, first, size);
+    // one
+    public <M> M one(Class<M> clazz, String select, String whereAndOrderBy, boolean checkOnlyOne, Object... params) {
+        return doGetOne(clazz, select, whereAndOrderBy, checkOnlyOne, params);
+    }
+
+    public <M> M one(Class<M> clazz, String whereAndOrderBy, Object... params) {
+        return doGetOne(clazz, null, whereAndOrderBy, true, params);
+    }
+
+    public <M> M first(Class<M> clazz, String whereAndOrderBy, Object... params) {
+        return doGetOne(clazz, null, whereAndOrderBy, false, params);
     }
 
     public <M> M oneByProperty(Class<M> clazz, String fieldName, Object fieldValue) {
@@ -149,15 +151,12 @@ public abstract class AbstractHibernateDao implements Dao {
         return doCount(clazz, null);
     }
 
-    public <M> long countList(Class<M> clazz, String where) {
-        return doCount(clazz, where);
+    public <M> long countList(Class<M> clazz, String where, Object... params) {
+        return doCount(clazz, where, params);
     }
 
     public <M> long countList(Class<M> clazz, String fieldName, Object fieldValue) {
-        if (fieldValue instanceof String) {
-            fieldValue = "'" + OgnlUtil.escape((String) fieldValue) + "'";
-        }
-        return doCount(clazz, " where p." + fieldName + " = " + fieldValue);
+        return doCount(clazz, " where p." + fieldName + " = :" + fieldName, fieldName, fieldValue);
     }
 
     public <M> long countLikeByExample(final M modelExample) {
@@ -227,11 +226,10 @@ public abstract class AbstractHibernateDao implements Dao {
     }
 
     protected String appendWhereString(List<String> fields, String like, StringBuilder hql) {
-        like = OgnlUtil.escape(like);
         if (!fields.isEmpty()) {// fixme not return String
             hql.append(" where 1=0 ");
             for (String field : fields) {
-                hql.append(" or p.").append(field).append(" like '%").append(like).append("%'");
+                hql.append(" or p.").append(field).append(" like :like");
             }
         }
         return hql.toString();
@@ -241,7 +239,7 @@ public abstract class AbstractHibernateDao implements Dao {
         if (!fields.isEmpty()) {
             hql.append(" where 1=1 ");
             for (String field : fields) {
-                hql.append(" and p.").append(field).append(" like '%").append(OgnlUtil.getStringValueOrEmpty(example, field).replace("'", "''")).append("%'");
+                hql.append(" and p.").append(field).append(" like :").append(field);
             }
         }
     }

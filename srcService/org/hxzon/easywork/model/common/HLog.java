@@ -6,9 +6,9 @@ import javax.validation.constraints.Size;
 
 import org.hxzon.project.BaseEntity;
 
+@SuppressWarnings("serial")
 @Entity
 public class HLog extends BaseEntity {
-    private static final long serialVersionUID = 7570429986649512051L;
 
     @Column(columnDefinition = DefineVarchar32)
     @Size(max = DefineSize32)

@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hxzon.easywork.model.security.Role;
 
+@SuppressWarnings("serial")
 @Entity
 public class Uzer extends org.hxzon.project.model.Uzer {
 
@@ -24,8 +25,6 @@ public class Uzer extends org.hxzon.project.model.Uzer {
     public static final int Department_Hardware = 4;
     public static final int Department_Software = 5;
     public static final int Department_ContractAuditor = 6;
-
-    private static final long serialVersionUID = 7570429986649512051L;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "uzer_role", //

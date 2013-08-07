@@ -1,97 +1,96 @@
 package org.hxzon.project;
 
+import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.List;
 
 public interface Dao {
-    public int execute(String hql);
 
-    public int executeSql(String sql);
+    //sql
+    int sqlExecute(String sql, Object... params);
 
-    public List<?> query(String hql, long first, long size);
+    long sqlCount(String sql, Object... params);
 
-    public List<?> query(String hql);
+    List<?> sqlList(String sql, long first, long size, Object... params);
 
-    // delete
-    public void delete(Object model);
+    <M> List<M> sqlList(Class<M> clazz, boolean entity, String sql, long first, long size, Object... params);
 
-    public <M> void delete(Class<M> clazz, String id);
+    <M> List<M> sqlList(Constructor<M> c, String sql, long first, long size, Object... params);
 
-    public <M> void deleteAll(Class<M> clazz);
-
-    public <M> void deleteAll(Collection<M> models);
-
-    // save
-    public void save(Object model);
-
-    public <M> void saveAll(Collection<M> models);
-
-    public void add(Object model);
-
-    public <M> void addAll(Collection<M> models);
-
-    public void update(Object model);
-
-    public <M> void updateAll(Collection<M> models);
+    <M> List<M> sqlList(MyHibernateResultTransformer<M> transform, String sql, long first, long size, Object... params);
 
     // get
+    int execute(String hql, Object... params);
+
+    List<?> list(String hql, long first, long size, Object... params);
 
     // list
-    public <M> M oneById(Class<M> clazz, String id);
+    <M> List<M> list(Class<M> clazz, String select, String whereAndOrderBy, long first, long size, Object... params);
 
-    public <M> M oneByProperty(Class<M> clazz, String fieldName, Object fieldValue);
+    <M> List<M> list(Class<M> clazz, String whereAndOrderBy, long first, long size, Object... params);
 
-    public <M> M one(Class<M> clazz, String select, String whereAndOrderBy, boolean checkOnlyOne);
+    <M> List<M> list(Class<M> clazz, long first, long size);
 
-    public <M> M one(Class<M> clazz, String select, String whereAndOrderBy);
+    <M> long countList(Class<M> clazz, String whereAndOrderBy, Object... params);
 
-    public <M> M one(Class<M> clazz, String whereAndOrderBy);
+    <M> long countList(Class<M> clazz);
 
-    public <M> M first(Class<M> clazz, String select, String whereAndOrderBy);
+    <M> List<M> listByProperty(Class<M> clazz, String fieldName, Object fieldValue, long first, long size);
 
-    public <M> M first(Class<M> clazz, String whereAndOrderBy);
+    <M> long countList(Class<M> clazz, String fieldName, Object fieldValue);
 
-    public <M> List<M> list(Class<M> clazz, String select, String whereAndOrderBy, long first, long size);
+    //one
+    <M> M oneById(Class<M> clazz, String id);
 
-    public <M> List<M> list(Class<M> clazz, String select, String whereAndOrderBy);
+    <M> M oneByProperty(Class<M> clazz, String fieldName, Object fieldValue);
 
-    public <M> List<M> list(Class<M> clazz, String whereAndOrderBy);
+    <M> M one(Class<M> clazz, String select, String whereAndOrderBy, boolean checkOnlyOne, Object... params);
 
-    public <M> List<M> list(Class<M> clazz, String whereAndOrderBy, long first, long size);
+    <M> M one(Class<M> clazz, String whereAndOrderBy, Object... params);
 
-    public <M> List<M> list(Class<M> clazz, long first, long size);
-
-    public <M> List<M> list(Class<M> clazz);
-
-    public <M> long countList(Class<M> clazz, String whereAndOrderBy);
-
-    public <M> long countList(Class<M> clazz);
-
-    public <M> List<M> listByProperty(Class<M> clazz, String fieldName, Object fieldValue);
-
-    public <M> List<M> listByProperty(Class<M> clazz, String fieldName, Object fieldValue, long first, long size);
-
-    public <M> long countList(Class<M> clazz, String fieldName, Object fieldValue);
+    <M> M first(Class<M> clazz, String whereAndOrderBy, Object... params);
 
     // like
-    public <M> List<M> like(Class<M> clazz, String like, List<String> fields, long first, long size);
+    <M> List<M> like(Class<M> clazz, String like, List<String> fields, long first, long size);
 
-    public <M> List<M> like(Class<M> clazz, String like, long first, long size);
+    <M> List<M> like(Class<M> clazz, String like, long first, long size);
 
-    public <M> List<M> likeByExample(M example, List<String> fields, long first, long size);
+    <M> List<M> likeByExample(M example, List<String> fields, long first, long size);
 
-    public <M> List<M> likeByExample(M example, long first, long size);
+    <M> List<M> likeByExample(M example, long first, long size);
 
-    public <M> long countLike(Class<M> clazz, String like, List<String> fields);
+    <M> long countLike(Class<M> clazz, String like, List<String> fields);
 
-    public <M> long countLike(Class<M> clazz, String like);
+    <M> long countLike(Class<M> clazz, String like);
 
-    public <M> long countLikeByExample(M example, List<String> fields);
+    <M> long countLikeByExample(M example, List<String> fields);
 
-    public <M> long countLikeByExample(M example);
+    <M> long countLikeByExample(M example);
 
     // search
-    public <M> List<M> search(Class<M> clazz, String search, long first, long size);
+    <M> List<M> search(Class<M> clazz, String search, long first, long size);
 
-    public <M> long countSearch(Class<M> clazz, String search);
+    <M> long countSearch(Class<M> clazz, String search);
+
+    // delete
+    void delete(Object model);
+
+    <M> void delete(Class<M> clazz, String id);
+
+    <M> void deleteAll(Class<M> clazz);
+
+    <M> void deleteAll(Collection<M> models);
+
+    // save
+    void save(Object model);
+
+    <M> void saveAll(Collection<M> models);
+
+    void add(Object model);
+
+    <M> void addAll(Collection<M> models);
+
+    void update(Object model);
+
+    <M> void updateAll(Collection<M> models);
 }
