@@ -10,8 +10,7 @@ import ognl.Node;
 import ognl.Ognl;
 import ognl.OgnlException;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +92,7 @@ public class OgnlUtil {
     public static String escape(String orig) {
         // orig = StringEscapeUtils.escapeHtml(orig);
         // orig = StringEscapeUtils.escapeJavaScript(orig);
-        orig = StringEscapeUtils.escapeSql(orig);
+        orig = orig.replaceAll("'", "\'");
         return orig;
     }
 
