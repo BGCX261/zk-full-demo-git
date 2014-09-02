@@ -1,128 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:aop="http://www.springframework.org/schema/aop" 
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
              http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
              http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
              http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
              http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-    <!-- 
-    <bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
-    <property name="driver" value="com.mysql.jdbc.Driver" /> 
-    <property name="driverUrl" value="jdbc:mysql://localhost:3306/mstar" />
-    <property name="user" value="root" />
-    <property name="password" value="root" />
-    </bean> 
-    -->
-    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <!--
-        <property name="driverClass" value="org.postgresql.Driver" />
-        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/mstar" />
-        <property name="driverClass" value="oracle.jdbc.driver.OracleDriver" /> 
-        <property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:mstar" /> 
-        -->
-        <!-- 
-        <property name="driverClass" value="com.mysql.jdbc.Driver" />
-        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mstar" />
-        <property name="user" value="root" />
-        <property name="password" value="root" />
-         -->
-        <property name="driverClass" value="org.hsqldb.jdbc.JDBCDriver" />
-        <property name="jdbcUrl" value="jdbc:hsqldb:file:d:/easywork/easywork" />
-        <property name="user" value="sa" />
-        <property name="password" value="" />
-        <property name="acquireIncrement" value="5" />
-        <property name="idleConnectionTestPeriod" value="3000" />
-        <property name="checkoutTimeout" value="3000" />
-        <property name="initialPoolSize" value="5" />
-        <property name="maxPoolSize" value="20" />
-        <property name="minPoolSize" value="5" />
-        <property name="maxStatements" value="5" />
-        <property name="maxStatementsPerConnection" value="0" />
-        <property name="maxIdleTime" value="30000" />
-        <property name="breakAfterAcquireFailure" value="false" />
-        <property name="acquireRetryAttempts" value="0" />
-    </bean>
-    <!-- 
-    <bean id="dataSource" class="com.p6spy.engine.spy.P6DataSource" > 
-    <constructor-arg>
-    <ref local="dataSource2" /> 
-    </constructor-arg> 
-    </bean> 
-    -->
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource">
-            <ref bean="dataSource" />
-        </property>
-        <property name="hibernateProperties">
-            <value>
-                <!-- 
-                hibernate.dialect=org.hibernate.dialect.MySQLDialect
-                hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
-                hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-                 -->
-                hibernate.dialect=org.hibernate.dialect.HSQLDialect
-                hibernate.show_sql=false
-                hibernate.format_sql=false
-                hibernate.hbm2ddl.auto=update
-                hibernate.current_session_context_class=org.springframework.orm.hibernate4.SpringSessionContext
-                <!-- hibernate cache -->
-                hibernate.cache.provider_class=net.sf.ehcache.hibernate.EhCacheProvider
-                hibernate.cache.region.factory_class=org.hibernate.cache.ehcache.EhCacheRegionFactory
-                <!-- hibernate search -->
-                hibernate.search.default.directory_provider=org.hibernate.search.store.FSDirectoryProvider
-                hibernate.search.default.indexBase=H:\indexed
-            </value>
-        </property>
-        <property name="packagesToScan">
-            <list>
-                <value>org.hxzon.easywork.model.common</value>
-                <value>org.hxzon.easywork.model.security</value>
-            </list>
-        </property>
-    </bean>
+	<!--
+		<bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
+		<property name="driver" value="com.mysql.jdbc.Driver" />
+		<property name="driverUrl" value="jdbc:mysql://localhost:3306/mstar" />
+		<property name="user" value="root" />
+		<property name="password" value="root" />
+		</bean>
+	-->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<!--
+			<property name="driverClass" value="org.postgresql.Driver" />
+			<property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/mstar"
+			/>
+			<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+			<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:mstar"
+			/>
+		-->
+		<!--
+			<property name="driverClass" value="com.mysql.jdbc.Driver" />
+			<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mstar" />
+			<property name="user" value="root" />
+			<property name="password" value="root" />
+		-->
+		<property name="driverClass" value="org.hsqldb.jdbc.JDBCDriver" />
+		<property name="jdbcUrl" value="jdbc:hsqldb:file:d:/easywork/easywork" />
+		<property name="user" value="sa" />
+		<property name="password" value="" />
+		<property name="acquireIncrement" value="5" />
+		<property name="idleConnectionTestPeriod" value="3000" />
+		<property name="checkoutTimeout" value="3000" />
+		<property name="initialPoolSize" value="5" />
+		<property name="maxPoolSize" value="20" />
+		<property name="minPoolSize" value="5" />
+		<property name="maxStatements" value="5" />
+		<property name="maxStatementsPerConnection" value="0" />
+		<property name="maxIdleTime" value="30000" />
+		<property name="breakAfterAcquireFailure" value="false" />
+		<property name="acquireRetryAttempts" value="0" />
+	</bean>
+	<!--
+		<bean id="dataSource" class="com.p6spy.engine.spy.P6DataSource" >
+		<constructor-arg>
+		<ref local="dataSource2" />
+		</constructor-arg>
+		</bean>
+	-->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<value>
+				<!--
+					hibernate.dialect=org.hibernate.dialect.MySQLDialect
+					hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
+					hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+				-->
+				hibernate.dialect=org.hibernate.dialect.HSQLDialect
+				hibernate.show_sql=false
+				hibernate.format_sql=false
+				hibernate.hbm2ddl.auto=update
+				hibernate.current_session_context_class=org.springframework.orm.hibernate4.SpringSessionContext
+				<!-- hibernate cache -->
+				hibernate.cache.provider_class=net.sf.ehcache.hibernate.EhCacheProvider
+				hibernate.cache.region.factory_class=org.hibernate.cache.ehcache.EhCacheRegionFactory
+				<!-- hibernate search -->
+				hibernate.search.default.directory_provider=org.hibernate.search.store.FSDirectoryProvider
+				hibernate.search.default.indexBase=H:\indexed
+			</value>
+		</property>
+		<property name="packagesToScan">
+			<list>
+				<value>org.hxzon.easywork.model.common</value>
+				<value>org.hxzon.easywork.model.security</value>
+			</list>
+		</property>
+	</bean>
 
-    <bean id="dao" class="org.hxzon.project.HibernateDao">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory" />
-        </property>
-    </bean>
+	<bean id="dao" class="org.hxzon.project.HibernateDao">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
 
-    <context:component-scan base-package="org.hxzon.easywork.service.impl" />
+	<context:component-scan base-package="org.hxzon.easywork.service.impl" />
 
-    <context:annotation-config />
+	<context:annotation-config />
 
 
 
-    <!-- 事务管理 -->
-    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory">
-            <ref local="sessionFactory" />
-        </property>
-    </bean>
+	<!-- 事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
 
-    <tx:advice id="txAdvice" transaction-manager="transactionManager">
-        <tx:attributes>
-            <tx:method name="delete*" propagation="REQUIRED" />
-            <tx:method name="add*" propagation="REQUIRED" />
-            <tx:method name="update*" propagation="REQUIRED" />
-            <tx:method name="save*" propagation="REQUIRED" />
-            <tx:method name="find*" propagation="REQUIRED" read-only="true" />
-            <tx:method name="get*" propagation="REQUIRED" read-only="true" />
-            <tx:method name="count*" propagation="REQUIRED" read-only="true" />
-            <tx:method name="*" propagation="REQUIRED" />
-        </tx:attributes>
-    </tx:advice>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="count*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
 
-    <aop:config>
-        <aop:pointcut id="allManagerMethod" expression="execution (*  org.hxzon.easywork.service.*.*(..))" />
-        <aop:pointcut id="allManagerMethodFix" expression="execution (*  org.hxzon.project.AbstractModelService.*(..))" />
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="allManagerMethod" />
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="allManagerMethodFix" />
-    </aop:config>
+	<aop:config>
+		<aop:pointcut id="allManagerMethod"
+			expression="execution (*  org.hxzon.easywork.service.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allManagerMethod" />
+		<!--
+			<aop:pointcut id="allManagerMethodFix" expression="execution (* org.hxzon.project.AbstractModelService.*(..))"
+			/>
+			<aop:advisor advice-ref="txAdvice" pointcut-ref="allManagerMethodFix"
+			/>
+		-->
+	</aop:config>
 
-    <tx:annotation-driven/>
+	<tx:annotation-driven />
 
 </beans>

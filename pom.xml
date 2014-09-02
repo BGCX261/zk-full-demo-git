@@ -19,7 +19,7 @@
 	</properties>
 
 	<build>
-		<sourceDirectory>src_web</sourceDirectory>
+		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -34,12 +34,8 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>src_web_test</source>
-								<source>src_web_zk</source>
-								<source>src_service</source>
-								<source>org.hxzon.util</source>
-								<source>org.hxzon.tapestry5</source>
-								<source>fix</source>
+								<source>srcService</source>
+								<source>hxzon_util</source>
 							</sources>
 						</configuration>
 					</execution>
