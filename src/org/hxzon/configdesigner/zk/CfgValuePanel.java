@@ -3,7 +3,6 @@ package org.hxzon.configdesigner.zk;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tapestry5.json.JSONArray;
 import org.apache.tapestry5.json.JSONObject;
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.util.Dt;
@@ -13,82 +12,77 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Vlayout;
 
 @SuppressWarnings("serial")
 public class CfgValuePanel extends Panel {
 
     private CfgInfo cfgInfo;
-    private Object parentValue;
-    private String myKey;
-    private int myIndex;
-    private Object myValue;
+    private Object cfgValue;
 
-    public CfgValuePanel(CfgInfo cfgInfo, Object parentValue) {
+    public CfgValuePanel(CfgInfo cfgInfo, Object cfgValue) {
         this.cfgInfo = cfgInfo;
-        this.parentValue = parentValue;
-        JSONObject mapParent = (JSONObject) parentValue;
-        myValue = mapParent.get(cfgInfo.getId());
-        init();
-    }
-
-    public CfgValuePanel(CfgInfo cfgInfo, Object parentValue, String myKey) {
-        this.cfgInfo = cfgInfo;
-        this.parentValue = parentValue;
-        this.myKey = myKey;
-        JSONObject mapParent = (JSONObject) parentValue;
-        myValue = mapParent.get(myKey);
-        init();
-    }
-
-    public CfgValuePanel(CfgInfo cfgInfo, Object parentValue, int myIndex) {
-        this.cfgInfo = cfgInfo;
-        this.parentValue = parentValue;
-        this.myIndex = myIndex;
-        JSONArray listParent = (JSONArray) parentValue;
-        myValue = listParent.get(myIndex);
+        this.cfgValue = cfgValue;
         init();
     }
 
     private void init() {
         int type = cfgInfo.getType();
         Panelchildren pc = new Panelchildren();
+        Vlayout vl = new Vlayout();
         switch (type) {
         case CfgInfo.Type_Struct:
             Combobox combobox = new Combobox();
             List<CfgInfo> miss = new ArrayList<CfgInfo>();
-            JSONObject json = (JSONObject) myValue;
+            JSONObject json = (JSONObject) cfgValue;
+            boolean isPreSimple = false;
             for (CfgInfo cInfo : cfgInfo.getParts()) {
                 Object cv = json.get(cInfo.getId());
                 if (cv == null) {
                     miss.add(cInfo);
                 } else {
+                    Label label = new Label(cInfo.getLabel());
                     Component cc = createComponent(cInfo, cv);
-                    pc.appendChild(cc);
+                    if (cInfo.getType() < CfgInfo.Type_Combo) {
+                        Hlayout hl = new Hlayout();
+                        hl.appendChild(label);
+                        hl.appendChild(cc);
+                        vl.appendChild(hl);
+                        isPreSimple = true;
+                    } else {
+                        if (isPreSimple) {
+                            vl.appendChild(new Label());
+                        }
+                        isPreSimple = false;
+                        vl.appendChild(label);
+                        vl.appendChild(cc);
+                        vl.appendChild(new Label());
+                    }
                 }
             }
-            combobox.setModel(new ListModelList<CfgInfo>(miss));
-            pc.appendChild(combobox);
+            if (!miss.isEmpty()) {
+                combobox.setModel(new ListModelList<CfgInfo>(miss));
+                pc.appendChild(combobox);
+            }
             break;
         case CfgInfo.Type_Map:
             break;
         case CfgInfo.Type_List:
             break;
         }
+        pc.appendChild(vl);
         this.appendChild(pc);
     }
 
     private Component createComponent(CfgInfo info, Object value) {
-        return createComponent(info, value, null, 0);
-    }
-
-    private Component createComponent(CfgInfo info, Object value, String mapKey, int listIndex) {
-        int type = cfgInfo.getType();
+        int type = info.getType();
         switch (type) {
         case CfgInfo.Type_Boolean:
             Checkbox checkbox = new Checkbox();
@@ -107,11 +101,9 @@ public class CfgValuePanel extends Panel {
             textbox.setValue(Dt.toString(value, ""));
             return textbox;
         case CfgInfo.Type_Struct:
-            //return new CfgValuePanel(info, value);
         case CfgInfo.Type_List:
-            //return new CfgValuePanel(info, value, listIndex);
         case CfgInfo.Type_Map:
-            //return new CfgValuePanel(info, value, mapKey);
+            return info.isEmbed() ? new CfgValueLink(info, value) : new CfgValuePanel(info, value);
         default:
             return new Label();
         }
