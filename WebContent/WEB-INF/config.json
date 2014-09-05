@@ -1,0 +1,70 @@
+{
+  "rootL2" : [
+    {
+      "rootL2M1" : {
+        "m62" : "m61v复制",
+        "m61" : "m61v",
+        "m63" : "m63v"
+      },
+      "rootL2L1" : [
+        {
+          "rootL2L1A1" : "L41"
+        },
+        {
+          "rootL2L1A1" : "L42"
+        }
+      ],
+      "rootL2L2" : [
+        "L51",
+        "L52"
+      ],
+      "rootL2A1" : "l1",
+      "rootL2A2" : 1,
+      "rootL2A3" : true
+    },
+    {
+      "rootL2M1" : { },
+      "rootL2L1" : [ ],
+      "rootL2L2" : [ ],
+      "rootL2A1" : "l2",
+      "rootL2A2" : 0,
+      "rootL2A3" : false
+    }
+  ],
+  "rootL1" : [
+    "l1",
+    "l2"
+  ],
+  "rootS1" : {
+    "rootS1A3" : false,
+    "rootS1A2" : 0,
+    "rootS1A1" : "null"
+  },
+  "rootA3" : true,
+  "rootA4" : "default",
+  "rootA5" : "null",
+  "rootM3" : { },
+  "rootM2" : {
+    "a1" : {
+      "rootM2A3" : true,
+      "rootM2A1" : 1,
+      "rootM2A2" : "a1v"
+    },
+    "a2" : {
+      "rootM2A3" : false,
+      "rootM2A1" : 0,
+      "rootM2A2" : "a2v"
+    }
+  },
+  "rootE1" : { },
+  "rootM1" : {
+    "a1" : "a1v",
+    "a2" : "a2v"
+  },
+  "appbase" : {
+    "appVersion" : "v1.1",
+    "appname" : "rpggame"
+  },
+  "rootA2" : 1.1,
+  "rootA1" : 1
+}

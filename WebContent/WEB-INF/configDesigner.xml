@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root label="配置后台">
+
+	<appbase embed="true">
+		<appname label="应用名" type="s" />
+		<appVersion label="应用版本" type="s" />
+	</appbase>
+
+	<rootA1 label="属性一（整数）" type="i" value="1"/>
+	<rootA2 label="属性二（实数）" type="r" value="1.1"/>
+	<rootA3 label="属性三（布尔）" type="b" value="true"/>
+	<rootA4 label="属性四（字符串）" type="s" value="default"/>
+	<rootA5 label="属性五（字符串，文本框）" type="s" textarea="true" />
+
+	<rootS1 label="结构一" type="st">
+		<rootS1A1 label="属性1" type="s" />
+		<rootS1A2 label="属性2" type="i" />
+		<rootS1A3 label="属性3" type="b" />
+	</rootS1>
+
+	<rootM1 label="映射表一（简单类型）" type="m" etype="s" embed="true">
+	</rootM1>
+
+	<rootM2 label="映射表二（结构）" type="m" etype="st" labelKey="rootM2A2">
+		<rootM2A1 label="属性1" type="i" />
+		<rootM2A2 label="属性2" type="s" />
+		<rootM2A3 label="属性3" type="b" />
+	</rootM2>
+
+	<rootM3 label="映射表三（etype错误）" type="m" etype="s">
+		<rootM3A1 label="属性1" type="s" />
+		<rootM3A2 label="属性2" type="i" />
+		<rootM3A3 label="属性3" type="b" />
+	</rootM3>
+
+	<rootL1 label="列表一（简单类型）" type="l" etype="s">
+	</rootL1>
+
+	<rootL2 label="列表二（结构）" type="l" etype="st" labelKey="错误的labelKey">
+		<rootL2A1 label="默认的labelKey" type="s" />
+		<rootL2A2 type="i" />
+		<rootL2A3 type="b" />
+		<rootL2L1 type="l" etype="st" embed="true">
+			<rootL2L1A1 type="s"/>
+		</rootL2L1>
+		<rootL2L2 type="l" etype="s"/>
+		<rootL2M1 type="m" etype="s">
+			<!-- 元素类型配置错误，元素结构被忽略 -->
+			<rootL2M1A1 type="s" />
+			<rootL2M1A2 type="i" />
+			<rootL2M1A3 type="b" />
+		</rootL2M1>
+	</rootL2>
+
+	<rootE1 type="xx"/>
+</root>
