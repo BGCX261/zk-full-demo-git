@@ -9,6 +9,7 @@ import org.apache.tapestry5.json.JSONObject;
 import org.dom4j.Element;
 import org.hxzon.demo.jt.config.MyString;
 import org.hxzon.util.Dom4jUtil;
+import org.hxzon.util.Dt;
 
 public class CfgParser {
     //private static final Object Null = JSONObject.NULL;
@@ -165,13 +166,13 @@ public class CfgParser {
         int type = cfgInfo.getType();
         switch (type) {
         case CfgInfo.Type_Boolean:
-            return root.getBoolValue();
+            return Dt.toBoolean(root.getValue(), false);
         case CfgInfo.Type_Integer:
-            return root.getIntValue();
+            return Dt.toLong(root.getValue(), 0);
         case CfgInfo.Type_Real:
-            return root.getRealValue();
+            return Dt.toDouble(root.getValue(), 0);
         case CfgInfo.Type_String:
-            return new MyString(root.getStrValue());
+            return new MyString(Dt.toString(root.getValue(), ""));
         case CfgInfo.Type_Struct: {
             JSONObject json = new JSONObject();
             for (CfgValue e : root.getChildren()) {

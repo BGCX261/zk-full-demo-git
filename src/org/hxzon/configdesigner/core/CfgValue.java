@@ -152,38 +152,6 @@ public class CfgValue {
         this.value = value;
     }
 
-    public String getStrValue() {
-        return (String) value;
-    }
-
-    public void setStrValue(String value) {
-        this.value = value;
-    }
-
-    public int getIntValue() {
-        return (Integer) value;
-    }
-
-    public void setIntValue(int value) {
-        this.value = value;
-    }
-
-    public double getRealValue() {
-        return (Double) value;
-    }
-
-    public void setRealValue(double value) {
-        this.value = value;
-    }
-
-    public boolean getBoolValue() {
-        return (Boolean) value;
-    }
-
-    public void setBoolValue(boolean value) {
-        this.value = value;
-    }
-
     //
     public CfgValue(CfgInfo cfgInfo, UUID uuid) {
         this.cfgInfo = cfgInfo;

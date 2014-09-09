@@ -6,6 +6,9 @@ import java.util.List;
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgValue;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
@@ -72,6 +75,16 @@ public class CfgValuePanel extends Panel {
                 }
             }
         }
+        Button saveBtn = new Button("保存");
+        mainPanel.appendChild(saveBtn);
+        saveBtn.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
+
+            @Override
+            public void onEvent(MouseEvent event) throws Exception {
+                saveValue();
+            }
+
+        });
         hl.appendChild(mainPanel);
         hl.appendChild(new Splitter());
         if (!missValues.isEmpty()) {
@@ -105,6 +118,22 @@ public class CfgValuePanel extends Panel {
 
     private void initList(Panelchildren pc) {
         initList(pc);
+    }
+
+    public void saveValue() {
+        for (Component c : mainPanel.getChildren()) {
+            if (c instanceof CfgValuePanel) {
+                ((CfgValuePanel) c).saveValue();
+            } else if (c instanceof CfgValueCheckbox) {
+                ((CfgValueCheckbox) c).saveValue();
+            } else if (c instanceof CfgValueLongbox) {
+                ((CfgValueLongbox) c).saveValue();
+            } else if (c instanceof CfgValueDoublebox) {
+                ((CfgValueDoublebox) c).saveValue();
+            } else if (c instanceof CfgValueTextbox) {
+                ((CfgValueTextbox) c).saveValue();
+            }
+        }
     }
 
     //===============
