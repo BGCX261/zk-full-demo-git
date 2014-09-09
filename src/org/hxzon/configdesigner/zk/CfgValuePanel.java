@@ -6,15 +6,17 @@ import java.util.List;
 import org.apache.tapestry5.json.JSONObject;
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.util.Dt;
+import org.zkoss.zhtml.Textarea;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
@@ -26,6 +28,7 @@ public class CfgValuePanel extends Panel {
 
     private CfgInfo cfgInfo;
     private Object cfgValue;
+    private static final ListitemRenderer<CfgInfo> listitemRenderer = new CfgListitemRenderer();
 
     public CfgValuePanel(CfgInfo cfgInfo, Object cfgValue) {
         this.cfgInfo = cfgInfo;
@@ -39,37 +42,37 @@ public class CfgValuePanel extends Panel {
         Vlayout vl = new Vlayout();
         switch (type) {
         case CfgInfo.Type_Struct:
-            Combobox combobox = new Combobox();
             List<CfgInfo> miss = new ArrayList<CfgInfo>();
             JSONObject json = (JSONObject) cfgValue;
-            boolean isPreSimple = false;
             for (CfgInfo cInfo : cfgInfo.getParts()) {
                 Object cv = json.get(cInfo.getId());
                 if (cv == null) {
                     miss.add(cInfo);
                 } else {
-                    Label label = new Label(cInfo.getLabel());
                     Component cc = createComponent(cInfo, cv);
-                    if (cInfo.getType() < CfgInfo.Type_Combo) {
+                    if (cInfo.isEmbed()) {
+                        Label label = new Label(cInfo.getLabel());
+                        Button delBtn = new Button("-");
                         Hlayout hl = new Hlayout();
                         hl.appendChild(label);
-                        hl.appendChild(cc);
+                        hl.appendChild(delBtn);
                         vl.appendChild(hl);
-                        isPreSimple = true;
-                    } else {
-                        if (isPreSimple) {
-                            vl.appendChild(new Label());
-                        }
-                        isPreSimple = false;
-                        vl.appendChild(label);
                         vl.appendChild(cc);
-                        vl.appendChild(new Label());
+                    } else {
+                        vl.appendChild(cc);
                     }
                 }
             }
             if (!miss.isEmpty()) {
-                combobox.setModel(new ListModelList<CfgInfo>(miss));
-                pc.appendChild(combobox);
+                Listbox listbox = new Listbox();
+                listbox.setModel(new ListModelList<CfgInfo>(miss));
+                listbox.setItemRenderer(listitemRenderer);
+                Hlayout hl = new Hlayout();
+                hl.appendChild(vl);
+                hl.appendChild(listbox);
+                pc.appendChild(hl);
+            } else {
+                pc.appendChild(vl);
             }
             break;
         case CfgInfo.Type_Map:
@@ -77,7 +80,6 @@ public class CfgValuePanel extends Panel {
         case CfgInfo.Type_List:
             break;
         }
-        pc.appendChild(vl);
         this.appendChild(pc);
     }
 
@@ -97,22 +99,28 @@ public class CfgValuePanel extends Panel {
             doublebox.setValue(Dt.toDouble(value, 0));
             return doublebox;
         case CfgInfo.Type_String:
-            Textbox textbox = new Textbox();
-            textbox.setValue(Dt.toString(value, ""));
-            return textbox;
+            if (info.isTextArea()) {
+                Textarea textarea = new Textarea();
+                textarea.setValue(Dt.toString(value, ""));
+                return textarea;
+            } else {
+                Textbox textbox = new Textbox();
+                textbox.setValue(Dt.toString(value, ""));
+                return textbox;
+            }
         case CfgInfo.Type_Struct:
         case CfgInfo.Type_List:
         case CfgInfo.Type_Map:
-            return info.isEmbed() ? new CfgValueLink(info, value) : new CfgValuePanel(info, value);
+            return info.isEmbed() ? new CfgValuePanel(info, value) : new CfgValueLink(info, value);
         default:
             return new Label();
         }
     }
 
-    public static class CfgComboitemRenderer implements ComboitemRenderer<CfgInfo> {
+    public static class CfgListitemRenderer implements ListitemRenderer<CfgInfo> {
 
         @Override
-        public void render(Comboitem item, CfgInfo data, int index) throws Exception {
+        public void render(Listitem item, CfgInfo data, int index) throws Exception {
             item.setLabel(data.getLabel());
         }
 
