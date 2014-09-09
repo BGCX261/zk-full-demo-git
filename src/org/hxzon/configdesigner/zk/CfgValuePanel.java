@@ -51,15 +51,17 @@ public class CfgValuePanel extends Panel {
         Hbox hl = new Hbox();
         //
         mainPanel = new Vlayout();
-        List<CfgValue> missValues = new ArrayList<CfgValue>();
-        for (CfgValue cCfgValue : cfgValue.getChildren()) {
-            if (cCfgValue.isNull()) {
-                missValues.add(cCfgValue);
+        List<CfgInfo> missValues = new ArrayList<CfgInfo>();
+        CfgInfo cfgInfo = cfgValue.getCfgInfo();
+        for (CfgInfo cCfgInfo : cfgInfo.getParts()) {
+            CfgValue cCfgValue = cfgValue.getValue(cCfgInfo.getId());
+            if (cCfgValue == null) {
+                missValues.add(cCfgInfo);
             } else {
                 Component cComponent = CfgValueZkUtil.createComponent(cCfgValue);
                 if (cCfgValue.getCfgInfo().isEmbed()) {
                     Label label = new Label(cCfgValue.getLabel());
-                    Button delBtn = new CfgValueDeleteButton(cCfgValue, cComponent, this);
+                    Button delBtn = new CfgValueDeleteButton(cCfgValue, this);
                     Hlayout cTitlePanel = new Hlayout();
                     cTitlePanel.appendChild(label);
                     cTitlePanel.appendChild(delBtn);
@@ -73,8 +75,8 @@ public class CfgValuePanel extends Panel {
         hl.appendChild(mainPanel);
         hl.appendChild(new Splitter());
         if (!missValues.isEmpty()) {
-            for (CfgValue cCfgValue : missValues) {
-                Button btn = new CfgValuePartAddButton(cCfgValue, this);
+            for (CfgInfo cCfgInfo : missValues) {
+                Button btn = new CfgValuePartAddButton(cCfgInfo, this);
                 missButtonPanel.appendChild(btn);
             }
             hl.appendChild(missButtonPanel);
@@ -88,7 +90,7 @@ public class CfgValuePanel extends Panel {
             Component cComponent = CfgValueZkUtil.createComponent(cCfgValue);
             if (cCfgValue.getCfgInfo().isEmbed()) {
                 Label label = new Label(cCfgValue.getLabel());
-                Button delBtn = new CfgValueDeleteButton(cCfgValue, cComponent);
+                Button delBtn = new CfgValueDeleteButton(cCfgValue);
                 Hlayout cTitlePanel = new Hlayout();
                 cTitlePanel.appendChild(label);
                 cTitlePanel.appendChild(delBtn);
@@ -110,16 +112,12 @@ public class CfgValuePanel extends Panel {
         return mainPanel;
     }
 
-    public void setMainPanel(Component mainPanel) {
-        this.mainPanel = mainPanel;
-    }
-
     public Component getMissButtonPanel() {
         return missButtonPanel;
     }
 
-    public void setMissButtonPanel(Component missButtonPanel) {
-        this.missButtonPanel = missButtonPanel;
+    public CfgValue getCfgValue() {
+        return cfgValue;
     }
 
 }

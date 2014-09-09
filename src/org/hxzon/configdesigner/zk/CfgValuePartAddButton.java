@@ -2,6 +2,7 @@ package org.hxzon.configdesigner.zk;
 
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgValue;
+import org.hxzon.configdesigner.util.CfgUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -13,29 +14,28 @@ import org.zkoss.zul.Label;
 @SuppressWarnings("serial")
 public class CfgValuePartAddButton extends Button {
 
-    public CfgValuePartAddButton(final CfgValue cfgValue,//
+    public CfgValuePartAddButton(final CfgInfo cfgInfo,//
             final CfgValuePanel panel) {
-        this.setLabel(cfgValue.getLabel());
+        this.setLabel(cfgInfo.getLabel());
         this.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
 
             @Override
             public void onEvent(MouseEvent event) throws Exception {
-                int type = cfgValue.getParent().getCfgInfo().getType();
-                if (type == CfgInfo.Type_Struct) {
-                    Component cComponent = CfgValueZkUtil.createComponent(cfgValue);
-                    if (cfgValue.getCfgInfo().isEmbed()) {
-                        Label label = new Label(cfgValue.getLabel());
-                        Button delBtn = new CfgValueDeleteButton(cfgValue, cComponent, panel);
-                        Hlayout cTitilePanel = new Hlayout();
-                        cTitilePanel.appendChild(label);
-                        cTitilePanel.appendChild(delBtn);
-                        panel.getMainPanel().appendChild(cTitilePanel);
-                        panel.getMainPanel().appendChild(cComponent);
-                    } else {
-                        panel.getMainPanel().appendChild(cComponent);
-                    }
-                    CfgValuePartAddButton.this.setParent(null);
+                CfgValue cfgValue = CfgUtil.getCfgParser().buildCfgValue_withNull(cfgInfo, null);
+                cfgValue.setParent(panel.getCfgValue());
+                Component cComponent = CfgValueZkUtil.createComponent(cfgValue);
+                if (cfgInfo.isEmbed()) {
+                    Label label = new Label(cfgValue.getLabel());
+                    Button delBtn = new CfgValueDeleteButton(cfgValue, panel);
+                    Hlayout cTitilePanel = new Hlayout();
+                    cTitilePanel.appendChild(label);
+                    cTitilePanel.appendChild(delBtn);
+                    panel.getMainPanel().appendChild(cTitilePanel);
+                    panel.getMainPanel().appendChild(cComponent);
+                } else {
+                    panel.getMainPanel().appendChild(cComponent);
                 }
+                CfgValuePartAddButton.this.setParent(null);
             }
 
         });
