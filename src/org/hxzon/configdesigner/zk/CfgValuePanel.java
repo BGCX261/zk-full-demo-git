@@ -5,29 +5,22 @@ import java.util.List;
 
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgValue;
-import org.hxzon.util.Dt;
-import org.zkoss.zhtml.Textarea;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
-import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Splitter;
 import org.zkoss.zul.Vlayout;
 
 @SuppressWarnings("serial")
 public class CfgValuePanel extends Panel {
 
-    private static final CfgListitemRenderer listitemRenderer = new CfgListitemRenderer();
     private CfgValue cfgValue;
+    private Component mainPanel;
+    private Component missButtonPanel;
 
     public CfgValuePanel(CfgValue cfgValue) {
         this.cfgValue = cfgValue;
@@ -38,92 +31,95 @@ public class CfgValuePanel extends Panel {
         CfgInfo cfgInfo = cfgValue.getCfgInfo();
         int type = cfgInfo.getType();
         Panelchildren pc = new Panelchildren();
-        Vlayout vl = new Vlayout();
         switch (type) {
         case CfgInfo.Type_Struct:
-            List<CfgValue> miss = new ArrayList<CfgValue>();
-            for (CfgValue c : cfgValue.getChildren()) {
-                if (c.isNull()) {
-                    miss.add(c);
-                } else {
-                    Component cc = createComponent(c);
-                    if (c.getCfgInfo().isEmbed()) {
-                        Label label = new Label(c.getLabel());
-                        Button delBtn = new Button("删除");
-                        Hlayout hl = new Hlayout();
-                        hl.appendChild(label);
-                        hl.appendChild(delBtn);
-                        vl.appendChild(hl);
-                        vl.appendChild(cc);
-                    } else {
-                        vl.appendChild(cc);
-                    }
-                }
-            }
-            if (!miss.isEmpty()) {
-                Listbox listbox = new Listbox();
-                listbox.setModel(new ListModelList<CfgValue>(miss));
-                listbox.setItemRenderer(listitemRenderer);
-                Hlayout hl = new Hlayout();
-                hl.appendChild(vl);
-                hl.appendChild(listbox);
-                pc.appendChild(hl);
-            } else {
-                pc.appendChild(vl);
-            }
+            initStruct(pc);
             break;
         case CfgInfo.Type_Map:
+            initMap(pc);
             break;
         case CfgInfo.Type_List:
+            initList(pc);
             break;
         }
         this.appendChild(pc);
     }
 
-    private Component createComponent(CfgValue cfgValue) {
-        CfgInfo info = cfgValue.getCfgInfo();
-        int type = info.getType();
-        switch (type) {
-        case CfgInfo.Type_Boolean:
-            Checkbox checkbox = new Checkbox();
-            checkbox.setChecked(Dt.toBoolean(cfgValue.getValue(), false));
-            return checkbox;
-        case CfgInfo.Type_Integer:
-            Longbox longbox = new Longbox();
-            longbox.setValue(Dt.toLong(cfgValue.getValue(), 0));
-            return longbox;
-        case CfgInfo.Type_Real:
-            Doublebox doublebox = new Doublebox();
-            doublebox.setValue(Dt.toDouble(cfgValue.getValue(), 0));
-            return doublebox;
-        case CfgInfo.Type_String:
-            if (info.isTextArea()) {
-                Textarea textarea = new Textarea();
-                textarea.setValue(Dt.toString(cfgValue.getValue(), ""));
-                return textarea;
+    private void initStruct(Panelchildren pc) {
+        missButtonPanel = new Vlayout();
+        missButtonPanel.appendChild(new Label("添加配置选项"));
+        Hbox hl = new Hbox();
+        //
+        mainPanel = new Vlayout();
+        List<CfgValue> missValues = new ArrayList<CfgValue>();
+        for (CfgValue cCfgValue : cfgValue.getChildren()) {
+            if (cCfgValue.isNull()) {
+                missValues.add(cCfgValue);
             } else {
-                Textbox textbox = new Textbox();
-                textbox.setValue(Dt.toString(cfgValue.getValue(), ""));
-                return textbox;
+                Component cComponent = CfgValueZkUtil.createComponent(cCfgValue);
+                if (cCfgValue.getCfgInfo().isEmbed()) {
+                    Label label = new Label(cCfgValue.getLabel());
+                    Button delBtn = new CfgValueDeleteButton(cCfgValue, cComponent, this);
+                    Hlayout cTitlePanel = new Hlayout();
+                    cTitlePanel.appendChild(label);
+                    cTitlePanel.appendChild(delBtn);
+                    mainPanel.appendChild(cTitlePanel);
+                    mainPanel.appendChild(cComponent);
+                } else {
+                    mainPanel.appendChild(cComponent);
+                }
             }
-        case CfgInfo.Type_Struct:
-        case CfgInfo.Type_List:
-        case CfgInfo.Type_Map:
-            return info.isEmbed() ? new CfgValuePanel(cfgValue) : new CfgValueLink(cfgValue);
-        default:
-            return new Label();
         }
+        hl.appendChild(mainPanel);
+        hl.appendChild(new Splitter());
+        if (!missValues.isEmpty()) {
+            for (CfgValue cCfgValue : missValues) {
+                Button btn = new CfgValuePartAddButton(cCfgValue, this);
+                missButtonPanel.appendChild(btn);
+            }
+            hl.appendChild(missButtonPanel);
+        }
+        pc.appendChild(hl);
     }
 
-    public static class CfgListitemRenderer implements ListitemRenderer<CfgValue> {
-
-        @Override
-        public void render(Listitem item, CfgValue data, int index) throws Exception {
-            item.setLabel(data.getLabel());
+    private void initMap(Panelchildren pc) {
+        mainPanel = new Vlayout();
+        for (CfgValue cCfgValue : cfgValue.getChildren()) {
+            Component cComponent = CfgValueZkUtil.createComponent(cCfgValue);
+            if (cCfgValue.getCfgInfo().isEmbed()) {
+                Label label = new Label(cCfgValue.getLabel());
+                Button delBtn = new CfgValueDeleteButton(cCfgValue, cComponent);
+                Hlayout cTitlePanel = new Hlayout();
+                cTitlePanel.appendChild(label);
+                cTitlePanel.appendChild(delBtn);
+                mainPanel.appendChild(cTitlePanel);
+                mainPanel.appendChild(cComponent);
+            } else {
+                mainPanel.appendChild(cComponent);
+            }
         }
+        pc.appendChild(mainPanel);
+    }
 
+    private void initList(Panelchildren pc) {
+        initList(pc);
     }
 
     //===============
+    public Component getMainPanel() {
+        return mainPanel;
+    }
+
+    public void setMainPanel(Component mainPanel) {
+        this.mainPanel = mainPanel;
+    }
+
+    public Component getMissButtonPanel() {
+        return missButtonPanel;
+    }
+
+    public void setMissButtonPanel(Component missButtonPanel) {
+        this.missButtonPanel = missButtonPanel;
+    }
 
 }
