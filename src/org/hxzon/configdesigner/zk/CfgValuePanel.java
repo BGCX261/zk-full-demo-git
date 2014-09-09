@@ -3,8 +3,8 @@ package org.hxzon.configdesigner.zk;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tapestry5.json.JSONObject;
 import org.hxzon.configdesigner.core.CfgInfo;
+import org.hxzon.configdesigner.core.CfgValue;
 import org.hxzon.util.Dt;
 import org.zkoss.zhtml.Textarea;
 import org.zkoss.zk.ui.Component;
@@ -26,33 +26,30 @@ import org.zkoss.zul.Vlayout;
 @SuppressWarnings("serial")
 public class CfgValuePanel extends Panel {
 
-    private CfgInfo cfgInfo;
-    private Object cfgValue;
-    private static final ListitemRenderer<CfgInfo> listitemRenderer = new CfgListitemRenderer();
+    private static final CfgListitemRenderer listitemRenderer = new CfgListitemRenderer();
+    private CfgValue cfgValue;
 
-    public CfgValuePanel(CfgInfo cfgInfo, Object cfgValue) {
-        this.cfgInfo = cfgInfo;
+    public CfgValuePanel(CfgValue cfgValue) {
         this.cfgValue = cfgValue;
         init();
     }
 
     private void init() {
+        CfgInfo cfgInfo = cfgValue.getCfgInfo();
         int type = cfgInfo.getType();
         Panelchildren pc = new Panelchildren();
         Vlayout vl = new Vlayout();
         switch (type) {
         case CfgInfo.Type_Struct:
-            List<CfgInfo> miss = new ArrayList<CfgInfo>();
-            JSONObject json = (JSONObject) cfgValue;
-            for (CfgInfo cInfo : cfgInfo.getParts()) {
-                Object cv = json.get(cInfo.getId());
-                if (cv == null) {
-                    miss.add(cInfo);
+            List<CfgValue> miss = new ArrayList<CfgValue>();
+            for (CfgValue c : cfgValue.getChildren()) {
+                if (c.isNull()) {
+                    miss.add(c);
                 } else {
-                    Component cc = createComponent(cInfo, cv);
-                    if (cInfo.isEmbed()) {
-                        Label label = new Label(cInfo.getLabel());
-                        Button delBtn = new Button("-");
+                    Component cc = createComponent(c);
+                    if (c.getCfgInfo().isEmbed()) {
+                        Label label = new Label(c.getLabel());
+                        Button delBtn = new Button("删除");
                         Hlayout hl = new Hlayout();
                         hl.appendChild(label);
                         hl.appendChild(delBtn);
@@ -65,7 +62,7 @@ public class CfgValuePanel extends Panel {
             }
             if (!miss.isEmpty()) {
                 Listbox listbox = new Listbox();
-                listbox.setModel(new ListModelList<CfgInfo>(miss));
+                listbox.setModel(new ListModelList<CfgValue>(miss));
                 listbox.setItemRenderer(listitemRenderer);
                 Hlayout hl = new Hlayout();
                 hl.appendChild(vl);
@@ -83,44 +80,45 @@ public class CfgValuePanel extends Panel {
         this.appendChild(pc);
     }
 
-    private Component createComponent(CfgInfo info, Object value) {
+    private Component createComponent(CfgValue cfgValue) {
+        CfgInfo info = cfgValue.getCfgInfo();
         int type = info.getType();
         switch (type) {
         case CfgInfo.Type_Boolean:
             Checkbox checkbox = new Checkbox();
-            checkbox.setChecked(Dt.toBoolean(value, false));
+            checkbox.setChecked(Dt.toBoolean(cfgValue.getValue(), false));
             return checkbox;
         case CfgInfo.Type_Integer:
             Longbox longbox = new Longbox();
-            longbox.setValue(Dt.toLong(value, 0));
+            longbox.setValue(Dt.toLong(cfgValue.getValue(), 0));
             return longbox;
         case CfgInfo.Type_Real:
             Doublebox doublebox = new Doublebox();
-            doublebox.setValue(Dt.toDouble(value, 0));
+            doublebox.setValue(Dt.toDouble(cfgValue.getValue(), 0));
             return doublebox;
         case CfgInfo.Type_String:
             if (info.isTextArea()) {
                 Textarea textarea = new Textarea();
-                textarea.setValue(Dt.toString(value, ""));
+                textarea.setValue(Dt.toString(cfgValue.getValue(), ""));
                 return textarea;
             } else {
                 Textbox textbox = new Textbox();
-                textbox.setValue(Dt.toString(value, ""));
+                textbox.setValue(Dt.toString(cfgValue.getValue(), ""));
                 return textbox;
             }
         case CfgInfo.Type_Struct:
         case CfgInfo.Type_List:
         case CfgInfo.Type_Map:
-            return info.isEmbed() ? new CfgValuePanel(info, value) : new CfgValueLink(info, value);
+            return info.isEmbed() ? new CfgValuePanel(cfgValue) : new CfgValueLink(cfgValue);
         default:
             return new Label();
         }
     }
 
-    public static class CfgListitemRenderer implements ListitemRenderer<CfgInfo> {
+    public static class CfgListitemRenderer implements ListitemRenderer<CfgValue> {
 
         @Override
-        public void render(Listitem item, CfgInfo data, int index) throws Exception {
+        public void render(Listitem item, CfgValue data, int index) throws Exception {
             item.setLabel(data.getLabel());
         }
 

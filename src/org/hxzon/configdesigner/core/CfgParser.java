@@ -2,7 +2,6 @@ package org.hxzon.configdesigner.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tapestry5.json.JSONArray;
@@ -131,7 +130,9 @@ public class CfgParser {
         if (mapsJson != null && mapsJson instanceof JSONObject) {
             JSONObject jsonObj = (JSONObject) mapsJson;
             for (String key : jsonObj.keys()) {
-                mapsCfgValue.addValue(key, buildCfgValue(eCfgInfo, jsonObj.get(key)));//add element
+                CfgValue e = buildCfgValue(eCfgInfo, jsonObj.get(key));
+                e.setKey(key);
+                mapsCfgValue.addValue(e);//add element
             }
         }
         return mapsCfgValue;
@@ -162,22 +163,22 @@ public class CfgParser {
             return new MyString(root.getStrValue());
         case CfgInfo.Type_Struct: {
             JSONObject json = new JSONObject();
-            for (CfgValue e : root.getValues()) {
+            for (CfgValue e : root.getChildren()) {
                 json.put(e.getCfgInfo().getId(), toJson(e));
             }
             return json;
         }
         case CfgInfo.Type_List: {
             JSONArray jsonA = new JSONArray();
-            for (CfgValue e : root.getValues()) {
+            for (CfgValue e : root.getChildren()) {
                 jsonA.put(toJson(e));
             }
             return jsonA;
         }
         case CfgInfo.Type_Map: {
             JSONObject json = new JSONObject();
-            for (Map.Entry<String, CfgValue> e : root.getMapValues().entrySet()) {
-                json.put(e.getKey(), toJson(e.getValue()));
+            for (CfgValue e : root.getChildren()) {
+                json.put(e.getKey(), toJson(e));
             }
             return json;
         }
@@ -206,15 +207,10 @@ public class CfgParser {
         CfgValue r = new CfgValue(cfgInfo, UUID.randomUUID());
         switch (cfgInfo.getType()) {
         case CfgInfo.Type_List:
-        case CfgInfo.Type_Struct: {
-            for (CfgValue childCfgValue : origCfgValue.getValues()) {
-                r.addValue(copy(childCfgValue));
-            }
-            break;
-        }
+        case CfgInfo.Type_Struct:
         case CfgInfo.Type_Map: {
-            for (Map.Entry<String, CfgValue> entry : origCfgValue.getMapValues().entrySet()) {
-                r.addValue(entry.getKey(), copy(entry.getValue()));
+            for (CfgValue childCfgValue : origCfgValue.getChildren()) {
+                r.addValue(copy(childCfgValue));
             }
             break;
         }

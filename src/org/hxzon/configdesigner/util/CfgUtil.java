@@ -20,8 +20,6 @@ import org.zkoss.zk.ui.WebApp;
 public class CfgUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(CfgUtil.class);
-    private static CfgInfo info;
-    private static JSONObject json;
     private static CfgValue configer;
     private static Map<Integer, CfgValue> indexer = new HashMap<Integer, CfgValue>();;
 
@@ -29,9 +27,9 @@ public class CfgUtil {
         try {
             WebApp webapp = Executions.getCurrent().getDesktop().getWebApp();
             String xmlStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/configDesigner.xml")), "utf8");
-            info = CfgParser.parseSchema(xmlStr);
+            CfgInfo info = CfgParser.parseSchema(xmlStr);
             String jsonStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/config.json")), "utf8");
-            json = new JSONObject(jsonStr);
+            JSONObject json = new JSONObject(jsonStr);
             configer = CfgParser.buildCfgValue(info, json);
             indexCfg(configer);
         } catch (IOException e) {
@@ -40,12 +38,8 @@ public class CfgUtil {
         }
     }
 
-    public static CfgInfo getInfo() {
-        return info;
-    }
-
-    public static JSONObject getValue() {
-        return json;
+    public static CfgValue getValue() {
+        return configer;
     }
 
     public static void indexCfg(CfgValue cfg) {
@@ -54,7 +48,7 @@ public class CfgUtil {
         if (type == CfgInfo.Type_Struct//
                 || type == CfgInfo.Type_Map//
                 || type == CfgInfo.Type_List) {
-            for (CfgValue childCfg : cfg.getValues()) {
+            for (CfgValue childCfg : cfg.getChildren()) {
                 indexCfg(childCfg);
             }
         }

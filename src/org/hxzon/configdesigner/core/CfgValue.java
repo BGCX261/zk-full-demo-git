@@ -1,10 +1,7 @@
 package org.hxzon.configdesigner.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class CfgValue {
@@ -13,6 +10,7 @@ public class CfgValue {
     private CfgInfo cfgInfo;
     private CfgValue parent;
     private String key;
+    private List<CfgValue> children;//对于列表，好维护序号变更
     private Object value;
 
     public int indexCode() {
@@ -23,7 +21,7 @@ public class CfgValue {
         String parentPath = (parent == null) ? "" : parent.getFullPath() + "/";
         int parentType = parent == null ? 0 : parent.getCfgInfo().getType();
         if (parentType == CfgInfo.Type_List) {
-            return parentPath + parent.getValues().indexOf(this);
+            return parentPath + parent.getIndex(this);
         }
         if (parentType == CfgInfo.Type_Map) {
             return parentPath + key;
@@ -40,7 +38,7 @@ public class CfgValue {
         String parentTitle = (parent == null) ? "" : parent.getTitle() + "/";
         int parentType = parent == null ? 0 : parent.getCfgInfo().getType();
         if (parentType == CfgInfo.Type_List) {
-            return parentTitle + parent.getValues().indexOf(this);
+            return parentTitle + parent.getIndex(this);
         }
         if (parentType == CfgInfo.Type_Map) {
             return parentTitle + key;
@@ -56,17 +54,16 @@ public class CfgValue {
                 return String.valueOf(value);
             }
             String labelKey = eCfgInfo.getLabelKey();
-            List<CfgValue> valueParts = getValues();
-            for (CfgValue v : valueParts) {
-                if (v.getCfgInfo().getTitle().equals(labelKey)) {
-                    return String.valueOf(v.getValue());
-                }
+            CfgValue labelValue = getValue(labelKey);
+            if (labelValue != null) {
+                return String.valueOf(labelValue.getValue());
             }
-            return String.valueOf(valueParts.get(0).getValue());
+            return String.valueOf(children.get(0).getValue());
         }
         return cfgInfo.getTitle();
     }
 
+    @Override
     public String toString() {
         return cfgInfo.getId() + "[" + cfgInfo.getLabel() + "]" + cfgInfo.getType();
     }
@@ -92,76 +89,58 @@ public class CfgValue {
         throw new RuntimeException("type error");
     }
 
-    @SuppressWarnings("unchecked")
     public void removeValue(CfgValue cfgValue) {
-        checkType(CfgInfo.Type_List, CfgInfo.Type_Map);
-        int type = cfgInfo.getType();
-        if (type == CfgInfo.Type_List) {
-            ((List<CfgValue>) value).remove(cfgValue);
-        } else if (type == CfgInfo.Type_Map) {
-            ((Map<String, CfgValue>) value).remove(cfgValue.getKey());
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void removeValue(String key) {
-        checkType(CfgInfo.Type_Map);
-        ((Map<String, CfgValue>) value).remove(key);
+        checkType(CfgInfo.Type_Struct, CfgInfo.Type_List, CfgInfo.Type_Map);
+        getChildren().remove(cfgValue);
     }
 
     public void addValue(CfgValue cfgValue) {
-        checkType(CfgInfo.Type_Struct, CfgInfo.Type_List);
+        checkType(CfgInfo.Type_Struct, CfgInfo.Type_List, CfgInfo.Type_Map);
         cfgValue.setParent(this);
-        if (value == null) {
-            value = new ArrayList<CfgValue>();
-        }
-        getValues().add(cfgValue);
+        getChildren().add(cfgValue);
     }
 
-    public void addValue(String key, CfgValue cfgValue) {
-        checkType(CfgInfo.Type_Map);
-        cfgValue.setParent(this);
-        if (value == null) {
-            value = new LinkedHashMap<String, CfgValue>();
-        }
-        cfgValue.setKey(key);
-        getMapValues().put(key, cfgValue);
+    public CfgValue getValue(int index) {
+        checkType(CfgInfo.Type_List);
+        return getChildren().get(index);
     }
 
-    public List<CfgValue> getValues(boolean isSimple) {
-        List<CfgValue> r = new ArrayList<CfgValue>();
-        for (CfgValue v : getValues()) {
-            if (v.isSimpleValue() == isSimple) {
-                r.add(v);
+    public CfgValue getValue(String key) {
+        checkType(CfgInfo.Type_Struct, CfgInfo.Type_Map);
+        children = getChildren();
+        if (cfgInfo.getType() == CfgInfo.Type_Struct) {
+            for (CfgValue c : children) {
+                if (c.getCfgInfo().getId().equals(key)) {
+                    return c;
+                }
+            }
+            return null;
+        }
+        for (CfgValue c : children) {
+            if (c.getKey().equals(key)) {
+                return c;
             }
         }
-        return r;
+        return null;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<CfgValue> getValues() {
-        if (value == null) {
-            return Collections.emptyList();
-        }
-        int type = cfgInfo.getType();
-        if (type == CfgInfo.Type_List || type == CfgInfo.Type_Struct) {
-            return (List<CfgValue>) value;
-        }
-        if (type == CfgInfo.Type_Map) {
-            List<CfgValue> r = new ArrayList<CfgValue>();
-            Map<String, CfgValue> mapsValue = (Map<String, CfgValue>) value;
-            r.addAll(mapsValue.values());
-            return r;
-        }
-        return Collections.emptyList();//null;
+    public int getIndex(CfgValue c) {
+        checkType(CfgInfo.Type_List);
+        return getChildren().indexOf(c);
     }
 
-    @SuppressWarnings("unchecked")
-    public Map<String, CfgValue> getMapValues() {
-        if (value == null) {
-            return Collections.emptyMap();
+    public List<CfgValue> getChildren() {
+        if (children == null) {
+            children = new ArrayList<CfgValue>();
         }
-        return (Map<String, CfgValue>) value;
+        return children;
+    }
+
+    public boolean isNull() {
+        if (cfgInfo.getType() < CfgInfo.Type_Combo) {
+            return value == null;
+        }
+        return children == null || children.isEmpty();
     }
 
     //
