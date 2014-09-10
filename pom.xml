@@ -345,11 +345,6 @@
 			</dependency>
 		-->
 		<dependency>
-			<groupId>org.apache.tapestry</groupId>
-			<artifactId>tapestry-json</artifactId>
-			<version>5.4-beta-6</version>
-		</dependency>
-		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
 			<version>1.1.6</version>

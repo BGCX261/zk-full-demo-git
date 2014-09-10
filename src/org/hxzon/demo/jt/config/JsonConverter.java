@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.tapestry5.json.JSONArray;
-import org.apache.tapestry5.json.JSONObject;
 import org.dom4j.Element;
 import org.hxzon.util.Dom4jUtil;
+import org.hxzon.util.json.JSONArray;
+import org.hxzon.util.json.JSONObject;
 
 public class JsonConverter {
     private static final Object Null = JSONObject.NULL;

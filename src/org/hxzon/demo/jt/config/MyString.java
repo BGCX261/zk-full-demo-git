@@ -1,6 +1,6 @@
 package org.hxzon.demo.jt.config;
 
-import org.apache.tapestry5.json.JSONString;
+import org.hxzon.util.json.JSONString;
 
 public class MyString implements JSONString {
     private final String text;
@@ -14,6 +14,7 @@ public class MyString implements JSONString {
         return text;
     }
 
+    @Override
     public String toJSONString() {
         return "\"" + text + "\"";
     }
