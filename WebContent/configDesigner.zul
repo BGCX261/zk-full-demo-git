@@ -1,5 +1,4 @@
 <?page title="Zk Full Demo"?>
 <window title="后台配置" border="normal" mode="modal" width="100%" height="100%"
-          xmlns:h="http://www.w3.org/1999/xhtml"
           apply="org.hxzon.configdesigner.zk.ConfigDesignerComposer">
 </window>
