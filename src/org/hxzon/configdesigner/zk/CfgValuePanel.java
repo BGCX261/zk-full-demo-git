@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hxzon.configdesigner.core.CfgInfo;
+import org.hxzon.configdesigner.core.CfgParser;
 import org.hxzon.configdesigner.core.CfgValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
@@ -24,6 +25,7 @@ public class CfgValuePanel extends Panel {
     private CfgValue cfgValue;
     private Component mainPanel;
     private Component missButtonPanel;
+    private Button saveBtn;
 
     public CfgValuePanel(CfgValue cfgValue) {
         this.cfgValue = cfgValue;
@@ -64,7 +66,7 @@ public class CfgValuePanel extends Panel {
                 Component cComponent = CfgValueZkUtil.createComponent(cCfgValue);
                 if (cCfgValue.getCfgInfo().isEmbed()) {
                     Label label = new Label(cCfgValue.getLabel());
-                    Button delBtn = new CfgValueDeleteButton(cCfgValue, this);
+                    Button delBtn = newDeleteValueBtn(cCfgValue);
                     Hlayout cTitlePanel = new Hlayout();
                     cTitlePanel.appendChild(label);
                     cTitlePanel.appendChild(delBtn);
@@ -75,8 +77,7 @@ public class CfgValuePanel extends Panel {
                 }
             }
         }
-        Button saveBtn = new Button("保存");
-        mainPanel.appendChild(saveBtn);
+        saveBtn = new Button("保存");
         saveBtn.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
 
             @Override
@@ -85,11 +86,12 @@ public class CfgValuePanel extends Panel {
             }
 
         });
+        mainPanel.appendChild(saveBtn);
         hl.appendChild(mainPanel);
         hl.appendChild(new Splitter());
         if (!missValues.isEmpty()) {
             for (CfgInfo cCfgInfo : missValues) {
-                Button btn = new CfgValuePartAddButton(cCfgInfo, this);
+                Button btn = newAddPartBtn(cCfgInfo);
                 missButtonPanel.appendChild(btn);
             }
             hl.appendChild(missButtonPanel);
@@ -103,7 +105,7 @@ public class CfgValuePanel extends Panel {
             Component cComponent = CfgValueZkUtil.createComponent(cCfgValue);
             if (cCfgValue.getCfgInfo().isEmbed()) {
                 Label label = new Label(cCfgValue.getLabel());
-                Button delBtn = new CfgValueDeleteButton(cCfgValue);
+                Button delBtn = newDeleteValueBtn(cCfgValue);
                 Hlayout cTitlePanel = new Hlayout();
                 cTitlePanel.appendChild(label);
                 cTitlePanel.appendChild(delBtn);
@@ -136,17 +138,73 @@ public class CfgValuePanel extends Panel {
         }
     }
 
-    //===============
-    public Component getMainPanel() {
-        return mainPanel;
+    private void addPart(CfgInfo cfgInfo) {
+        mainPanel.removeChild(saveBtn);
+        CfgValue newPartCfgValue = CfgParser.buildCfgValue(cfgInfo, null, 1, 1);
+        //newPartCfgValue.setParent(cfgValue);
+        cfgValue.addValue(newPartCfgValue);
+        Component cComponent = CfgValueZkUtil.createComponent(newPartCfgValue);
+        if (cfgInfo.isEmbed()) {
+            Label label = new Label(newPartCfgValue.getLabel());
+            Button delBtn = newDeleteValueBtn(newPartCfgValue);
+            Hlayout cTitilePanel = new Hlayout();
+            cTitilePanel.appendChild(label);
+            cTitilePanel.appendChild(delBtn);
+            mainPanel.appendChild(cTitilePanel);
+            mainPanel.appendChild(cComponent);
+        } else {
+            mainPanel.appendChild(cComponent);
+        }
+        mainPanel.appendChild(saveBtn);
     }
 
-    public Component getMissButtonPanel() {
-        return missButtonPanel;
+    private void deleteValue(CfgValueButton btn) {
+        CfgValue deleteCfgValue = btn.getCfgValue();
+        CfgValue parent = deleteCfgValue.getParent();
+        int parentType = parent.getCfgInfo().getType();
+        if (parentType == CfgInfo.Type_Struct) {
+            missButtonPanel.appendChild(newAddPartBtn(deleteCfgValue.getCfgInfo()));
+            if (missButtonPanel.getParent() == null) {
+                missButtonPanel.setParent(mainPanel.getParent());
+            }
+        }
+        Component titlePanel = btn.getParent();
+        Component cComponent = titlePanel.getNextSibling();
+        parent.removeValue(deleteCfgValue);
+        cComponent.getParent().removeChild(cComponent);
+        titlePanel.getParent().removeChild(titlePanel);
     }
 
-    public CfgValue getCfgValue() {
-        return cfgValue;
+    private final EventListener<MouseEvent> AddPartBtnEventListener = new EventListener<MouseEvent>() {
+        @Override
+        public void onEvent(MouseEvent event) throws Exception {
+            CfgInfoButton btn = (CfgInfoButton) event.getTarget();
+            addPart(btn.getCfgInfo());
+            btn.setParent(null);
+        }
+    };
+
+    private final EventListener<MouseEvent> DeleteValueBtnEventListener = new EventListener<MouseEvent>() {
+        @Override
+        public void onEvent(MouseEvent event) throws Exception {
+            CfgValueButton btn = (CfgValueButton) event.getTarget();
+            deleteValue(btn);
+            btn.setParent(null);
+        }
+    };
+
+    private Button newAddPartBtn(CfgInfo cfgInfo) {
+        Button btn = new CfgInfoButton(cfgInfo);
+        btn.setLabel(cfgInfo.getLabel());
+        btn.addEventListener(Events.ON_CLICK, AddPartBtnEventListener);
+        return btn;
+    }
+
+    private Button newDeleteValueBtn(CfgValue cfgValue) {
+        Button btn = new CfgValueButton(cfgValue);
+        btn.setLabel("删除");
+        btn.addEventListener(Events.ON_CLICK, DeleteValueBtnEventListener);
+        return btn;
     }
 
 }

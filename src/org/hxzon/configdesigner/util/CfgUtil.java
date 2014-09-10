@@ -21,7 +21,6 @@ public class CfgUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(CfgUtil.class);
     private static CfgValue configer;
-    private static CfgParser cfgParser;
     private static Map<Integer, CfgValue> indexer = new HashMap<Integer, CfgValue>();;
 
     static {
@@ -31,8 +30,7 @@ public class CfgUtil {
             CfgInfo info = CfgParser.parseSchema(xmlStr);
             String jsonStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/config.json")), "utf8");
             JSONObject json = new JSONObject(jsonStr);
-            cfgParser = new CfgParser();
-            configer = cfgParser.buildCfgValue(info, json);
+            configer = CfgParser.buildCfgValue(info, json, 1000, 1);
             indexCfg(configer);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -75,10 +73,6 @@ public class CfgUtil {
             }
         }
         return r;
-    }
-
-    public static CfgParser getCfgParser() {
-        return cfgParser;
     }
 
 }
