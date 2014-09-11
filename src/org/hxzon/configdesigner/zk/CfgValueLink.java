@@ -5,14 +5,19 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
 
 @SuppressWarnings("serial")
-public class CfgValueLink extends Button {
+public class CfgValueLink extends Hlayout {
 
     public CfgValueLink(final CfgValue cfgValue) {
-        this.setLabel(cfgValue.getCfgInfo().getLabel());
-        this.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
+        Label label = new Label(cfgValue.getCfgInfo().getLabel());
+        Button btn = new Button();
+        btn.setImage("images/easyicon_open.png");
+        btn.setTooltiptext("打开");
+        btn.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
 
             @Override
             public void onEvent(MouseEvent event) throws Exception {
@@ -28,6 +33,8 @@ public class CfgValueLink extends Button {
             }
 
         });
+        this.appendChild(label);
+        this.appendChild(btn);
     }
 
 }

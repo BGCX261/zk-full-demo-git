@@ -282,13 +282,16 @@ public class CfgValuePanel extends Panel {
     private Button newAddPartBtn(CfgInfo cfgInfo) {
         Button btn = new CfgInfoButton(cfgInfo);
         btn.setLabel(cfgInfo.getTitle());
+        btn.setImage("images/easyicon_add.png");
+        btn.setTooltiptext("添加");
         btn.addEventListener(Events.ON_CLICK, AddPartBtnEventListener);
         return btn;
     }
 
     private Button newDeleteValueBtn(CfgValue cfgValue, Component delComp) {
         Button btn = new CfgValueButton(cfgValue);
-        btn.setLabel("删除");
+        btn.setImage("images/easyicon_remove.png");
+        btn.setTooltiptext("删除");
         btn.addEventListener(Events.ON_CLICK, DeleteValueBtnEventListener);
         delBtnMaps.put(btn, delComp);
         return btn;
@@ -296,13 +299,15 @@ public class CfgValuePanel extends Panel {
 
     private Button newAddElementBtn(CfgValue parent) {
         Button btn = new Button();
-        btn.setLabel("添加元素");
+        btn.setImage("images/easyicon_add.png");
+        btn.setTooltiptext("添加");
         return btn;
     }
 
     private Button newCopyElementBtn(CfgValue origValue) {
         Button btn = new Button();
-        btn.setLabel("复制元素");
+        btn.setImage("images/easyicon_copy.png");
+        btn.setTooltiptext("复制");
         return btn;
     }
 
