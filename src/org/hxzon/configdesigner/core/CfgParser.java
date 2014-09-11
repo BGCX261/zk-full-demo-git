@@ -40,17 +40,7 @@ public class CfgParser {
             fillPartsInfo(cfgInfo, e);
         }
         if (type == CfgInfo.Type_List || type == CfgInfo.Type_Map) {
-            int etype = parseCfgType(Dom4jUtil.getText(e, "@etype"));
-            CfgInfo eCfgInfo = new CfgInfo();
-            eCfgInfo.setLabel(cfgInfo.getLabel());
-            eCfgInfo.setId(cfgInfo.getId());//just for show label
-            eCfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
-            eCfgInfo.setType(etype);
-            fillPartsInfo(eCfgInfo, e);
-            //
-            List<CfgInfo> parts = new ArrayList<CfgInfo>(1);
-            parts.add(eCfgInfo);
-            cfgInfo.setParts(parts);
+            fillElementInfo(cfgInfo, e);
         }
         return cfgInfo;
     }
@@ -63,6 +53,25 @@ public class CfgParser {
             parts.add(childInfo);
         }
         cfgInfo.setParts(parts);
+    }
+
+    private static void fillElementInfo(CfgInfo cfgInfo, Element e) {
+        int etype = parseCfgType(Dom4jUtil.getText(e, "@etype"));
+        CfgInfo eCfgInfo = new CfgInfo();
+        eCfgInfo.setType(etype);
+        if (etype == CfgInfo.Type_Struct) {
+            eCfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
+            fillPartsInfo(eCfgInfo, e);
+        }
+        if (etype == CfgInfo.Type_List || etype == CfgInfo.Type_Map) {
+            List<Element> childrenEles = Dom4jUtil.getElements(e);
+            if (!childrenEles.isEmpty()) {
+                Element childrenEle = childrenEles.get(0);
+                fillElementInfo(eCfgInfo, childrenEle);
+            }
+        }
+        //
+        cfgInfo.setElementInfo(eCfgInfo);
     }
 
     private static int parseCfgType(String type) {
@@ -84,7 +93,8 @@ public class CfgParser {
         return CfgInfo.Type_Struct;
     }
 
-    public static CfgValue buildCfgValue(CfgInfo cfgInfo, Object json, int notNullValueDeep, int nullValueDeep) {
+    public static CfgValue buildCfgValue(CfgInfo cfgInfo, Object json, //
+            int notNullValueDeep, int nullValueDeep) {
         if (notNullValueDeep <= 0) {
             return null;
         }
@@ -104,19 +114,21 @@ public class CfgParser {
         throw new RuntimeException("type error");
     }
 
-    private static CfgValue buildSimpleCfgValue(CfgInfo cfgInfo, Object json, int notNullValueDeep, int nullValueDeep) {
+    private static CfgValue buildSimpleCfgValue(CfgInfo cfgInfo, Object json, //
+            int notNullValueDeep, int nullValueDeep) {
         CfgValue cfgValue = new CfgValue(cfgInfo, UUID.randomUUID());
         cfgValue.setValue(json != null ? json : cfgInfo.getDefaultValue());
         return cfgValue;
     }
 
-    private static CfgValue buildStructCfgValue(CfgInfo mapCfgInfo, Object mapJson, int notNullValueDeep, int nullValueDeep) {
+    private static CfgValue buildStructCfgValue(CfgInfo mapCfgInfo, Object mapJson, //
+            int notNullValueDeep, int nullValueDeep) {
         CfgValue cfgValue = new CfgValue(mapCfgInfo, UUID.randomUUID());
         for (CfgInfo partInfo : mapCfgInfo.getParts()) {
             Object partJson = null;
             if (mapJson != null && mapJson instanceof JSONObject) {
                 JSONObject jsonObj = (JSONObject) mapJson;
-                partJson = jsonObj.get(partInfo.getId());
+                partJson = jsonObj.opt(partInfo.getId());
             }
             CfgValue part = buildCfgValue(partInfo, partJson, notNullValueDeep - 1, nullValueDeep - 1);
             if (part != null) {
@@ -126,9 +138,10 @@ public class CfgParser {
         return cfgValue;
     }
 
-    private static CfgValue buildListCfgValue(CfgInfo listCfgInfo, Object listJson, int notNullValueDeep, int nullValueDeep) {
+    private static CfgValue buildListCfgValue(CfgInfo listCfgInfo, Object listJson, //
+            int notNullValueDeep, int nullValueDeep) {
         CfgValue listCfgValue = new CfgValue(listCfgInfo, UUID.randomUUID());
-        CfgInfo eCfgInfo = listCfgInfo.getParts().get(0);
+        CfgInfo eCfgInfo = listCfgInfo.getElementInfo();
         if (listJson != null && listJson instanceof JSONArray) {
             JSONArray jsonArray = (JSONArray) listJson;
             for (Object eleJson : jsonArray) {
@@ -139,9 +152,10 @@ public class CfgParser {
         return listCfgValue;
     }
 
-    private static CfgValue buildMapCfgValue(CfgInfo mapsCfgInfo, Object mapsJson, int notNullValueDeep, int nullValueDeep) {
+    private static CfgValue buildMapCfgValue(CfgInfo mapsCfgInfo, Object mapsJson, //
+            int notNullValueDeep, int nullValueDeep) {
         CfgValue mapsCfgValue = new CfgValue(mapsCfgInfo, UUID.randomUUID());
-        CfgInfo eCfgInfo = mapsCfgInfo.getParts().get(0);
+        CfgInfo eCfgInfo = mapsCfgInfo.getElementInfo();
         if (mapsJson != null && mapsJson instanceof JSONObject) {
             JSONObject jsonObj = (JSONObject) mapsJson;
             for (String key : jsonObj.keys()) {
@@ -159,7 +173,7 @@ public class CfgParser {
         }
         CfgInfo listCfgInfo = parent.getCfgInfo();
         if (listCfgInfo.getType() == CfgInfo.Type_List || listCfgInfo.getType() == CfgInfo.Type_Map) {
-            CfgInfo eCfgInfo = listCfgInfo.getParts().get(0);
+            CfgInfo eCfgInfo = listCfgInfo.getElementInfo();
             CfgValue r = buildCfgValue(eCfgInfo, null, 1, deep);
             r.setParent(parent);
             return r;

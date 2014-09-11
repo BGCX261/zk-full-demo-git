@@ -14,7 +14,8 @@ public class CfgInfo {
     public static final int Type_List = 8;
     public static final int Type_End = 9;
     //
-    private List<CfgInfo> parts;
+    private List<CfgInfo> parts;//parts info
+    private CfgInfo elementInfo;//element info
     //
     private String id;
     private String label;
@@ -27,6 +28,7 @@ public class CfgInfo {
     private boolean embed;
 
     //
+    @Override
     public String toString() {
         return id + "[" + label + "]" + type;
     }
@@ -43,6 +45,14 @@ public class CfgInfo {
 
     public void setParts(List<CfgInfo> parts) {
         this.parts = parts;
+    }
+
+    public CfgInfo getElementInfo() {
+        return elementInfo;
+    }
+
+    public void setElementInfo(CfgInfo elementInfo) {
+        this.elementInfo = elementInfo;
     }
 
     public void setLabel(String label) {
