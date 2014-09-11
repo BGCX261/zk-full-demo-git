@@ -12,6 +12,6 @@ public class ConfigDesignerComposer extends GenericForwardComposer<Window> {
     public void doAfterCompose(Window comp) throws Exception {
         super.doAfterCompose(comp);
         CfgValue cfgValue = CfgUtil.getValue();
-        comp.appendChild(new CfgValuePanel(cfgValue));
+        comp.appendChild(new CfgValuePaneInfo(cfgValue).getView());
     }
 }

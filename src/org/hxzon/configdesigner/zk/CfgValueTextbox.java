@@ -5,7 +5,7 @@ import org.hxzon.util.Dt;
 import org.zkoss.zul.Textbox;
 
 @SuppressWarnings("serial")
-public class CfgValueTextbox extends Textbox {
+public class CfgValueTextbox extends Textbox implements CfgValueHolder {
 
     private CfgValue cfgValue;
 
@@ -17,10 +17,11 @@ public class CfgValueTextbox extends Textbox {
             setRows(8);
             setCols(150);
         } else {
-            setCols(100);
+            //setCols(100);
         }
     }
 
+    @Override
     public void saveValue() {
         cfgValue.setValue(getValue());
     }

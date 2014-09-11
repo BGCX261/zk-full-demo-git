@@ -5,6 +5,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/srcService"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/hxzon_util"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
         <property name="java-output-path" value="/zkFullDemo/WebContent/WEB-INF/classes"/>
         <property name="context-root" value="mstar-t5.4"/>
     </wb-module>

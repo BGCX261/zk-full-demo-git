@@ -5,7 +5,7 @@ import org.hxzon.util.Dt;
 import org.zkoss.zul.Doublebox;
 
 @SuppressWarnings("serial")
-public class CfgValueDoublebox extends Doublebox {
+public class CfgValueDoublebox extends Doublebox implements CfgValueHolder {
 
     private CfgValue cfgValue;
 
@@ -14,6 +14,7 @@ public class CfgValueDoublebox extends Doublebox {
         setValue(Dt.toDouble(cfgValue.getValue(), 0));
     }
 
+    @Override
     public void saveValue() {
         cfgValue.setValue(getValue());
     }

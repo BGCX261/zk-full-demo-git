@@ -16,33 +16,49 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Panel;
-import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Vlayout;
 
-@SuppressWarnings("serial")
-public class CfgValuePanel extends Panel {
+public class CfgValuePaneInfo implements CfgValueHolder {
 
     private CfgValue cfgValue;
     //
+    private boolean embed;
+    private Component view;
     private Component mainPanel;
     private Component buttonPanel;
+    private Button addBtn;
     private Button saveBtn;
-    private boolean embed;
-    private List<Component> inputComps = new ArrayList<Component>();
-    private Map<Button, Component> delBtnMaps = new HashMap<Button, Component>();
+    private List<CfgValueHolder> valueHolders;
+    private Map<Button, Component> delBtnMaps;
 
-    public CfgValuePanel(CfgValue cfgValue) {
+    public CfgValuePaneInfo(CfgValue cfgValue) {
         this(cfgValue, false);
     }
 
-    protected CfgValuePanel(CfgValue cfgValue, boolean embed) {
+    protected CfgValuePaneInfo(CfgValue cfgValue, boolean embed) {
         this.cfgValue = cfgValue;
         this.embed = embed;
         //
+        createView();
+    }
+
+    private void createView() {
         CfgInfo info = cfgValue.getCfgInfo();
+        if (info.isTextArea()) {
+            view = createTextareaPane(cfgValue);
+            return;
+        }
         int type = info.getType();
-        Label label = new Label(info.getTitle() + "：");
+        if (type < CfgInfo.Type_Combo) {
+            view = createSimpleValuePane(cfgValue);
+            return;
+        }
+        //
+        valueHolders = new ArrayList<CfgValueHolder>();
+        delBtnMaps = new HashMap<Button, Component>();
+        //
+        Label label = new Label(cfgValue.getTitle());
         Hlayout titleLayout = new Hlayout();
         Vlayout vlayout = new Vlayout();
         titleLayout.appendChild(label);
@@ -50,9 +66,8 @@ public class CfgValuePanel extends Panel {
             Button delBtn = newDeleteValueBtn(cfgValue, vlayout);
             titleLayout.appendChild(delBtn);
         }
-        if (type == CfgInfo.Type_Map || type == CfgInfo.Type_List) {
-            titleLayout.appendChild(newAddElementBtn(cfgValue));
-        }
+        addBtn = newAddElementBtn();
+        titleLayout.appendChild(addBtn);
         if (cfgValue.isElement()) {
             titleLayout.appendChild(newCopyElementBtn(cfgValue));
         }
@@ -62,12 +77,7 @@ public class CfgValuePanel extends Panel {
         vlayout.appendChild(space);
         Component body = createBody();
         vlayout.appendChild(body);
-        Panelchildren pc = new Panelchildren();
-        pc.appendChild(vlayout);
-        space = new Div();
-        space.setHeight("20px");
-        pc.appendChild(space);
-        this.appendChild(pc);
+        view = vlayout;
     }
 
     private Component createBody() {
@@ -89,14 +99,15 @@ public class CfgValuePanel extends Panel {
         buttonPanel.appendChild(new Label("添加配置选项"));
         //
         mainPanel = new Vlayout();
-        List<CfgInfo> missValues = new ArrayList<CfgInfo>();
+        ((Vlayout) mainPanel).setSpacing("0.5em");
+        List<CfgInfo> partsToAdd = new ArrayList<CfgInfo>();
         CfgInfo cfgInfo = cfgValue.getCfgInfo();
         for (CfgInfo cCfgInfo : cfgInfo.getParts()) {
             CfgValue cCfgValue = cfgValue.getValue(cCfgInfo.getId());
             if (cCfgValue == null) {
-                missValues.add(cCfgInfo);
+                partsToAdd.add(cCfgInfo);
             } else {
-                Component cComponent = createComponent(cCfgValue);
+                Component cComponent = createPane(cCfgValue);
                 mainPanel.appendChild(cComponent);
             }
         }
@@ -112,25 +123,18 @@ public class CfgValuePanel extends Panel {
             });
             mainPanel.appendChild(saveBtn);
         }
-        Hlayout layout = new Hlayout();
-        layout.appendChild(mainPanel);
-        Div space = new Div();
-        space.setWidth("30px");
-        layout.appendChild(space);
-        if (!missValues.isEmpty()) {
-            for (CfgInfo cCfgInfo : missValues) {
-                Button btn = newAddPartBtn(cCfgInfo);
-                buttonPanel.appendChild(btn);
-            }
-            layout.appendChild(buttonPanel);
+        for (CfgInfo cCfgInfo : partsToAdd) {
+            Button btn = newAddPartBtn(cCfgInfo);
+            buttonPanel.appendChild(btn);
         }
-        return layout;
+        addBtn.setVisible(!partsToAdd.isEmpty());
+        return mainPanel;
     }
 
     private Component createBody_map() {
         mainPanel = new Vlayout();
         for (CfgValue cCfgValue : cfgValue.getChildren()) {
-            Component cComponent = createComponent(cCfgValue);
+            Component cComponent = createPane(cCfgValue);
             mainPanel.appendChild(cComponent);
         }
         return mainPanel;
@@ -140,17 +144,42 @@ public class CfgValuePanel extends Panel {
         return createBody_map();
     }
 
-    public Component createComponent(CfgValue cfgValue) {
+    public Component createPane(CfgValue cfgValue) {
         CfgInfo info = cfgValue.getCfgInfo();
-        int type = info.getType();
-        if (type > CfgInfo.Type_Combo || info.isTextArea()) {
-            return createComponent_block(cfgValue);
-        } else {
-            return createComponent_line(cfgValue);
+        if (info.isTextArea()) {
+            return createTextareaPane(cfgValue);
         }
+        int type = info.getType();
+        if (type < CfgInfo.Type_Combo) {
+            return createSimpleValuePane(cfgValue);
+        }
+        if (!info.isEmbed()) {
+            return new CfgValueLink(cfgValue);
+        }
+        CfgValuePaneInfo paneInfo = new CfgValuePaneInfo(cfgValue, true);
+        valueHolders.add(paneInfo);
+        return paneInfo.getView();
     }
 
-    private Component createComponent_line(CfgValue cfgValue) {
+    private Component createTextareaPane(CfgValue cfgValue) {
+        CfgInfo info = cfgValue.getCfgInfo();
+        CfgValueTextbox inputComp = new CfgValueTextbox(cfgValue);
+        valueHolders.add(inputComp);
+        Label label = new Label(info.getLabelOrId() + "：");
+        Hlayout hlayout = new Hlayout();
+        Vlayout vlayout = new Vlayout();
+        Button delBtn = newDeleteValueBtn(cfgValue, vlayout);
+        hlayout.appendChild(label);
+        hlayout.appendChild(delBtn);
+        if (cfgValue.isElement()) {
+            hlayout.appendChild(newCopyElementBtn(cfgValue));
+        }
+        vlayout.appendChild(hlayout);
+        vlayout.appendChild(inputComp);
+        return vlayout;
+    }
+
+    public Component createSimpleValuePane(CfgValue cfgValue) {
         CfgInfo info = cfgValue.getCfgInfo();
         int type = info.getType();
         Component inputComp = null;
@@ -169,11 +198,11 @@ public class CfgValuePanel extends Panel {
             inputComp = new CfgValueTextbox(cfgValue);
             break;
         default:
-            inputComp = new Label("未知");
+
         }
-        inputComps.add(inputComp);
+        valueHolders.add((CfgValueHolder) inputComp);
         Hlayout layout = new Hlayout();
-        Label label = new Label(info.getTitle() + "：");
+        Label label = new Label(info.getLabelOrId() + "：");
         Button delBtn = newDeleteValueBtn(cfgValue, layout);
         layout.appendChild(label);
         layout.appendChild(inputComp);
@@ -184,48 +213,13 @@ public class CfgValuePanel extends Panel {
         return layout;
     }
 
-    private Component createComponent_block(CfgValue cfgValue) {
-        CfgInfo info = cfgValue.getCfgInfo();
-        int type = info.getType();
-        if (type == CfgInfo.Type_String) {
-            Component inputComp = new CfgValueTextbox(cfgValue);
-            inputComps.add(inputComp);
-            Label label = new Label(info.getTitle() + "：");
-            Hlayout hlayout = new Hlayout();
-            Vlayout vlayout = new Vlayout();
-            Button delBtn = newDeleteValueBtn(cfgValue, vlayout);
-            hlayout.appendChild(label);
-            hlayout.appendChild(delBtn);
-            if (type == CfgInfo.Type_Map || type == CfgInfo.Type_List) {
-                hlayout.appendChild(newAddElementBtn(cfgValue));
-            }
-            if (cfgValue.isElement()) {
-                hlayout.appendChild(newCopyElementBtn(cfgValue));
-            }
-            vlayout.appendChild(hlayout);
-            vlayout.appendChild(inputComp);
-            return vlayout;
-        } else if (info.isEmbed()) {
-            return new CfgValuePanel(cfgValue, true);
-        }
-        Component link = new CfgValueLink(cfgValue);
-        return link;
-    }
-
     //==============
 
+    @Override
     public void saveValue() {
-        for (Component c : inputComps) {
-            if (c instanceof CfgValuePanel) {
-                ((CfgValuePanel) c).saveValue();
-            } else if (c instanceof CfgValueCheckbox) {
-                ((CfgValueCheckbox) c).saveValue();
-            } else if (c instanceof CfgValueLongbox) {
-                ((CfgValueLongbox) c).saveValue();
-            } else if (c instanceof CfgValueDoublebox) {
-                ((CfgValueDoublebox) c).saveValue();
-            } else if (c instanceof CfgValueTextbox) {
-                ((CfgValueTextbox) c).saveValue();
+        if (valueHolders != null) {
+            for (CfgValueHolder c : valueHolders) {
+                c.saveValue();
             }
         }
     }
@@ -236,16 +230,15 @@ public class CfgValuePanel extends Panel {
             mainPanel.removeChild(saveBtn);
         }
         CfgValue newPartCfgValue = CfgParser.buildCfgValue(cfgInfo, null, 1, 1);
-        //newPartCfgValue.setParent(cfgValue);
         cfgValue.addValue(newPartCfgValue);
-        Component cComponent = createComponent(newPartCfgValue);
+        Component cComponent = createPane(newPartCfgValue);
         mainPanel.appendChild(cComponent);
         if (!embed) {
             mainPanel.appendChild(saveBtn);
         }
         btn.setParent(null);
         if (buttonPanel.getChildren().size() == 1) {
-            buttonPanel.setParent(null);
+            addBtn.setVisible(false);
         }
     }
 
@@ -255,12 +248,28 @@ public class CfgValuePanel extends Panel {
         int parentType = parent.getCfgInfo().getType();
         if (parentType == CfgInfo.Type_Struct) {
             buttonPanel.appendChild(newAddPartBtn(deleteCfgValue.getCfgInfo()));
-            if (buttonPanel.getParent() == null) {
-                buttonPanel.setParent(mainPanel.getParent());
-            }
+            addBtn.setVisible(true);
         }
         parent.removeValue(deleteCfgValue);
         delBtnMaps.get(btn).setParent(null);
+    }
+
+    private void addValue() {
+        if (buttonPanel != null) {
+            Popup popup = new Popup();
+            popup.appendChild(buttonPanel);
+            popup.open(addBtn, "before_start");
+        } else {
+            CfgValue newEle = CfgParser.buildListElementCfgValue(cfgValue, 1);
+            if (!embed) {
+                mainPanel.removeChild(saveBtn);
+            }
+            Component cComponent = createPane(newEle);
+            mainPanel.appendChild(cComponent);
+            if (!embed) {
+                mainPanel.appendChild(saveBtn);
+            }
+        }
     }
 
     private final EventListener<MouseEvent> AddPartBtnEventListener = new EventListener<MouseEvent>() {
@@ -279,9 +288,16 @@ public class CfgValuePanel extends Panel {
         }
     };
 
+    private final EventListener<MouseEvent> AddValueBtnEventListener = new EventListener<MouseEvent>() {
+        @Override
+        public void onEvent(MouseEvent event) throws Exception {
+            addValue();
+        }
+    };
+
     private Button newAddPartBtn(CfgInfo cfgInfo) {
         Button btn = new CfgInfoButton(cfgInfo);
-        btn.setLabel(cfgInfo.getTitle());
+        btn.setLabel(cfgInfo.getLabelOrId());
         btn.setImage("images/easyicon_add.png");
         btn.setTooltiptext("添加");
         btn.addEventListener(Events.ON_CLICK, AddPartBtnEventListener);
@@ -297,10 +313,11 @@ public class CfgValuePanel extends Panel {
         return btn;
     }
 
-    private Button newAddElementBtn(CfgValue parent) {
+    private Button newAddElementBtn() {
         Button btn = new Button();
         btn.setImage("images/easyicon_add.png");
         btn.setTooltiptext("添加");
+        btn.addEventListener(Events.ON_CLICK, AddValueBtnEventListener);
         return btn;
     }
 
@@ -311,4 +328,7 @@ public class CfgValuePanel extends Panel {
         return btn;
     }
 
+    public Component getView() {
+        return view;
+    }
 }

@@ -23,7 +23,7 @@ public class CfgValueLink extends Hlayout {
             public void onEvent(MouseEvent event) throws Exception {
                 Window dialog = new Window();
                 dialog.setParent(CfgValueLink.this.getParent());
-                dialog.appendChild(new CfgValuePanel(cfgValue));
+                dialog.appendChild(new CfgValuePaneInfo(cfgValue).getView());
                 dialog.setMode(Window.MODAL);
                 dialog.setTitle(cfgValue.getCfgInfo().getLabel());
                 dialog.setClosable(true);

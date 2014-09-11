@@ -5,7 +5,7 @@ import org.hxzon.util.Dt;
 import org.zkoss.zul.Checkbox;
 
 @SuppressWarnings("serial")
-public class CfgValueCheckbox extends Checkbox {
+public class CfgValueCheckbox extends Checkbox implements CfgValueHolder {
 
     private CfgValue cfgValue;
 
@@ -14,6 +14,7 @@ public class CfgValueCheckbox extends Checkbox {
         setChecked(Dt.toBoolean(cfgValue.getValue(), false));
     }
 
+    @Override
     public void saveValue() {
         cfgValue.setValue(isChecked());
     }
