@@ -19,58 +19,74 @@
 		<rootS1A3 label="属性3" type="b" />
 	</rootS1>
 
-	<rootM1 label="映射表（元素为字符串）" type="m" etype="s" embed="true">
-	</rootM1>
-
-	<rootM2 label="映射表（元素为简单结构体）" type="m" etype="st" labelKey="rootM2A2">
-		<rootM2A1 label="属性1" type="i" />
-		<rootM2A2 label="属性2" type="s" />
-		<rootM2A3 label="属性3" type="b" />
-	</rootM2>
-
-	<rootM4 label="映射表（元素为列表）" type="m" etype="l">
-		<e etype="s" />
-	</rootM4>
-
-	<rootM5 label="映射表（元素为映射表）" type="m" etype="m">
-		<e etype="s" />
-	</rootM5>
-
-	<rootM3 label="映射表（元素为字符串）" type="m" etype="s">
-		<!-- 元素类型配置错误，以下结构被忽略 -->
+	<rootM1 label="映射表（元素为字符串）" type="m" embed="true">
+		<e type="s" textarea="true" />
+		<!-- 以下结构被忽略 -->
 		<rootM3A1 label="属性1" type="s" />
 		<rootM3A2 label="属性2" type="i" />
 		<rootM3A3 label="属性3" type="b" />
+	</rootM1>
+
+	<rootM2 label="映射表（元素为简单结构体）" type="m">
+		<e type="st" labelKey="rootM2A2">
+			<rootM2A1 label="属性1" type="i" />
+			<rootM2A2 label="属性2" type="s" />
+			<rootM2A3 label="属性3" type="b" />
+		</e>
+	</rootM2>
+
+	<rootM3 label="映射表（元素为列表）" type="m">
+		<e type="l">
+			<e type="s" />
+		</e>
 	</rootM3>
 
-	<rootL1 label="列表（元素为字符串）" type="l" etype="s">
+	<rootM4 label="映射表（元素为映射表）" type="m">
+		<e type="m">
+			<e type="s" />
+		</e>
+	</rootM4>
+
+	<rootL1 label="列表（元素为字符串）" type="l">
+		<e type="s" />
 	</rootL1>
 
-	<rootL2 label="列表（元素为结构体）" type="l" etype="st" labelKey="错误的labelKey">
-		<rootL2A1 label="默认的labelKey" type="s" />
-		<rootL2A2 type="i" />
-		<rootL2A3 type="b" />
-		<rootL2L1 type="l" etype="st" embed="true">
-			<rootL2L1A1 type="s" />
-		</rootL2L1>
-		<rootL2L2 type="l" etype="s" />
-		<rootL2M1 type="m" etype="s">
-			<!-- 元素类型配置错误，以下结构被忽略 -->
-			<rootL2M1A1 type="s" />
-			<rootL2M1A2 type="i" />
-			<rootL2M1A3 type="b" />
-		</rootL2M1>
+	<rootL2 label="列表（元素为结构体）" type="l">
+		<e type="st" labelKey="错误的labelKey">
+			<rootL2A1 label="默认的labelKey" type="s" />
+			<rootL2A2 type="i" />
+			<rootL2A3 type="b" />
+			<rootL2L1 type="l" embed="true">
+				<e type="st">
+					<rootL2L1A1 type="s" />
+				</e>
+			</rootL2L1>
+			<rootL2L2 type="l">
+				<e type="s" />
+			</rootL2L2>
+			<rootL2M1 type="m">
+				<e type="s" />
+				<!-- 元素类型配置错误，以下结构被忽略 -->
+				<rootL2M1A1 type="s" />
+				<rootL2M1A2 type="i" />
+				<rootL2M1A3 type="b" />
+			</rootL2M1>
+		</e>
 	</rootL2>
 
 	<rootL3 label="列表（元素为列表）" type="l" etype="l">
-		<e etype="s" />
+		<e type="l">
+			<e type="s" />
+		</e>
 	</rootL3>
 
 	<rootL4 label="列表（元素为映射表）" type="l" etype="m">
-		<e etype="st">
-			<rootL4M1A1 label="属性1" type="s" />
-			<rootL4M1A2 label="属性2" type="i" />
-			<rootL4M1A3 label="属性3" type="b" />
+		<e type="m">
+			<e type="st">
+				<rootL4M1A1 label="属性1" type="s" />
+				<rootL4M1A2 label="属性2" type="i" />
+				<rootL4M1A3 label="属性3" type="b" />
+			</e>
 		</e>
 	</rootL4>
 

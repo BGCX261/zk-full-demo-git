@@ -28,8 +28,6 @@ public class CfgParser {
         cfgInfo.setId(id);
         cfgInfo.setLabel(Dom4jUtil.getText(e, "@label"));
         cfgInfo.setSource(Dom4jUtil.getText(e, "@source"));
-        String textArea = Dom4jUtil.getText(e, "@textarea");
-        cfgInfo.setTextArea("true".equals(textArea));
         String embed = Dom4jUtil.getText(e, "@embed");
         cfgInfo.setEmbed("true".equals(embed));
         //
@@ -37,10 +35,15 @@ public class CfgParser {
         cfgInfo.setType(type);
         cfgInfo.setDefaultValue(converValue(type, Dom4jUtil.getText(e, "@value")));
         if (type == CfgInfo.Type_Struct) {
+            cfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
             fillPartsInfo(cfgInfo, e);
         }
         if (type == CfgInfo.Type_List || type == CfgInfo.Type_Map) {
-            fillElementInfo(cfgInfo, e);
+            cfgInfo.setElementInfo(toCfgInfo(Dom4jUtil.getElement(e)));
+        }
+        if (type == CfgInfo.Type_String) {
+            String textArea = Dom4jUtil.getText(e, "@textarea");
+            cfgInfo.setTextArea("true".equals(textArea));
         }
         return cfgInfo;
     }
@@ -53,25 +56,6 @@ public class CfgParser {
             parts.add(childInfo);
         }
         cfgInfo.setParts(parts);
-    }
-
-    private static void fillElementInfo(CfgInfo cfgInfo, Element e) {
-        int etype = parseCfgType(Dom4jUtil.getText(e, "@etype"));
-        CfgInfo eCfgInfo = new CfgInfo();
-        eCfgInfo.setType(etype);
-        if (etype == CfgInfo.Type_Struct) {
-            eCfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
-            fillPartsInfo(eCfgInfo, e);
-        }
-        if (etype == CfgInfo.Type_List || etype == CfgInfo.Type_Map) {
-            List<Element> childrenEles = Dom4jUtil.getElements(e);
-            if (!childrenEles.isEmpty()) {
-                Element childrenEle = childrenEles.get(0);
-                fillElementInfo(eCfgInfo, childrenEle);
-            }
-        }
-        //
-        cfgInfo.setElementInfo(eCfgInfo);
     }
 
     private static int parseCfgType(String type) {

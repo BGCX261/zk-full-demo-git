@@ -34,6 +34,7 @@ public class CfgValue {
         return parentType == CfgInfo.Type_List || parentType == CfgInfo.Type_Map;
     }
 
+    //全路径
     public String getTitle() {
         String parentTitle = (parent == null) ? "" : parent.getTitle() + "/";
         int parentType = parent == null ? 0 : parent.getCfgInfo().getType();
@@ -43,13 +44,14 @@ public class CfgValue {
         if (parentType == CfgInfo.Type_Map) {
             return parentTitle + key;
         }
-        return parentTitle + cfgInfo.getTitle();
+        return parentTitle + cfgInfo.getLabelOrId();
     }
 
+    //非全路径
     public String getLabel() {
         int parentType = (parent == null) ? 0 : parent.getCfgInfo().getType();
         if (parentType == CfgInfo.Type_List || parentType == CfgInfo.Type_Map) {
-            CfgInfo eCfgInfo = parent.getCfgInfo().getParts().get(0);
+            CfgInfo eCfgInfo = parent.getCfgInfo().getElementInfo();
             if (eCfgInfo.getType() < CfgInfo.Type_Combo) {
                 return String.valueOf(value);
             }
@@ -60,12 +62,12 @@ public class CfgValue {
             }
             return String.valueOf(children.get(0).getValue());
         }
-        return cfgInfo.getTitle();
+        return cfgInfo.getLabelOrId();
     }
 
     @Override
     public String toString() {
-        return cfgInfo.getId() + "[" + cfgInfo.getLabel() + "]" + cfgInfo.getType();
+        return cfgInfo.getId() + "[" + cfgInfo.getLabel() + "]" + cfgInfo.getTypeStr();
     }
 
     public boolean isSimpleValue() {
@@ -144,18 +146,18 @@ public class CfgValue {
     }
 
     //
+    public CfgValue(CfgInfo cfgInfo, UUID uuid) {
+        this.cfgInfo = cfgInfo;
+        this.uuid = uuid;
+    }
+
+    //
     public Object getValue() {
         return value;
     }
 
     public void setValue(Object value) {
         this.value = value;
-    }
-
-    //
-    public CfgValue(CfgInfo cfgInfo, UUID uuid) {
-        this.cfgInfo = cfgInfo;
-        this.uuid = uuid;
     }
 
     public CfgInfo getCfgInfo() {

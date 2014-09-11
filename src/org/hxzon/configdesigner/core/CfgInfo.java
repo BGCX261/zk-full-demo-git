@@ -30,12 +30,32 @@ public class CfgInfo {
     //
     @Override
     public String toString() {
-        return id + "[" + label + "]" + type;
+        return id + "[" + label + "]" + getTypeStr();
     }
 
     //
-    public String getTitle() {
+    public String getLabelOrId() {
         return label == null ? id : label;
+    }
+
+    public String getTypeStr() {
+        switch (type) {
+        case Type_String:
+            return "str";
+        case Type_Integer:
+            return "integer";
+        case Type_Real:
+            return "real";
+        case Type_Boolean:
+            return "bool";
+        case Type_Struct:
+            return "struct";
+        case Type_List:
+            return "list";
+        case Type_Map:
+            return "map";
+        }
+        return "unknown";
     }
 
     //

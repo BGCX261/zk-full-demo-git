@@ -32,12 +32,18 @@ public class Dom4jUtil {
 
     @SuppressWarnings("unchecked")
     public static List<Element> getElements(Element e, String path) {
-        return (List<Element>) e.selectNodes(path);
+        return e.selectNodes(path);
     }
 
     @SuppressWarnings("unchecked")
     public static List<Element> getElements(Element e) {
         return e.elements();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Element getElement(Element e) {
+        List<Element> es = e.elements();
+        return es.isEmpty() ? null : es.get(0);
     }
 
     public static String getText(Element parent, String path) {
