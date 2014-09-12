@@ -50,19 +50,37 @@ public class CfgValue {
     //非全路径
     public String getLabel() {
         int parentType = (parent == null) ? 0 : parent.getCfgInfo().getType();
-        if (parentType == CfgInfo.Type_List || parentType == CfgInfo.Type_Map) {
-            CfgInfo eCfgInfo = parent.getCfgInfo().getElementInfo();
-            if (eCfgInfo.getType() < CfgInfo.Type_Combo) {
-                return String.valueOf(value);
+        if (parentType == CfgInfo.Type_Struct) {
+            return cfgInfo.getLabelOrId();
+        }
+        int type = cfgInfo.getType();
+        if (parentType == CfgInfo.Type_List) {
+            if (type != CfgInfo.Type_Struct) {
+                return String.valueOf(parent.getIndex(this));
             }
-            String labelKey = eCfgInfo.getLabelKey();
-            CfgValue labelValue = getValue(labelKey);
-            if (labelValue != null) {
-                return String.valueOf(labelValue.getValue());
+            String labelKey = cfgInfo.getLabelKey();
+            if (labelKey != null) {
+                CfgValue labelValue = getValue(labelKey);
+                if (labelValue != null) {
+                    return String.valueOf(labelValue.getValue());
+                }
             }
             return String.valueOf(children.get(0).getValue());
         }
-        return cfgInfo.getLabelOrId();
+        if (parentType == CfgInfo.Type_Map) {
+            if (type != CfgInfo.Type_Struct) {
+                return key;
+            }
+            String labelKey = cfgInfo.getLabelKey();
+            if (labelKey != null) {
+                CfgValue labelValue = getValue(labelKey);
+                if (labelValue != null) {
+                    return String.valueOf(labelValue.getValue());
+                }
+            }
+            return String.valueOf(children.get(0).getValue());
+        }
+        return cfgInfo.getLabel();//root
     }
 
     @Override

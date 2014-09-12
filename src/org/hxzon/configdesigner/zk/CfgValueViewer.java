@@ -57,8 +57,8 @@ public class CfgValueViewer implements CfgValueHolder {
         //
         view = new Vlayout();
         Hlayout titleLayout = new Hlayout();
-        Label label = new Label(cfgValue.getTitle());
-        titleLayout.appendChild(label);
+
+        titleLayout.appendChild(createTitle(cfgValue));
         if (cfgValue.getParent() != null) {
             Button delBtn = createDeleteBtn(cfgValue, view);
             titleLayout.appendChild(delBtn);
@@ -95,8 +95,8 @@ public class CfgValueViewer implements CfgValueHolder {
                 Button btn = newAddPartBtn(cCfgInfo);
                 buttonPanel.appendChild(btn);
             } else {
-                Component cComponent = createPane(cCfgValue);
-                mainPanel.appendChild(cComponent);
+                Component partPane = createPane(cCfgValue);
+                mainPanel.appendChild(partPane);
             }
         }
         createSaveBtn();
@@ -107,8 +107,8 @@ public class CfgValueViewer implements CfgValueHolder {
     private Component createBody_listOrMap() {
         mainPanel = new Vlayout();
         for (CfgValue cCfgValue : cfgValue.getChildren()) {
-            Component cComponent = createPane(cCfgValue);
-            mainPanel.appendChild(cComponent);
+            Component elePane = createPane(cCfgValue);
+            mainPanel.appendChild(elePane);
         }
         createSaveBtn();
         return mainPanel;
@@ -147,14 +147,12 @@ public class CfgValueViewer implements CfgValueHolder {
     }
 
     private Component createTextareaPane(CfgValue cfgValue) {
-        CfgInfo info = cfgValue.getCfgInfo();
         CfgValueTextbox inputComp = new CfgValueTextbox(cfgValue);
         valueHolders.add(inputComp);
         Vlayout pane = new Vlayout();
         Hlayout hlayout = new Hlayout();
-        Label label = new Label(info.getLabelOrId() + "：");
         Button delBtn = createDeleteBtn(cfgValue, pane);
-        hlayout.appendChild(label);
+        hlayout.appendChild(createLabel(cfgValue));
         hlayout.appendChild(delBtn);
         if (cfgValue.isElement()) {
             hlayout.appendChild(createCopyElementBtn(cfgValue));
@@ -185,9 +183,8 @@ public class CfgValueViewer implements CfgValueHolder {
         }
         valueHolders.add((CfgValueHolder) inputComp);
         Hlayout pane = new Hlayout();
-        Label label = new Label(info.getLabelOrId() + "：");
         Button delBtn = createDeleteBtn(cfgValue, pane);
-        pane.appendChild(label);
+        pane.appendChild(createLabel(cfgValue));
         pane.appendChild(inputComp);
         pane.appendChild(delBtn);
         if (cfgValue.isElement()) {
@@ -198,7 +195,6 @@ public class CfgValueViewer implements CfgValueHolder {
 
     private Component createLinkPane(final CfgValue cfgValue) {
         Hlayout pane = new Hlayout();
-        Label label = new Label(cfgValue.getCfgInfo().getLabel());
         Button btn = new Button();
         btn.setImage("images/easyicon_open.png");
         btn.setTooltiptext("打开");
@@ -207,12 +203,12 @@ public class CfgValueViewer implements CfgValueHolder {
             @Override
             public void onEvent(MouseEvent event) throws Exception {
                 newDialog(new CfgValueViewer(cfgValue).getView(),//
-                        cfgValue.getCfgInfo().getLabel());
+                        cfgValue.getTitle());
 
             }
 
         });
-        pane.appendChild(label);
+        pane.appendChild(createLabel(cfgValue));
         pane.appendChild(btn);
         return pane;
     }
@@ -345,14 +341,23 @@ public class CfgValueViewer implements CfgValueHolder {
     private Component newDialog(Component content, String title) {
         Window dialog = new Window();
         dialog.appendChild(content);
-        dialog.setTitle(title);
+        dialog.setTitle(title == null ? "hh" : title);
         dialog.setClosable(true);
         dialog.setSizable(true);
         dialog.setWidth("50%");
         dialog.setHeight("50%");
+        dialog.setBorder(true);
         dialog.setParent(view);
         dialog.setMode(Window.MODAL);
         return dialog;
+    }
+
+    private Label createLabel(CfgValue cfgValue) {
+        return new Label(cfgValue.getLabel() + "：");
+    }
+
+    private Label createTitle(CfgValue cfgValue) {
+        return new Label(cfgValue.getTitle());
     }
 
     //==============
