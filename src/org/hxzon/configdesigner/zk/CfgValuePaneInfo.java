@@ -1,9 +1,7 @@
 package org.hxzon.configdesigner.zk;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgParser;
@@ -16,8 +14,8 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.Window;
 
 public class CfgValuePaneInfo implements CfgValueHolder {
 
@@ -30,7 +28,6 @@ public class CfgValuePaneInfo implements CfgValueHolder {
     private Button addBtn;
     private Button saveBtn;
     private List<CfgValueHolder> valueHolders;
-    private Map<Button, Component> delBtnMaps;
 
     public CfgValuePaneInfo(CfgValue cfgValue) {
         this(cfgValue, false);
@@ -56,7 +53,6 @@ public class CfgValuePaneInfo implements CfgValueHolder {
         }
         //
         valueHolders = new ArrayList<CfgValueHolder>();
-        delBtnMaps = new HashMap<Button, Component>();
         //
         Label label = new Label(cfgValue.getTitle());
         Hlayout titleLayout = new Hlayout();
@@ -77,7 +73,7 @@ public class CfgValuePaneInfo implements CfgValueHolder {
         vlayout.appendChild(space);
         Component body = createBody();
         vlayout.appendChild(body);
-        view = vlayout;
+        view = vlayout;//TODO scrollable
     }
 
     private Component createBody() {
@@ -111,18 +107,7 @@ public class CfgValuePaneInfo implements CfgValueHolder {
                 mainPanel.appendChild(cComponent);
             }
         }
-        if (!embed) {
-            saveBtn = new Button("保存");
-            saveBtn.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
-
-                @Override
-                public void onEvent(MouseEvent event) throws Exception {
-                    saveValue();
-                }
-
-            });
-            mainPanel.appendChild(saveBtn);
-        }
+        createSaveBtn();
         for (CfgInfo cCfgInfo : partsToAdd) {
             Button btn = newAddPartBtn(cCfgInfo);
             buttonPanel.appendChild(btn);
@@ -137,6 +122,7 @@ public class CfgValuePaneInfo implements CfgValueHolder {
             Component cComponent = createPane(cCfgValue);
             mainPanel.appendChild(cComponent);
         }
+        createSaveBtn();
         return mainPanel;
     }
 
@@ -144,7 +130,22 @@ public class CfgValuePaneInfo implements CfgValueHolder {
         return createBody_map();
     }
 
-    public Component createPane(CfgValue cfgValue) {
+    private void createSaveBtn() {
+        if (!embed) {
+            saveBtn = new Button("保存");
+            saveBtn.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
+
+                @Override
+                public void onEvent(MouseEvent event) throws Exception {
+                    saveValue();
+                }
+
+            });
+            mainPanel.appendChild(saveBtn);
+        }
+    }
+
+    private Component createPane(CfgValue cfgValue) {
         CfgInfo info = cfgValue.getCfgInfo();
         if (info.isTextArea()) {
             return createTextareaPane(cfgValue);
@@ -154,7 +155,7 @@ public class CfgValuePaneInfo implements CfgValueHolder {
             return createSimpleValuePane(cfgValue);
         }
         if (!info.isEmbed()) {
-            return new CfgValueLink(cfgValue);
+            return createLinkPane(cfgValue);
         }
         CfgValuePaneInfo paneInfo = new CfgValuePaneInfo(cfgValue, true);
         valueHolders.add(paneInfo);
@@ -179,7 +180,7 @@ public class CfgValuePaneInfo implements CfgValueHolder {
         return vlayout;
     }
 
-    public Component createSimpleValuePane(CfgValue cfgValue) {
+    private Component createSimpleValuePane(CfgValue cfgValue) {
         CfgInfo info = cfgValue.getCfgInfo();
         int type = info.getType();
         Component inputComp = null;
@@ -213,6 +214,27 @@ public class CfgValuePaneInfo implements CfgValueHolder {
         return layout;
     }
 
+    private Component createLinkPane(final CfgValue cfgValue) {
+        Hlayout layout = new Hlayout();
+        Label label = new Label(cfgValue.getCfgInfo().getLabel());
+        Button btn = new Button();
+        btn.setImage("images/easyicon_open.png");
+        btn.setTooltiptext("打开");
+        btn.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
+
+            @Override
+            public void onEvent(MouseEvent event) throws Exception {
+                newDialog(new CfgValuePaneInfo(cfgValue).getView(),//
+                        cfgValue.getCfgInfo().getLabel());
+
+            }
+
+        });
+        layout.appendChild(label);
+        layout.appendChild(btn);
+        return layout;
+    }
+
     //==============
 
     @Override
@@ -224,8 +246,8 @@ public class CfgValuePaneInfo implements CfgValueHolder {
         }
     }
 
-    private void addPart(CfgInfoButton btn) {
-        CfgInfo cfgInfo = btn.getCfgInfo();
+    private void addPart(Component btn) {
+        CfgInfo cfgInfo = (CfgInfo) btn.getAttribute("cfgInfo");
         if (!embed) {
             mainPanel.removeChild(saveBtn);
         }
@@ -242,8 +264,8 @@ public class CfgValuePaneInfo implements CfgValueHolder {
         }
     }
 
-    private void deleteValue(CfgValueButton btn) {
-        CfgValue deleteCfgValue = btn.getCfgValue();
+    private void deleteValue(Component btn) {
+        CfgValue deleteCfgValue = (CfgValue) btn.getAttribute("cfgValue");
         CfgValue parent = deleteCfgValue.getParent();
         int parentType = parent.getCfgInfo().getType();
         if (parentType == CfgInfo.Type_Struct) {
@@ -251,14 +273,12 @@ public class CfgValuePaneInfo implements CfgValueHolder {
             addBtn.setVisible(true);
         }
         parent.removeValue(deleteCfgValue);
-        delBtnMaps.get(btn).setParent(null);
+        ((Component) btn.getAttribute("delPane")).setParent(null);
     }
 
     private void addValue() {
         if (buttonPanel != null) {
-            Popup popup = new Popup();
-            popup.appendChild(buttonPanel);
-            popup.open(addBtn, "before_start");
+            newDialog(buttonPanel, "添加字段");
         } else {
             CfgValue newEle = CfgParser.buildListElementCfgValue(cfgValue, 1);
             if (!embed) {
@@ -275,16 +295,14 @@ public class CfgValuePaneInfo implements CfgValueHolder {
     private final EventListener<MouseEvent> AddPartBtnEventListener = new EventListener<MouseEvent>() {
         @Override
         public void onEvent(MouseEvent event) throws Exception {
-            CfgInfoButton btn = (CfgInfoButton) event.getTarget();
-            addPart(btn);
+            addPart(event.getTarget());
         }
     };
 
     private final EventListener<MouseEvent> DeleteValueBtnEventListener = new EventListener<MouseEvent>() {
         @Override
         public void onEvent(MouseEvent event) throws Exception {
-            CfgValueButton btn = (CfgValueButton) event.getTarget();
-            deleteValue(btn);
+            deleteValue(event.getTarget());
         }
     };
 
@@ -296,7 +314,8 @@ public class CfgValuePaneInfo implements CfgValueHolder {
     };
 
     private Button newAddPartBtn(CfgInfo cfgInfo) {
-        Button btn = new CfgInfoButton(cfgInfo);
+        Button btn = new Button();
+        btn.setAttribute("cfgInfo", cfgInfo);
         btn.setLabel(cfgInfo.getLabelOrId());
         btn.setImage("images/easyicon_add.png");
         btn.setTooltiptext("添加");
@@ -305,11 +324,12 @@ public class CfgValuePaneInfo implements CfgValueHolder {
     }
 
     private Button newDeleteValueBtn(CfgValue cfgValue, Component delComp) {
-        Button btn = new CfgValueButton(cfgValue);
+        Button btn = new Button();
+        btn.setAttribute("cfgValue", cfgValue);
         btn.setImage("images/easyicon_remove.png");
         btn.setTooltiptext("删除");
         btn.addEventListener(Events.ON_CLICK, DeleteValueBtnEventListener);
-        delBtnMaps.put(btn, delComp);
+        btn.setAttribute("delPane", delComp);
         return btn;
     }
 
@@ -328,6 +348,20 @@ public class CfgValuePaneInfo implements CfgValueHolder {
         return btn;
     }
 
+    private Component newDialog(Component content, String title) {
+        Window dialog = new Window();
+        dialog.setParent(view);
+        dialog.appendChild(content);
+        dialog.setMode(Window.MODAL);
+        dialog.setTitle(title);
+        dialog.setClosable(true);
+        dialog.setSizable(true);
+        dialog.setWidth("50%");
+        dialog.setHeight("50%");
+        return dialog;
+    }
+
+    //==============
     public Component getView() {
         return view;
     }

@@ -5,7 +5,7 @@ import org.hxzon.util.Dt;
 import org.zkoss.zul.Longbox;
 
 @SuppressWarnings("serial")
-public class CfgValueLongbox extends Longbox  implements CfgValueHolder{
+public class CfgValueLongbox extends Longbox implements CfgValueHolder {
 
     private CfgValue cfgValue;
 
