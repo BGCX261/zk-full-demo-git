@@ -53,14 +53,18 @@ public class CfgValueViewer implements CfgValueHolder {
             return;
         }
         //
+        view = createComboPane(type);
+    }
+
+    private Component createComboPane(int type) {
         valueHolders = new ArrayList<CfgValueHolder>();
         //
-        view = new Vlayout();
+        Vlayout pane = new Vlayout();//for dialog's parent,can't use Panel
         Hlayout titleLayout = new Hlayout();
 
         titleLayout.appendChild(createTitle(cfgValue));
         if (cfgValue.getParent() != null) {
-            Button delBtn = createDeleteBtn(cfgValue, view);
+            Button delBtn = createDeleteBtn(cfgValue, pane);
             titleLayout.appendChild(delBtn);
         }
         addBtn = createAddBtn();
@@ -68,10 +72,12 @@ public class CfgValueViewer implements CfgValueHolder {
         if (cfgValue.isElement()) {
             titleLayout.appendChild(createCopyElementBtn(cfgValue));
         }
-        view.appendChild(titleLayout);
-        view.appendChild(new Space());
+        pane.appendChild(titleLayout);
+        pane.appendChild(new Space());
         Component body = createBody(type);
-        view.appendChild(body);
+        pane.appendChild(body);
+        //
+        return pane;
     }
 
     private Component createBody(int type) {
