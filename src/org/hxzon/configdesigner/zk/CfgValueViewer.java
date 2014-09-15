@@ -67,7 +67,7 @@ public class CfgValueViewer implements CfgValueHolder {
         Vlayout pane = new Vlayout();//for dialog's parent,can't use Panel
         Hlayout titleLayout = new Hlayout();
 
-        titleLayout.appendChild(createTitle(cfgValue));
+        titleLayout.appendChild(embed ? createLabel(cfgValue) : createTitle(cfgValue));
         if (cfgValue.getParent() != null) {
             Button delBtn = createDeleteBtn(cfgValue, pane);
             titleLayout.appendChild(delBtn);
@@ -360,7 +360,7 @@ public class CfgValueViewer implements CfgValueHolder {
     private Component createDialog(Component content, String title) {
         Window dialog = new Window();
         dialog.appendChild(content);
-        dialog.setTitle(title == null ? "hh" : title);
+        dialog.setTitle(title);
         dialog.setClosable(true);
         dialog.setSizable(true);
         dialog.setWidth("50%");

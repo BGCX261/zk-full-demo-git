@@ -67,7 +67,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
         Vlayout pane = new Vlayout();
         Hlayout titleLayout = new Hlayout();
 
-        titleLayout.appendChild(createTitle(cfgValue));
+        titleLayout.appendChild(embed ? createLabel(cfgValue) : createTitle(cfgValue));
         if (cfgValue.getParent() != null) {
             Button delBtn = createDeleteBtn(cfgValue, pane);
             titleLayout.appendChild(delBtn);
@@ -77,12 +77,15 @@ public class CfgValueViewer2 implements CfgValueHolder {
         if (cfgValue.isElement()) {
             titleLayout.appendChild(createCopyElementBtn(cfgValue));
         }
-        if (cfgValue.getParent() != null) {
+        if (!embed && cfgValue.getParent() != null) {
             Button returnBtn = createReturnBtn();
             titleLayout.appendChild(returnBtn);
         }
         pane.appendChild(titleLayout);
         pane.appendChild(new Space());
+        if (cfgValue.isMapElement()) {
+            pane.appendChild(createKeyPane(cfgValue));
+        }
         Component body = createBody(cfgValue);
         pane.appendChild(body);
         //
@@ -174,6 +177,9 @@ public class CfgValueViewer2 implements CfgValueHolder {
             hlayout.appendChild(createCopyElementBtn(cfgValue));
         }
         pane.appendChild(hlayout);
+        if (cfgValue.isMapElement()) {
+            pane.appendChild(createKeyPane(cfgValue));
+        }
         pane.appendChild(inputComp);
         return pane;
     }
@@ -200,7 +206,11 @@ public class CfgValueViewer2 implements CfgValueHolder {
         valueHolders.add((CfgValueHolder) inputComp);
         Hlayout pane = new Hlayout();
         Button delBtn = createDeleteBtn(cfgValue, pane);
-        pane.appendChild(createLabel(cfgValue));
+        if (cfgValue.isMapElement()) {
+            pane.appendChild(createKeyPane(cfgValue));
+        } else {
+            pane.appendChild(createLabel(cfgValue));
+        }
         pane.appendChild(inputComp);
         pane.appendChild(delBtn);
         if (cfgValue.isElement()) {
@@ -209,10 +219,20 @@ public class CfgValueViewer2 implements CfgValueHolder {
         return pane;
     }
 
-    private Component createLinkPane(final CfgValue cfgValue) {
+    private Component createLinkPane(CfgValue cfgValue) {
         Hlayout pane = new Hlayout();
         pane.appendChild(createLabel(cfgValue));
+        pane.appendChild(createDeleteBtn(cfgValue, pane));
         pane.appendChild(createEnterBtn(cfgValue));
+        return pane;
+    }
+
+    private Component createKeyPane(CfgValue cfgValue) {
+        CfgValueKeybox keyInputComp = new CfgValueKeybox(cfgValue);
+        valueHolders.add(keyInputComp);
+        Hlayout pane = new Hlayout();
+        pane.appendChild(new Label("键："));
+        pane.appendChild(keyInputComp);
         return pane;
     }
 
@@ -229,6 +249,14 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
     private void deleteValue(Component btn) {
         CfgValue deleteCfgValue = (CfgValue) btn.getAttribute("cfgValue");
+        if (deleteCfgValue == cfgValue) {
+            CfgValue parent = deleteCfgValue.getParent();
+            parent.removeValue(deleteCfgValue);
+            viewParent.removeChild(view);
+            new CfgValueViewer2(parent, viewParent);
+            return;
+        }
+
         CfgValue parent = deleteCfgValue.getParent();
         int parentType = parent.getCfgInfo().getType();
         if (parentType == CfgInfo.Type_Struct) {
@@ -254,14 +282,26 @@ public class CfgValueViewer2 implements CfgValueHolder {
             createDialog(buttonPanel, "添加字段");
         } else {
             CfgValue newEle = CfgParser.buildListElementCfgValue(cfgValue, 1);
+            if (newEle.isMapElement()) {
+                newEle.setKey("_new");
+            }
             addValue_(newEle);
         }
     }
 
     private void copyValue(Component btn) {
         CfgValue origValue = (CfgValue) btn.getAttribute("cfgValue");
-        CfgValue newEle = CfgParser.copy(origValue);
-        addValue_(newEle);
+        CfgValue newValue = CfgParser.copy(origValue);
+        if (newValue.isMapElement()) {
+            newValue.setKey(newValue.getKey() + "_copy");
+        }
+        if (origValue == cfgValue) {
+            origValue.getParent().addValue(newValue);
+            viewParent.removeChild(view);
+            new CfgValueViewer2(newValue, viewParent);
+            return;
+        }
+        addValue_(newValue);
     }
 
     private void addValue_(CfgValue newValue) {
@@ -387,7 +427,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
     private Component createDialog(Component content, String title) {
         Window dialog = new Window();
         dialog.appendChild(content);
-        dialog.setTitle(title == null ? "hh" : title);
+        dialog.setTitle(title);
         dialog.setClosable(true);
         dialog.setSizable(true);
         dialog.setWidth("50%");

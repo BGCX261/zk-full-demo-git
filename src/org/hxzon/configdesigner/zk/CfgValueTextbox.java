@@ -17,7 +17,7 @@ public class CfgValueTextbox extends Textbox implements CfgValueHolder {
             setRows(8);
             setCols(150);
         } else {
-            //setCols(100);
+            setCols(100);
         }
     }
 

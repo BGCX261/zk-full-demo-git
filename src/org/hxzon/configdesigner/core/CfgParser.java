@@ -233,6 +233,9 @@ public class CfgParser {
         default:
             r.setValue(origCfgValue.getValue());
         }
+        if (origCfgValue.isMapElement()) {
+            r.setKey(origCfgValue.getKey());
+        }
         return r;
     }
 

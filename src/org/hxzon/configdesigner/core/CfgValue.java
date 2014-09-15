@@ -34,6 +34,11 @@ public class CfgValue {
         return parentType == CfgInfo.Type_List || parentType == CfgInfo.Type_Map;
     }
 
+    public boolean isMapElement() {
+        int parentType = (parent == null) ? 0 : parent.getCfgInfo().getType();
+        return parentType == CfgInfo.Type_Map;
+    }
+
     //全路径
     public String getTitle() {
         String parentTitle = (parent == null) ? "" : parent.getTitle() + "/";
@@ -65,7 +70,7 @@ public class CfgValue {
                     return String.valueOf(labelValue.getValue());
                 }
             }
-            return String.valueOf(children.get(0).getValue());
+            return String.valueOf(parent.getIndex(this));
         }
         if (parentType == CfgInfo.Type_Map) {
             if (type != CfgInfo.Type_Struct) {
@@ -78,7 +83,7 @@ public class CfgValue {
                     return String.valueOf(labelValue.getValue());
                 }
             }
-            return String.valueOf(children.get(0).getValue());
+            return key;
         }
         return cfgInfo.getLabel();//root
     }
