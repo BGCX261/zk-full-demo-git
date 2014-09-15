@@ -17,7 +17,7 @@ import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Window;
 
-public class CfgValueViewer implements CfgValueHolder {
+public class CfgValueViewer2 implements CfgValueHolder {
 
     private CfgValue cfgValue;
     //
@@ -31,17 +31,17 @@ public class CfgValueViewer implements CfgValueHolder {
     private Button saveBtn;
     private List<CfgValueHolder> valueHolders;
 
-    public CfgValueViewer(CfgValue cfgValue, Component viewParent) {
+    public CfgValueViewer2(CfgValue cfgValue, Component viewParent) {
         this(cfgValue, viewParent, false);
     }
 
-    protected CfgValueViewer(CfgValue cfgValue, Component viewParent, boolean embed) {
+    protected CfgValueViewer2(CfgValue cfgValue, Component viewParent, boolean embed) {
         this.cfgValue = cfgValue;
-        this.embed = embed;
         this.viewParent = viewParent;
+        this.embed = embed;
         //
         createView();
-        if (!embed && viewParent != null) {//in dialog,viewParent is null
+        if (!embed) {
             viewParent.appendChild(view);
         }
     }
@@ -58,13 +58,13 @@ public class CfgValueViewer implements CfgValueHolder {
             return;
         }
         //
-        view = createComboPane(type);
+        view = createComboPane();
     }
 
-    private Component createComboPane(int type) {
+    private Component createComboPane() {
         valueHolders = new ArrayList<CfgValueHolder>();
         //
-        Vlayout pane = new Vlayout();//for dialog's parent,can't use Panel
+        Vlayout pane = new Vlayout();
         Hlayout titleLayout = new Hlayout();
 
         titleLayout.appendChild(createTitle(cfgValue));
@@ -79,13 +79,14 @@ public class CfgValueViewer implements CfgValueHolder {
         }
         pane.appendChild(titleLayout);
         pane.appendChild(new Space());
-        Component body = createBody(type);
+        Component body = createBody(cfgValue);
         pane.appendChild(body);
         //
         return pane;
     }
 
-    private Component createBody(int type) {
+    private Component createBody(CfgValue cfgValue) {
+        int type = cfgValue.getCfgInfo().getType();
         if (type == CfgInfo.Type_Struct) {
             return createBody_struct();
         } else {
@@ -103,7 +104,7 @@ public class CfgValueViewer implements CfgValueHolder {
         for (CfgInfo cCfgInfo : cfgInfo.getParts()) {
             CfgValue cCfgValue = cfgValue.getValue(cCfgInfo.getId());
             if (cCfgValue == null) {
-                Button btn = createAddPartBtn(cCfgInfo);
+                Button btn = newAddPartBtn(cCfgInfo);
                 buttonPanel.appendChild(btn);
             } else {
                 Component partPane = createPane(cCfgValue);
@@ -152,7 +153,7 @@ public class CfgValueViewer implements CfgValueHolder {
         if (!info.isEmbed()) {
             return createLinkPane(cfgValue);
         }
-        CfgValueViewer viewer = new CfgValueViewer(cfgValue, viewParent, true);
+        CfgValueViewer2 viewer = new CfgValueViewer2(cfgValue, viewParent, true);
         valueHolders.add(viewer);
         return viewer.getView();
     }
@@ -213,9 +214,8 @@ public class CfgValueViewer implements CfgValueHolder {
 
             @Override
             public void onEvent(MouseEvent event) throws Exception {
-                newDialog(new CfgValueViewer(cfgValue, null).getView(),//
-                        cfgValue.getTitle());
-
+                viewParent.removeChild(view);
+                new CfgValueViewer2(cfgValue, viewParent);
             }
 
         });
@@ -240,7 +240,7 @@ public class CfgValueViewer implements CfgValueHolder {
         CfgValue parent = deleteCfgValue.getParent();
         int parentType = parent.getCfgInfo().getType();
         if (parentType == CfgInfo.Type_Struct) {
-            buttonPanel.appendChild(createAddPartBtn(deleteCfgValue.getCfgInfo()));
+            buttonPanel.appendChild(newAddPartBtn(deleteCfgValue.getCfgInfo()));
             addBtn.setVisible(true);
         }
         parent.removeValue(deleteCfgValue);
@@ -312,7 +312,7 @@ public class CfgValueViewer implements CfgValueHolder {
         }
     };
 
-    private Button createAddPartBtn(CfgInfo cfgInfo) {
+    private Button newAddPartBtn(CfgInfo cfgInfo) {
         Button btn = new Button();
         btn.setAttribute("cfgInfo", cfgInfo);
         btn.setLabel(cfgInfo.getLabelOrId());
