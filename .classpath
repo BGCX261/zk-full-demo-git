@@ -6,6 +6,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="src_configDesign"/>
 	<classpathentry kind="src" output="target/classes" path="srcService">
 		<attributes>
 			<attribute name="optional" value="true"/>
