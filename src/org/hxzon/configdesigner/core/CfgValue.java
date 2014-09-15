@@ -111,6 +111,7 @@ public class CfgValue {
 
     public void removeValue(CfgValue cfgValue) {
         checkType(CfgInfo.Type_Struct, CfgInfo.Type_List, CfgInfo.Type_Map);
+        //cfgValue.setParent(null);//?方便回到上级，即便被删除
         getChildren().remove(cfgValue);
     }
 

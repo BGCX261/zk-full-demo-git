@@ -77,6 +77,10 @@ public class CfgValueViewer2 implements CfgValueHolder {
         if (cfgValue.isElement()) {
             titleLayout.appendChild(createCopyElementBtn(cfgValue));
         }
+        if (cfgValue.getParent() != null) {
+            Button returnBtn = createReturnBtn();
+            titleLayout.appendChild(returnBtn);
+        }
         pane.appendChild(titleLayout);
         pane.appendChild(new Space());
         Component body = createBody(cfgValue);
@@ -104,7 +108,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
         for (CfgInfo cCfgInfo : cfgInfo.getParts()) {
             CfgValue cCfgValue = cfgValue.getValue(cCfgInfo.getId());
             if (cCfgValue == null) {
-                Button btn = newAddPartBtn(cCfgInfo);
+                Button btn = createAddPartBtn(cCfgInfo);
                 buttonPanel.appendChild(btn);
             } else {
                 Component partPane = createPane(cCfgValue);
@@ -207,20 +211,8 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
     private Component createLinkPane(final CfgValue cfgValue) {
         Hlayout pane = new Hlayout();
-        Button btn = new Button();
-        btn.setImage("images/easyicon_open.png");
-        btn.setTooltiptext("打开");
-        btn.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
-
-            @Override
-            public void onEvent(MouseEvent event) throws Exception {
-                viewParent.removeChild(view);
-                new CfgValueViewer2(cfgValue, viewParent);
-            }
-
-        });
         pane.appendChild(createLabel(cfgValue));
-        pane.appendChild(btn);
+        pane.appendChild(createEnterBtn(cfgValue));
         return pane;
     }
 
@@ -240,7 +232,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
         CfgValue parent = deleteCfgValue.getParent();
         int parentType = parent.getCfgInfo().getType();
         if (parentType == CfgInfo.Type_Struct) {
-            buttonPanel.appendChild(newAddPartBtn(deleteCfgValue.getCfgInfo()));
+            buttonPanel.appendChild(createAddPartBtn(deleteCfgValue.getCfgInfo()));
             addBtn.setVisible(true);
         }
         parent.removeValue(deleteCfgValue);
@@ -259,7 +251,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
     private void addValue() {
         if (buttonPanel != null) {
-            newDialog(buttonPanel, "添加字段");
+            createDialog(buttonPanel, "添加字段");
         } else {
             CfgValue newEle = CfgParser.buildListElementCfgValue(cfgValue, 1);
             addValue_(newEle);
@@ -282,6 +274,18 @@ public class CfgValueViewer2 implements CfgValueHolder {
         if (!embed) {
             mainPanel.appendChild(saveBtn);
         }
+    }
+
+    private void returnParent() {
+        CfgValue parent = cfgValue.getParent();
+        viewParent.removeChild(view);
+        new CfgValueViewer2(parent, viewParent);
+    }
+
+    private void enter(Component btn) {
+        CfgValue cfgValue = (CfgValue) btn.getAttribute("cfgValue");
+        viewParent.removeChild(view);
+        new CfgValueViewer2(cfgValue, viewParent);
     }
 
     private final EventListener<MouseEvent> AddPartBtnEventListener = new EventListener<MouseEvent>() {
@@ -312,7 +316,21 @@ public class CfgValueViewer2 implements CfgValueHolder {
         }
     };
 
-    private Button newAddPartBtn(CfgInfo cfgInfo) {
+    private final EventListener<MouseEvent> ReturnBtnEventListener = new EventListener<MouseEvent>() {
+        @Override
+        public void onEvent(MouseEvent event) throws Exception {
+            returnParent();
+        }
+    };
+
+    private final EventListener<MouseEvent> EnterBtnEventListener = new EventListener<MouseEvent>() {
+        @Override
+        public void onEvent(MouseEvent event) throws Exception {
+            enter(event.getTarget());
+        }
+    };
+
+    private Button createAddPartBtn(CfgInfo cfgInfo) {
         Button btn = new Button();
         btn.setAttribute("cfgInfo", cfgInfo);
         btn.setLabel(cfgInfo.getLabelOrId());
@@ -349,7 +367,24 @@ public class CfgValueViewer2 implements CfgValueHolder {
         return btn;
     }
 
-    private Component newDialog(Component content, String title) {
+    private Button createReturnBtn() {
+        Button btn = new Button();
+        btn.setImage("images/easyicon_return.png");
+        btn.setTooltiptext("返回");
+        btn.addEventListener(Events.ON_CLICK, ReturnBtnEventListener);
+        return btn;
+    }
+
+    private Button createEnterBtn(CfgValue cfgValue) {
+        Button btn = new Button();
+        btn.setAttribute("cfgValue", cfgValue);
+        btn.setImage("images/easyicon_open.png");
+        btn.setTooltiptext("打开");
+        btn.addEventListener(Events.ON_CLICK, EnterBtnEventListener);
+        return btn;
+    }
+
+    private Component createDialog(Component content, String title) {
         Window dialog = new Window();
         dialog.appendChild(content);
         dialog.setTitle(title == null ? "hh" : title);
