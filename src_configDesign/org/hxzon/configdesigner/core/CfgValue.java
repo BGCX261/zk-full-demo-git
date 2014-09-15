@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.hxzon.util.Dt;
+import org.hxzon.util.StringParser;
+
 public class CfgValue {
 
     private UUID uuid;
@@ -169,7 +172,46 @@ public class CfgValue {
         return children == null || children.isEmpty();
     }
 
-    //
+    public CfgValue findCfgValue(String path) {
+        StringParser parser = new StringParser(path);
+        parser.setWithDefaultWps(true);
+        parser.setWps(new char[] { '/' });
+        return findCfgValue(parser);
+    }
+
+    private CfgValue findCfgValue(StringParser parser) {
+        String token = parser.nextToken();
+        if (token == null) {
+            return this;
+        }
+        int type = cfgInfo.getType();
+        if (type == CfgInfo.Type_Struct) {
+            for (CfgValue child : children) {
+                String id = child.getCfgInfo().getId();
+                if (id.equals(token)) {
+                    return child.findCfgValue(parser);
+                }
+            }
+        }
+        if (type == CfgInfo.Type_Map) {
+            for (CfgValue child : children) {
+                String key = child.getKey();
+                if (key.equals(token)) {
+                    return child.findCfgValue(parser);
+                }
+            }
+        }
+        if (type == CfgInfo.Type_List) {
+            int index = Dt.toInt(token, 0);
+            CfgValue child = getValue(index);
+            if (child != null) {
+                return child.findCfgValue(parser);
+            }
+        }
+        return null;
+    }
+
+    //==================
     public CfgValue(CfgInfo cfgInfo, UUID uuid) {
         this.cfgInfo = cfgInfo;
         this.uuid = uuid;

@@ -2,6 +2,8 @@ package org.hxzon.configdesigner.core;
 
 import java.util.List;
 
+import org.hxzon.util.StringParser;
+
 public class CfgInfo {
 
     public static final int Type_String = 1;
@@ -58,7 +60,34 @@ public class CfgInfo {
         return "unknown";
     }
 
-    //
+    public CfgInfo findCfgInfo(String path) {
+        StringParser parser = new StringParser(path);
+        parser.setWithDefaultWps(true);
+        parser.setWps(new char[] { '/' });
+        return findCfgInfo(parser);
+    }
+
+    private CfgInfo findCfgInfo(StringParser parser) {
+        String token = parser.nextToken();
+        if (token == null) {
+            return this;
+        }
+        if (type == CfgInfo.Type_Struct) {
+            for (CfgInfo part : parts) {
+                if (part.getId().equals(token)) {
+                    return part.findCfgInfo(parser);
+                }
+            }
+        }
+        if (type == CfgInfo.Type_List || type == CfgInfo.Type_Struct) {
+            if ("e".equals(token)) {
+                return elementInfo.findCfgInfo(parser);
+            }
+        }
+        return null;
+    }
+
+    //==================
     public List<CfgInfo> getParts() {
         return parts;
     }
