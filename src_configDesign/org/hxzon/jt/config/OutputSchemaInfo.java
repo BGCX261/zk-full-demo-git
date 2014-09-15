@@ -1,8 +1,8 @@
-package org.hxzon.demo.jt.config;
+package org.hxzon.jt.config;
 
 import java.util.List;
 
-public class TypeInfo {
+public class OutputSchemaInfo {
 
     private String targetType;
     private String name;
@@ -10,7 +10,7 @@ public class TypeInfo {
     private String vtype;
     private String from;
     private String notrim;
-    private List<TypeInfo> children;
+    private List<OutputSchemaInfo> children;
 
     //--------------
     public String toString() {
@@ -78,11 +78,11 @@ public class TypeInfo {
         return "true".equals(notrim);
     }
 
-    public List<TypeInfo> getChildren() {
+    public List<OutputSchemaInfo> getChildren() {
         return children;
     }
 
-    public void setChildren(List<TypeInfo> children) {
+    public void setChildren(List<OutputSchemaInfo> children) {
         this.children = children;
     }
 

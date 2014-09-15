@@ -1,6 +1,5 @@
-package org.hxzon.demo.jt.config;
+package org.hxzon.util.json;
 
-import org.hxzon.util.json.JSONString;
 
 public class MyString implements JSONString {
     private final String text;

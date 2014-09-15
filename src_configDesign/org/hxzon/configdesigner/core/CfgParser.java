@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.dom4j.Element;
-import org.hxzon.demo.jt.config.MyString;
 import org.hxzon.util.Dom4jUtil;
 import org.hxzon.util.Dt;
 import org.hxzon.util.json.JSONArray;
 import org.hxzon.util.json.JSONObject;
+import org.hxzon.util.json.MyString;
 
 public class CfgParser {
     //private static final Object Null = JSONObject.NULL;

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<object type="scene">
+	<attr name="name" vtype="string" notrim="true" />
+	<attr name="dsc" vtype="string" />
+	<attr name="map" vtype="string" />
+	<attr name="src" vtype="string" />
+	<attr name="sound" vtype="string" />
+	<attr name="outdoor" vtype="boolean" />
+	<attr name="day_night" vtype="boolean" />
+	<attr name="weather" vtype="boolean" />
+	<attr name="private" vtype="boolean" />
+	<attr name="no_shift" vtype="boolean" />
+
+	<amap name="npcs" fname="def_npcs" vtype="map">
+		<attr name="id" vtype="string" />
+		<attr name="name" vtype="string" />
+		<attr name="count" vtype="integer" />
+		<attr name="count_hxzon" fname="count" vtype="string" />
+		<attr name="pos" vtype="string" />
+		<list name="pos_hxzon" fname="__pos" vtype="integer" />
+		<attr name="kill" vtype="boolean" />
+	</amap>
+
+	<amap name="ops" vtype="map">
+		<attr name="name" vtype="string" />
+		<attr name="pos" vtype="string" />
+		<attr name="cfm" fname="confirm" vtype="string" />
+		<attr name="count" vtype="integer" />
+		<attr name="icon" vtype="string" notrim="true" />
+	</amap>
+
+	<list name="exits" vtype="string" from="value.to_eid" />
+	
+	<list name="exits_hxzon" fname="exits" vtype="string" from="key" />
+
+	<map name="t2">
+		<attr name="group" vtype="string" />
+		<attr name="name" vtype="string" />
+		<attr name="type" vtype="integer" />
+		
+		<amap name="rws" fname="rewards" vtype="string" />
+		
+		<map name="ev_on_accept">
+			<list name="stps" fname="steps" vtype="map">
+				<attr name="cmmt" vtype="string" />
+				<attr name="zy_cmmt" vtype="string" />
+				<attr name="stop_here" vtype="boolean" />
+				<list name="tgs" fname="targets" vtype="map">
+					<attr name="name" vtype="string" />
+					<attr name="nid" vtype="string" />
+					<attr name="eid" vtype="string" />
+				</list>
+			</list>
+		</map>
+		
+	</map>
+</object>

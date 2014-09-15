@@ -1,0 +1,886 @@
+{
+    "map": "fcs",
+    "name": "方寸山",
+    "designing": false,
+    "log_slot": true,
+    "outdoor": true,
+    "day_night": true,
+    "weather": true,
+    "private": false,
+    "dynamic": false,
+    "no_hanging": false,
+    "clazz": "",
+    "dsc": "",
+    "etype": 0,
+    "__default_pos": "[359,291]",
+    "__relive_pos": "[352,362]",
+    "__situ_relive_pos": "",
+    "src": "",
+    "sound": "fang_cun_shan.mp3",
+    "def_npcs":     {
+        "r102":         {
+            "count": "1",
+            "air": false,
+            "id": "r102",
+            "name": "樵夫",
+            "__pos":             [
+                302,
+                292
+            ],
+            "dx": 0,
+            "dy": 0,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r115":         {
+            "count": "6",
+            "air": false,
+            "id": "r115",
+            "name": "白鹿",
+            "__pos":             [
+                310,
+                385
+            ],
+            "dx": 35,
+            "dy": 20,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r103":         {
+            "count": "1",
+            "air": false,
+            "id": "r103",
+            "name": "游方僧人",
+            "__pos":             [
+                288,
+                233
+            ],
+            "dx": 0,
+            "dy": 0,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r117":         {
+            "count": "6",
+            "air": false,
+            "id": "r117",
+            "name": "木人",
+            "__pos":             [
+                245,
+                168
+            ],
+            "dx": 21,
+            "dy": 16,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r104":         {
+            "count": "1",
+            "air": false,
+            "id": "r104",
+            "name": "晨月",
+            "__pos":             [
+                253,
+                252
+            ],
+            "dx": 0,
+            "dy": 0,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r108":         {
+            "count": "1",
+            "air": false,
+            "id": "r108",
+            "name": "云阳真人",
+            "__pos":             [
+                145,
+                227
+            ],
+            "dx": 0,
+            "dy": 0,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r613":         {
+            "count": "1",
+            "air": false,
+            "id": "r613",
+            "name": "偷经怪",
+            "__pos":             [
+                111,
+                152
+            ],
+            "dx": 0,
+            "dy": 0,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r110":         {
+            "count": "1",
+            "air": false,
+            "id": "r110",
+            "name": "云清道长",
+            "__pos":             [
+                217,
+                136
+            ],
+            "dx": 0,
+            "dy": 0,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r105":         {
+            "count": "1",
+            "air": false,
+            "id": "r105",
+            "name": "清虚道人",
+            "__pos":             [
+                182,
+                293
+            ],
+            "dx": 0,
+            "dy": 0,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r106":         {
+            "count": "1",
+            "air": false,
+            "id": "r106",
+            "name": "广筠子",
+            "__pos":             [
+                271,
+                178
+            ],
+            "dx": 0,
+            "dy": 0,
+            "refresh_cond": "",
+            "refresh_time": 0,
+            "kill": "",
+            "team": "",
+            "s_cond": "",
+            "refresh_type": 0
+        },
+        "r107":         {
+            "count": "1",
+            "air": false,
+            "id": "r107",
+            "name": "小道童",
+            "__pos":             [
+                244,
+                221
+            ],
+            "dx": 0,
+            "dy": 0,
+            "kill": "",
+            "team": "",
+            "refresh_time": 0,
+            "refresh_cond": "",
+            "refresh_type": 0,
+            "s_cond": ""
+        },
+        "r109":         {
+            "count": "1",
+            "air": false,
+            "id": "r109",
+            "name": "云霄道长",
+            "__pos":             [
+                219,
+                189
+            ],
+            "dx": 0,
+            "dy": 0,
+            "kill": "",
+            "team": "",
+            "refresh_time": 0,
+            "refresh_cond": "",
+            "refresh_type": 0,
+            "s_cond": ""
+        },
+        "r111":         {
+            "count": "1",
+            "air": false,
+            "id": "r111",
+            "name": "云静道长",
+            "__pos":             [
+                148,
+                115
+            ],
+            "dx": 0,
+            "dy": 0,
+            "kill": "",
+            "team": "",
+            "refresh_time": 0,
+            "refresh_cond": "",
+            "refresh_type": 0,
+            "s_cond": ""
+        },
+        "r118":         {
+            "count": "3",
+            "air": false,
+            "id": "r118",
+            "name": "伶俐鬼",
+            "__pos":             [
+                168,
+                279
+            ],
+            "dx": 11,
+            "dy": 11,
+            "kill": "",
+            "team": "",
+            "refresh_time": 0,
+            "refresh_cond": "\"{#c.g_sc}\"==\"酉\" || \"{#c.g_sc}\"==\"戌\" || \"{#c.g_sc}\"==\"亥\" || \"{#c.g_sc}\"==\"子\" || \"{#c.g_sc}\"==\"丑\" || \"{#c.g_sc}\"==\"寅\"",
+            "refresh_type": 1,
+            "s_cond": ""
+        },
+        "r119":         {
+            "count": "1",
+            "air": false,
+            "id": "r119",
+            "name": "鹤女",
+            "__pos":             [
+                197,
+                218
+            ],
+            "dx": 0,
+            "dy": 0,
+            "kill": "",
+            "team": "",
+            "refresh_time": 0,
+            "refresh_cond": "\"{#c.g_sc}\"==\"辰\" || \"{#c.g_sc}\"==\"戍\"",
+            "refresh_type": 1,
+            "s_cond": ""
+        },
+        "r121":         {
+            "count": "1",
+            "air": false,
+            "id": "r121",
+            "name": "玄猿怪",
+            "__pos":             [
+                256,
+                370
+            ],
+            "dx": 0,
+            "dy": 0,
+            "kill": "",
+            "team": "",
+            "refresh_time": 0,
+            "refresh_cond": "",
+            "refresh_type": 0,
+            "s_cond": ""
+        },
+        "r122":         {
+            "count": "1",
+            "air": false,
+            "id": "r122",
+            "name": "巴山虎",
+            "__pos":             [
+                181,
+                228
+            ],
+            "dx": 0,
+            "dy": 0,
+            "kill": "",
+            "team": "",
+            "refresh_time": 0,
+            "refresh_cond": "",
+            "refresh_type": 0,
+            "s_cond": ""
+        },
+        "r614":         {
+            "count": "1",
+            "air": false,
+            "id": "r614",
+            "name": "采桃少女",
+            "__pos":             [
+                192,
+                228
+            ],
+            "dx": 0,
+            "dy": 0,
+            "kill": "",
+            "team": "",
+            "refresh_time": 0,
+            "refresh_cond": "",
+            "refresh_type": 0,
+            "s_cond": ""
+        },
+        "r115_2":         {
+            "count": "8",
+            "air": false,
+            "name": "白鹿",
+            "__pos":             [
+                339,
+                357
+            ],
+            "dx": 35,
+            "dy": 20,
+            "kill": "",
+            "team": "",
+            "refresh_time": 0,
+            "refresh_cond": "",
+            "refresh_type": 0,
+            "s_cond": "",
+            "id": "r115"
+        }
+    },
+    "exits":     {
+        "s85":         {
+            "to_eid": "s85",
+            "name": "三星洞",
+            "icon": "",
+            "__pos":             [
+                150,
+                157
+            ],
+            "__t_pos":             [
+                57,
+                87
+            ],
+            "dir": 3,
+            "s_cond": "",
+            "on_pass":             {
+                "open": true,
+                "type": 0,
+                "clazz": "",
+                "param": "",
+                "cond": "{u.can_enter_sanxingdong}==1",
+                "cmmt": "",
+                "cmmt2": "三星洞是菩提老祖修道之地，未经允许，不得进入！"
+            }
+        },
+        "s82":         {
+            "to_eid": "s82",
+            "name": "藏经阁",
+            "icon": "",
+            "__pos":             [
+                95,
+                159
+            ],
+            "__t_pos":             [
+                74,
+                56
+            ],
+            "dir": 8,
+            "s_cond": ""
+        },
+        "s86":         {
+            "name": "压龙洞",
+            "icon": "",
+            "__pos":             [
+                157,
+                295
+            ],
+            "__t_pos":             [
+                72,
+                104
+            ],
+            "dir": 2,
+            "s_cond": "",
+            "to_eid": "s86",
+            "on_pass":             {
+                "open": true,
+                "type": 0,
+                "clazz": "",
+                "param": "",
+                "cond": "{u.can_enter_yalongdong}==1",
+                "cmmt": "",
+                "cmmt2": "你必须继续完成主线任务方可进入压龙洞"
+            }
+        },
+        "s88":         {
+            "to_eid": "s88",
+            "name": "菩提塔",
+            "icon": "",
+            "__pos":             [
+                170,
+                98
+            ],
+            "__t_pos":             [
+                312,
+                320
+            ],
+            "dir": 3,
+            "s_cond": "",
+            "on_pass":             {
+                "open": true,
+                "type": 0,
+                "clazz": "",
+                "param": "",
+                "cond": "{u.can_enter_putita}==1",
+                "cmmt": "",
+                "cmmt2": "你必须继续完成主线任务方可进入菩提塔。"
+            }
+        },
+        "s116":         {
+            "to_eid": "s116",
+            "name": "拨云洞",
+            "icon": "",
+            "__pos":             [
+                322,
+                357
+            ],
+            "__t_pos":             [
+                121,
+                114
+            ],
+            "dir": 8,
+            "s_cond": ""
+        },
+        "s19":         {
+            "to_eid": "s19",
+            "name": "渔家坳",
+            "icon": "",
+            "__pos":             [
+                421,
+                272
+            ],
+            "__t_pos":             [
+                112,
+                298
+            ],
+            "dir": 3,
+            "s_cond": ""
+        },
+        "s123":         {
+            "to_eid": "s123",
+            "name": "花果山",
+            "icon": "",
+            "__pos":             [
+                312,
+                387
+            ],
+            "__t_pos":             [
+                244,
+                256
+            ],
+            "dir": 1,
+            "s_cond": ""
+        }
+    },
+    "ops":     {
+        "op1":         {
+            "open": true,
+            "hidden": false,
+            "__pos":             [
+                299,
+                270
+            ],
+            "icon": "",
+            "type": 0,
+            "name": "折桃枝",
+            "confirm": "",
+            "s_cond": "{u.can_make_wuweilurongdang}>=1 || true",
+            "show_ops": "",
+            "clazz": "",
+            "param": "",
+            "cond": "{c.time}-{u.t237_time}>=60*5",
+            "cmmt": "",
+            "cmmt2": "桃枝已经被折光了，先等它重新长出来吧……",
+            "steps": [            {
+                "stop_here": false,
+                "name": "",
+                "cond": "{u.lvl}>=20",
+                "cmmt": "你从桃树上折下一株桃枝……",
+                "cmmt2": "你的等级不够20级，折不下桃枝",
+                "e_cond": "",
+                "e_cmmt": "获得桃枝x1",
+                "zy_cmmt": "",
+                "step_role": "",
+                "skill_target": "",
+                "items": {"i576": "1"},
+                "s_attrs": {"u.t237_time": "{c.time}"}
+            }]
+        },
+        "op2":         {
+            "open": true,
+            "hidden": false,
+            "__pos":             [
+                302,
+                316
+            ],
+            "icon": "",
+            "type": 0,
+            "name": "采粉莓",
+            "confirm": "",
+            "s_cond": "{u.can_make_wuweilurongdang}>=1 || true",
+            "show_ops": "",
+            "clazz": "",
+            "param": "",
+            "cond": "{c.time}-{u.t237_time2}>=60*8",
+            "cmmt": "",
+            "cmmt2": "粉莓已经被采光了，先等它重新长出来吧……",
+            "steps": [            {
+                "stop_here": false,
+                "name": "",
+                "cond": "{u.lvl}>=20",
+                "cmmt": "你采到了一颗粉莓……",
+                "cmmt2": "你的等级不够20级，不能采摘粉莓",
+                "e_cond": "",
+                "e_cmmt": "获得粉莓x1",
+                "zy_cmmt": "",
+                "step_role": "",
+                "skill_target": "",
+                "items": {"i577": "1"},
+                "s_attrs": {"u.t237_time2": "{c.time}"}
+            }],
+            "arg": ""
+        },
+        "op3":         {
+            "open": true,
+            "hidden": false,
+            "__pos":             [
+                344,
+                316
+            ],
+            "icon": "",
+            "type": 0,
+            "name": "摘水梨",
+            "confirm": "",
+            "s_cond": "{u.can_make_wuweilurongdang}>=1 || true",
+            "show_ops": "",
+            "clazz": "",
+            "param": "",
+            "cond": "{c.time}-{u.t237_time3}>=60*10",
+            "cmmt": "",
+            "cmmt2": "水梨已经被采光了，先等它重新长出来吧……",
+            "steps": [            {
+                "stop_here": false,
+                "name": "",
+                "cond": "{u.lvl}>=20",
+                "cmmt": "你从梨树上摘下一个水梨……",
+                "cmmt2": "你的等级不够20级，不能摘下水梨",
+                "e_cond": "",
+                "e_cmmt": "得到水梨x1",
+                "zy_cmmt": "",
+                "step_role": "",
+                "skill_target": "",
+                "items": {"i578": "1"},
+                "s_attrs": {"u.t237_time3": "{c.time}"}
+            }],
+            "arg": ""
+        },
+        "op4":         {
+            "open": true,
+            "hidden": false,
+            "__pos":             [
+                170,
+                312
+            ],
+            "icon": "",
+            "type": 0,
+            "name": "采紫藤花",
+            "confirm": "",
+            "s_cond": "{u.can_make_wuweilurongdang}>=1 || true",
+            "show_ops": "",
+            "clazz": "",
+            "param": "",
+            "cond": "{c.time}-{gt.t237_time}>=60*2 && {c.time}-{u.t237_time4}>=60*20",
+            "cmmt": "",
+            "cmmt2": "紫藤花已经被采光了，先等它重新长出来吧……",
+            "steps": [            {
+                "stop_here": false,
+                "name": "",
+                "cond": "",
+                "cmmt": "你采到一朵紫藤花……",
+                "cmmt2": "",
+                "e_cond": "",
+                "e_cmmt": "得到紫藤花x1",
+                "zy_cmmt": "",
+                "step_role": "",
+                "skill_target": "",
+                "items": {"i579": "1"},
+                "s_attrs":                 {
+                    "u.t237_time4": "{c.time}",
+                    "gt.u.t237_time": "{c.time}"
+                }
+            }],
+            "arg": ""
+        },
+        "diaoyuchang":         {
+            "open": true,
+            "hidden": false,
+            "__pos": "375,288",
+            "icon": "",
+            "type": 0,
+            "name": "钓鱼场",
+            "confirm": "",
+            "s_cond": "{u.can_enter_fangcunshan}==1",
+            "show_ops": "",
+            "clazz": "",
+            "param": "",
+            "cond": "",
+            "cmmt": "这是方寸山下一潭碧绿的水，可以钓鱼。\r\n[url=event:touch_op diaoyu]此处钓鱼[/url]",
+            "cmmt2": "",
+            "arg": "diaoyu"
+        },
+        "diaoyu":         {
+            "open": true,
+            "hidden": true,
+            "__pos": "375,288",
+            "icon": "",
+            "type": 0,
+            "name": "此处钓鱼",
+            "confirm": "",
+            "s_cond": "",
+            "show_ops": "",
+            "clazz": "juntai.game.event.DiaoYuEvent",
+            "param": "sj",
+            "cond": "",
+            "cmmt": "",
+            "cmmt2": "",
+            "steps": []
+        }
+    },
+    "dycs": {"sj":     {
+        "name": "山涧钓鱼场",
+        "yus":         {
+            "jy":             {
+                "ids": ["i585"],
+                "name": "鲫鱼",
+                "rft": 60,
+                "cnt": 30,
+                "rtp": 0
+            },
+            "ly":             {
+                "ids": ["i586"],
+                "name": "鲤鱼",
+                "rft": 60,
+                "cnt": 30,
+                "rtp": 0
+            },
+            "wy":             {
+                "ids": ["i587"],
+                "name": "鲩鱼",
+                "rft": 60,
+                "cnt": 30,
+                "rtp": 0
+            },
+            "hjh":             {
+                "ids": ["i777"],
+                "name": "花精华(绑)",
+                "rft": 300,
+                "cnt": 2,
+                "rtp": 0
+            },
+            "jwd":             {
+                "ids": ["i778"],
+                "name": "精武丹(绑)",
+                "rft": 300,
+                "cnt": 2,
+                "rtp": 0
+            },
+            "sdbx":             {
+                "ids": ["i944"],
+                "name": "水底宝箱",
+                "rft": 60,
+                "cnt": 2,
+                "rtp": 0
+            }
+        },
+        "i672": {},
+        "i*":         {
+            "jy": "28",
+            "ly": "29",
+            "wy": "23",
+            "hjh": "10",
+            "sdbx": "10"
+        },
+        "i674":         {
+            "ly": "23",
+            "jy": "24",
+            "wy": "23",
+            "hjh": "10",
+            "jwd": "10",
+            "sdbx": "10"
+        }
+    }},
+    "def_scenes": {"zf":     {
+        "id": "s127",
+        "name": "竹筏",
+        "__pos": "391,302",
+        "__t_pos": "360,302",
+        "interval": 10,
+        "speed": 0.5,
+        "s_cond": ""
+    }},
+    "ev_on_enter":     {
+        "open": true,
+        "type": 0,
+        "clazz": "",
+        "param": "",
+        "cond": "",
+        "cmmt": "",
+        "cmmt2": "",
+        "steps":         [
+                        {
+                "stop_here": true,
+                "name": "",
+                "cond": "",
+                "cmmt": "",
+                "cmmt2": "",
+                "e_cond": "{o.tasks.t84.status}==2",
+                "e_cmmt": "",
+                "zy_cmmt": "",
+                "step_role": "",
+                "skill_target": "",
+                "r_tasks": ["t84"],
+                "a_tasks": ["t85"]
+            },
+                        {
+                "stop_here": true,
+                "name": "",
+                "cond": "",
+                "cmmt": "",
+                "cmmt2": "",
+                "e_cond": "{o.tasks.t101.status}==2",
+                "e_cmmt": "",
+                "zy_cmmt": "",
+                "step_role": "",
+                "skill_target": "",
+                "r_tasks": ["t101"],
+                "a_tasks": ["t102"]
+            }
+        ]
+    },
+    "loc": 0,
+    "t2":     {
+        "group": "main",
+        "name": "仙岛寻芳",
+        "clazz": "",
+        "type": 1,
+        "cond": "{u.tasks.t1.status}==2",
+        "f_cond": "",
+        "rewards": {
+        	"i344": "600",
+        	"i120": "300"
+        },
+        "ev_on_accept":         {
+            "open": true,
+            "type": 1,
+            "params": {},
+            "steps":             [
+                                {
+                    "name": "",
+                    "cond": "",
+                    "cmmt": "你：“船长，这已经在海中漂了数日了，淡水也已耗尽。再这么下去，只怕大家都得渴死在这破船之上……”",
+                    "cmmt2": "",
+                    "e_cond": "",
+                    "e_cmmt": "",
+                    "zy_cmmt": "",
+                    "step_role": "self",
+                    "skill_target": "",
+                    "reward_task": "t1",
+                    "r_tasks": ["t1"],
+                    "stop_here": false,
+                    "s_attrs": {"u.env.rf_hdtz": "1"},
+                    "check_tasks": false
+                },
+                                {
+                    "name": "",
+                    "cond": "",
+                    "cmmt": "船长叹了一口气，道：“如今也只有看运气了，不过我观这风向未变，一直往北漂的话，毕竟会到得一岛的……”",
+                    "cmmt2": "",
+                    "e_cond": "",
+                    "e_cmmt": "",
+                    "zy_cmmt": "",
+                    "step_role": "",
+                    "skill_target": "",
+                    "stop_here": false
+                },
+                                {
+                    "name": "",
+                    "cond": "",
+                    "cmmt": "你无奈道：“这样说来，也只有看天意了……”",
+                    "cmmt2": "",
+                    "e_cond": "",
+                    "e_cmmt": "",
+                    "zy_cmmt": "",
+                    "step_role": "self",
+                    "skill_target": "",
+                    "stop_here": false
+                },
+                                {
+                    "name": "",
+                    "cond": "",
+                    "cmmt": "船长：“吉人天相，我看{#u.gender_hero}气宇非凡，不可能葬身于此，你就放宽心吧。只是这小船上刚才跃上来一伙海盗探子，还得有劳{#u.gender_hero}将其诛杀，否则我们得成了海盗的目标了……”（杀海盗探子x3）",
+                    "cmmt2": "",
+                    "e_cond": "",
+                    "e_cmmt": "",
+                    "zy_cmmt": "马上去杀海盗探子吧》》",
+                    "step_role": "",
+                    "skill_target": "",
+                    "stop_here": false,
+                    "targets":                     [
+                                                {
+                            "name": "船长",
+                            "cond": "",
+                            "nid": "r1",
+                            "eid": "s5"
+                        },
+                                                {
+                            "name": "海盗探子",
+                            "cond": "",
+                            "eid": "s5",
+                            "nid": "r11"
+                        }
+                    ]
+                }
+            ]
+        },
+        "__npcs": {"r11": "3"},
+        "ev_on_finish":         {
+            "type": 1,
+            "open": true,
+            "clazz": "",
+            "param": "",
+            "cond": "",
+            "cmmt": "",
+            "cmmt2": "",
+            "steps": [            {
+                "a_tasks": ["t3"],
+                "stop_here": false,
+                "s_attrs": {"u.env.rf_hdtz": "0"}
+            }]
+        },
+        "__items": {},
+        "auto": false
+    }
+}

@@ -1,27 +1,27 @@
-package org.hxzon.demo.jt.config;
+package org.hxzon.jt.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.dom4j.Element;
 import org.hxzon.util.Dom4jUtil;
 import org.hxzon.util.json.JSONArray;
 import org.hxzon.util.json.JSONObject;
+import org.hxzon.util.json.MyString;
 
 public class JsonConverter {
     private static final Object Null = JSONObject.NULL;
 
-    public static TypeInfo readSchema(String xmlStr) {
+    public static OutputSchemaInfo readOutputSchema(String xmlStr) {
         Element root = Dom4jUtil.getRoot(xmlStr);
-        return toTypeInfo(root);
+        return toOutputSchemaInfo(root);
     }
 
-    public static TypeInfo toTypeInfo(Element e) {
-        TypeInfo typeInfo = new TypeInfo();
+    public static OutputSchemaInfo toOutputSchemaInfo(Element e) {
+        OutputSchemaInfo typeInfo = new OutputSchemaInfo();
         typeInfo.setTargetType(e.getName());//myType
         typeInfo.setName(Dom4jUtil.getText(e, "@name"));
         typeInfo.setFname(Dom4jUtil.getText(e, "@fname"));
@@ -29,17 +29,17 @@ public class JsonConverter {
         typeInfo.setNotrim(Dom4jUtil.getText(e, "@notrim"));
         typeInfo.setVtype(Dom4jUtil.getText(e, "@vtype"));
         if (!e.getName().equals("attr")) {
-            List<TypeInfo> children = new ArrayList<TypeInfo>();
+            List<OutputSchemaInfo> children = new ArrayList<OutputSchemaInfo>();
             List<Element> childrenEle = Dom4jUtil.getElements(e);
             for (Element childEle : childrenEle) {
-                children.add(toTypeInfo(childEle));
+                children.add(toOutputSchemaInfo(childEle));
             }
             typeInfo.setChildren(children);
         }
         return typeInfo;
     }
 
-    public static Object convert(Object origObj, TypeInfo typeInfo) {
+    public static Object convert(Object origObj, OutputSchemaInfo typeInfo) {
         if ("attr".equals(typeInfo.getTargetType())) {
             return convertAttr(origObj, typeInfo);
         } else if ("amap".equals(typeInfo.getTargetType())) {
@@ -55,7 +55,7 @@ public class JsonConverter {
     }
 
     //targetType:map(amap),sourceType:map(amap),valueType:any
-    public static Object convertAmap(Object origObj, TypeInfo typeInfo) {
+    public static Object convertAmap(Object origObj, OutputSchemaInfo typeInfo) {
         if (origObj == null) {
             return Null;
         }
@@ -68,7 +68,7 @@ public class JsonConverter {
                     //origValue is map
                     JSONObject origValue = (JSONObject) origAmap.opt(key);
                     JSONObject newValue = new JSONObject();
-                    for (TypeInfo valueTypeInfo : typeInfo.getChildren()) {
+                    for (OutputSchemaInfo valueTypeInfo : typeInfo.getChildren()) {
                         Object origValueValue = origValue.opt(valueTypeInfo.getFname());
                         Object newValueValue = convert(origValueValue, valueTypeInfo);
                         newValue.put(valueTypeInfo.getName(), newValueValue);
@@ -86,13 +86,13 @@ public class JsonConverter {
     }
 
     //targetType:map,sourceType:map,valueType:any
-    public static Object convertMap(Object origObj, TypeInfo typeInfo) {
+    public static Object convertMap(Object origObj, OutputSchemaInfo typeInfo) {
         if (origObj == null) {
             return Null;
         } else if (origObj instanceof JSONObject) {
             JSONObject origMap = (JSONObject) origObj;
             JSONObject newMap = new JSONObject();
-            for (TypeInfo valueTypeInfo : typeInfo.getChildren()) {
+            for (OutputSchemaInfo valueTypeInfo : typeInfo.getChildren()) {
                 Object origValue = origMap.opt(valueTypeInfo.getFname());
                 Object newValue = convert(origValue, valueTypeInfo);
                 newMap.put(valueTypeInfo.getName(), newValue);
@@ -103,7 +103,7 @@ public class JsonConverter {
     }
 
     //targetType:list,sourceType:list or map(amap),childType:any
-    public static Object convertList(Object origObj, TypeInfo typeInfo) {
+    public static Object convertList(Object origObj, OutputSchemaInfo typeInfo) {
         if (origObj == null) {
             return Null;
         } else if (origObj instanceof JSONArray) {
@@ -113,7 +113,7 @@ public class JsonConverter {
                 for (Object origEle : origArray) {
                     JSONObject origEleMap = (JSONObject) origEle;
                     JSONObject newEleMap = new JSONObject();
-                    for (TypeInfo eleValueTypeInfo : typeInfo.getChildren()) {
+                    for (OutputSchemaInfo eleValueTypeInfo : typeInfo.getChildren()) {
                         Object origEleValue = origEleMap.opt(eleValueTypeInfo.getFname());
                         Object newEleValue = convert(origEleValue, eleValueTypeInfo);
                         newEleMap.put(eleValueTypeInfo.getName(), newEleValue);
@@ -149,7 +149,7 @@ public class JsonConverter {
         throw new RuntimeException("source type error");
     }
 
-    public static Object convertAttr(Object o, TypeInfo typeInfo) {
+    public static Object convertAttr(Object o, OutputSchemaInfo typeInfo) {
         if ("string".equals(typeInfo.getVtype())) {
             return toString(o, typeInfo);
         } else if ("integer".equals(typeInfo.getVtype())) {
@@ -163,7 +163,7 @@ public class JsonConverter {
     }
 
     //-------------------
-    public static Object toString(Object o, TypeInfo typeInfo) {
+    public static Object toString(Object o, OutputSchemaInfo typeInfo) {
         if (o instanceof String) {
             return new MyString((String) o);
         } else if (o instanceof Number) {
@@ -176,7 +176,7 @@ public class JsonConverter {
         return Null;
     }
 
-    public static Object toInteger(Object o, TypeInfo typeInfo) {
+    public static Object toInteger(Object o, OutputSchemaInfo typeInfo) {
         if (o instanceof Long) {
             return o;
         } else if (o instanceof Number) {//int,double
@@ -189,7 +189,7 @@ public class JsonConverter {
         return Null;
     }
 
-    public static Object toDouble(Object o, TypeInfo typeInfo) {
+    public static Object toDouble(Object o, OutputSchemaInfo typeInfo) {
         if (o instanceof Double) {
             return o;
         } else if (o instanceof Number) {//int,long
@@ -202,7 +202,7 @@ public class JsonConverter {
         return Null;
     }
 
-    public static Object toBoolean(Object o, TypeInfo typeInfo) {
+    public static Object toBoolean(Object o, OutputSchemaInfo typeInfo) {
         if (o instanceof Boolean) {
             return o;
         } else if (o instanceof Number) {
@@ -217,10 +217,10 @@ public class JsonConverter {
 
     //--------------
     public static void main(String args[]) throws IOException {
-        String jsonS = FileUtils.readFileToString(new File("D:/test/s18.o"), "utf8");
+        String jsonS = IOUtils.toString(JsonConverter.class.getResource("test/s18.o"), "utf8");
         JSONObject json = new JSONObject(jsonS);
-        String xmlStr = FileUtils.readFileToString(new File("D:/test/s18.xml"), "utf8");
-        TypeInfo typeInfo = readSchema(xmlStr);
+        String xmlStr = IOUtils.toString(JsonConverter.class.getResource("test/s18.xml"), "utf8");
+        OutputSchemaInfo typeInfo = readOutputSchema(xmlStr);
         JSONObject newJson = (JSONObject) convert(json, typeInfo);
         System.out.println(newJson.toString(false));
     }
