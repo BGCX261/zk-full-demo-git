@@ -1,0 +1,352 @@
+{
+  "name" : "方寸山",
+  "dsc" : "",
+  "map" : "fcs",
+  "src" : "",
+  "sound" : "fang_cun_shan.mp3",
+  "outdoor" : true,
+  "day_night" : true,
+  "weather" : true,
+  "private" : false,
+  "no_shift" : null,
+  "npcs" : {
+    "r102" : {
+      "id" : "r102",
+      "name" : "樵夫",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        302,
+        292
+      ],
+      "kill" : false
+    },
+    "r115" : {
+      "id" : "r115",
+      "name" : "白鹿",
+      "count" : 6,
+      "count_hxzon" : "6",
+      "pos" : null,
+      "pos_hxzon" : [
+        310,
+        385
+      ],
+      "kill" : false
+    },
+    "r103" : {
+      "id" : "r103",
+      "name" : "游方僧人",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        288,
+        233
+      ],
+      "kill" : false
+    },
+    "r117" : {
+      "id" : "r117",
+      "name" : "木人",
+      "count" : 6,
+      "count_hxzon" : "6",
+      "pos" : null,
+      "pos_hxzon" : [
+        245,
+        168
+      ],
+      "kill" : false
+    },
+    "r104" : {
+      "id" : "r104",
+      "name" : "晨月",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        253,
+        252
+      ],
+      "kill" : false
+    },
+    "r108" : {
+      "id" : "r108",
+      "name" : "云阳真人",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        145,
+        227
+      ],
+      "kill" : false
+    },
+    "r613" : {
+      "id" : "r613",
+      "name" : "偷经怪",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        111,
+        152
+      ],
+      "kill" : false
+    },
+    "r110" : {
+      "id" : "r110",
+      "name" : "云清道长",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        217,
+        136
+      ],
+      "kill" : false
+    },
+    "r105" : {
+      "id" : "r105",
+      "name" : "清虚道人",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        182,
+        293
+      ],
+      "kill" : false
+    },
+    "r106" : {
+      "id" : "r106",
+      "name" : "广筠子",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        271,
+        178
+      ],
+      "kill" : false
+    },
+    "r107" : {
+      "id" : "r107",
+      "name" : "小道童",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        244,
+        221
+      ],
+      "kill" : false
+    },
+    "r109" : {
+      "id" : "r109",
+      "name" : "云霄道长",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        219,
+        189
+      ],
+      "kill" : false
+    },
+    "r111" : {
+      "id" : "r111",
+      "name" : "云静道长",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        148,
+        115
+      ],
+      "kill" : false
+    },
+    "r118" : {
+      "id" : "r118",
+      "name" : "伶俐鬼",
+      "count" : 3,
+      "count_hxzon" : "3",
+      "pos" : null,
+      "pos_hxzon" : [
+        168,
+        279
+      ],
+      "kill" : false
+    },
+    "r119" : {
+      "id" : "r119",
+      "name" : "鹤女",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        197,
+        218
+      ],
+      "kill" : false
+    },
+    "r121" : {
+      "id" : "r121",
+      "name" : "玄猿怪",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        256,
+        370
+      ],
+      "kill" : false
+    },
+    "r122" : {
+      "id" : "r122",
+      "name" : "巴山虎",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        181,
+        228
+      ],
+      "kill" : false
+    },
+    "r614" : {
+      "id" : "r614",
+      "name" : "采桃少女",
+      "count" : 1,
+      "count_hxzon" : "1",
+      "pos" : null,
+      "pos_hxzon" : [
+        192,
+        228
+      ],
+      "kill" : false
+    },
+    "r115_2" : {
+      "id" : "r115",
+      "name" : "白鹿",
+      "count" : 8,
+      "count_hxzon" : "8",
+      "pos" : null,
+      "pos_hxzon" : [
+        339,
+        357
+      ],
+      "kill" : false
+    }
+  },
+  "ops" : {
+    "op1" : {
+      "name" : "折桃枝",
+      "pos" : null,
+      "cfm" : "",
+      "count" : null,
+      "icon" : ""
+    },
+    "op2" : {
+      "name" : "采粉莓",
+      "pos" : null,
+      "cfm" : "",
+      "count" : null,
+      "icon" : ""
+    },
+    "op3" : {
+      "name" : "摘水梨",
+      "pos" : null,
+      "cfm" : "",
+      "count" : null,
+      "icon" : ""
+    },
+    "op4" : {
+      "name" : "采紫藤花",
+      "pos" : null,
+      "cfm" : "",
+      "count" : null,
+      "icon" : ""
+    },
+    "diaoyuchang" : {
+      "name" : "钓鱼场",
+      "pos" : null,
+      "cfm" : "",
+      "count" : null,
+      "icon" : ""
+    },
+    "diaoyu" : {
+      "name" : "此处钓鱼",
+      "pos" : null,
+      "cfm" : "",
+      "count" : null,
+      "icon" : ""
+    }
+  },
+  "exits" : [
+    "s85",
+    "s82",
+    "s86",
+    "s88",
+    "s116",
+    "s19",
+    "s123"
+  ],
+  "exits_hxzon" : [
+    "s85",
+    "s82",
+    "s86",
+    "s88",
+    "s116",
+    "s19",
+    "s123"
+  ],
+  "t2" : {
+    "group" : "main",
+    "name" : "仙岛寻芳",
+    "type" : 1,
+    "rws" : {
+      "i344" : "600",
+      "i120" : "300"
+    },
+    "ev_on_accept" : {
+      "stps" : [
+        {
+          "cmmt" : "你：“船长，这已经在海中漂了数日了，淡水也已耗尽。再这么下去，只怕大家都得渴死在这破船之上……”",
+          "zy_cmmt" : "",
+          "stop_here" : false,
+          "tgs" : null
+        },
+        {
+          "cmmt" : "船长叹了一口气，道：“如今也只有看运气了，不过我观这风向未变，一直往北漂的话，毕竟会到得一岛的……”",
+          "zy_cmmt" : "",
+          "stop_here" : false,
+          "tgs" : null
+        },
+        {
+          "cmmt" : "你无奈道：“这样说来，也只有看天意了……”",
+          "zy_cmmt" : "",
+          "stop_here" : false,
+          "tgs" : null
+        },
+        {
+          "cmmt" : "船长：“吉人天相，我看{#u.gender_hero}气宇非凡，不可能葬身于此，你就放宽心吧。只是这小船上刚才跃上来一伙海盗探子，还得有劳{#u.gender_hero}将其诛杀，否则我们得成了海盗的目标了……”（杀海盗探子x3）",
+          "zy_cmmt" : "马上去杀海盗探子吧》》",
+          "stop_here" : false,
+          "tgs" : [
+            {
+              "name" : "船长",
+              "nid" : "r1",
+              "eid" : "s5"
+            },
+            {
+              "name" : "海盗探子",
+              "nid" : "r11",
+              "eid" : "s5"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

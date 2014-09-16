@@ -13,6 +13,7 @@
 	<attr name="no_shift" vtype="boolean" />
 
 	<amap name="npcs" fname="def_npcs" vtype="map">
+	<!-- 从映射表到映射表，vtype为元素类型 -->
 		<attr name="id" vtype="string" />
 		<attr name="name" vtype="string" />
 		<attr name="count" vtype="integer" />
@@ -31,6 +32,7 @@
 	</amap>
 
 	<list name="exits" vtype="string" from="value.to_eid" />
+	<!-- 从映射表，或结构体，到列表，vtype为列表元素类型 -->
 	
 	<list name="exits_hxzon" fname="exits" vtype="string" from="key" />
 

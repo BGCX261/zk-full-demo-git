@@ -6,6 +6,7 @@ import java.util.List;
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgParser;
 import org.hxzon.configdesigner.core.CfgValue;
+import org.hxzon.util.json.JSONCollection;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -14,6 +15,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Space;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Window;
 
@@ -81,6 +83,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
             Button returnBtn = createReturnBtn();
             titleLayout.appendChild(returnBtn);
         }
+        titleLayout.appendChild(createViewDataBtn(cfgValue));
         pane.appendChild(titleLayout);
         pane.appendChild(new Space());
         if (cfgValue.isMapElement()) {
@@ -224,6 +227,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
         pane.appendChild(createLabel(cfgValue));
         pane.appendChild(createDeleteBtn(cfgValue, pane));
         pane.appendChild(createEnterBtn(cfgValue));
+        pane.appendChild(createViewDataBtn(cfgValue));
         return pane;
     }
 
@@ -328,6 +332,20 @@ public class CfgValueViewer2 implements CfgValueHolder {
         new CfgValueViewer2(cfgValue, viewParent);
     }
 
+    private void viewData(Component btn) {
+        CfgValue cfgValue = (CfgValue) btn.getAttribute("cfgValue");
+        Object json = CfgParser.toJson(cfgValue, true);
+        String jsonStr = json == null ? "" : //
+                (json instanceof JSONCollection) ? ((JSONCollection) json).toString(false) : json.toString();
+        Textbox v = new Textbox();
+        v.setMultiline(true);
+        v.setReadonly(true);
+        v.setWidth("100%");
+        v.setHeight("100%");
+        v.setValue(jsonStr);
+        createDialog(v, "查看数据");
+    }
+
     private final EventListener<MouseEvent> AddPartBtnEventListener = new EventListener<MouseEvent>() {
         @Override
         public void onEvent(MouseEvent event) throws Exception {
@@ -367,6 +385,13 @@ public class CfgValueViewer2 implements CfgValueHolder {
         @Override
         public void onEvent(MouseEvent event) throws Exception {
             enter(event.getTarget());
+        }
+    };
+
+    private final EventListener<MouseEvent> ViewDataBtnEventListener = new EventListener<MouseEvent>() {
+        @Override
+        public void onEvent(MouseEvent event) throws Exception {
+            viewData(event.getTarget());
         }
     };
 
@@ -418,9 +443,18 @@ public class CfgValueViewer2 implements CfgValueHolder {
     private Button createEnterBtn(CfgValue cfgValue) {
         Button btn = new Button();
         btn.setAttribute("cfgValue", cfgValue);
-        btn.setImage("images/easyicon_open.png");
-        btn.setTooltiptext("打开");
+        btn.setImage("images/easyicon_enter.png");
+        btn.setTooltiptext("进入");
         btn.addEventListener(Events.ON_CLICK, EnterBtnEventListener);
+        return btn;
+    }
+
+    private Button createViewDataBtn(CfgValue cfgValue) {
+        Button btn = new Button();
+        btn.setAttribute("cfgValue", cfgValue);
+        btn.setImage("images/easyicon_view.png");
+        btn.setTooltiptext("查看数据");
+        btn.addEventListener(Events.ON_CLICK, ViewDataBtnEventListener);
         return btn;
     }
 

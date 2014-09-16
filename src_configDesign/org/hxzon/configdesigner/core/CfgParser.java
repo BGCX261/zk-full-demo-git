@@ -12,7 +12,8 @@ import org.hxzon.util.json.JSONObject;
 import org.hxzon.util.json.MyString;
 
 public class CfgParser {
-    //private static final Object Null = JSONObject.NULL;
+    public static final Object Null = JSONObject.NULL;//有定义，值为null
+    public static final Object Undefined = null;//未定义
 
     public static CfgInfo parseSchema(String xmlStr) {
         Element root = Dom4jUtil.getRoot(xmlStr);
@@ -27,7 +28,6 @@ public class CfgParser {
         }
         cfgInfo.setId(id);
         cfgInfo.setLabel(Dom4jUtil.getText(e, "@label"));
-        cfgInfo.setSource(Dom4jUtil.getText(e, "@source"));
         String embed = Dom4jUtil.getText(e, "@embed");
         cfgInfo.setEmbed("true".equals(embed));
         //
@@ -165,41 +165,48 @@ public class CfgParser {
         throw new RuntimeException("type error");
     }
 
-    public static Object toJson(CfgValue root) {
+    public static Object toJson(CfgValue root, boolean trim) {
         CfgInfo cfgInfo = root.getCfgInfo();
         int type = cfgInfo.getType();
         switch (type) {
         case CfgInfo.Type_Boolean:
-            return Dt.toBoolean(root.getValue(), false);
+            boolean rb = Dt.toBoolean(root.getValue(), false);
+            return (trim && !rb) ? Undefined : rb;
         case CfgInfo.Type_Integer:
-            return Dt.toLong(root.getValue(), 0);
+            long rl = Dt.toLong(root.getValue(), 0);
+            return (trim && rl == 0) ? Undefined : rl;
         case CfgInfo.Type_Real:
-            return Dt.toDouble(root.getValue(), 0);
+            double rr = Dt.toDouble(root.getValue(), 0);
+            return (trim && rr == 0) ? Undefined : rr;
         case CfgInfo.Type_String:
-            return new MyString(Dt.toString(root.getValue(), ""));
+            String rs = Dt.toString(root.getValue(), "");
+            return (trim && rs.isEmpty()) ? Undefined : new MyString(rs);
         case CfgInfo.Type_Struct: {
             JSONObject json = new JSONObject();
             for (CfgValue e : root.getChildren()) {
-                json.put(e.getCfgInfo().getId(), toJson(e));
+                Object re = toJson(e, trim);
+                if (!trim || re != Undefined) {
+                    json.put(e.getCfgInfo().getId(), re);
+                }
             }
-            return json;
+            return (trim && json.length() == 0) ? Undefined : json;
         }
         case CfgInfo.Type_List: {
             JSONArray jsonA = new JSONArray();
             for (CfgValue e : root.getChildren()) {
-                jsonA.put(toJson(e));
+                jsonA.put(toJson(e, trim));
             }
-            return jsonA;
+            return (trim && jsonA.length() == 0) ? Undefined : jsonA;
         }
         case CfgInfo.Type_Map: {
             JSONObject json = new JSONObject();
             for (CfgValue e : root.getChildren()) {
-                json.put(e.getKey(), toJson(e));
+                json.put(e.getKey(), toJson(e, trim));
             }
-            return json;
+            return (trim && json.length() == 0) ? Undefined : json;
         }
         default:
-            return null;
+            return Undefined;
         }
     }
 
@@ -214,7 +221,7 @@ public class CfgParser {
         case CfgInfo.Type_String:
             return strValue;
         default:
-            return null;
+            return Undefined;
         }
     }
 

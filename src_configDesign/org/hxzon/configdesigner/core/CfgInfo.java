@@ -23,7 +23,6 @@ public class CfgInfo {
     private String label;
     private String labelKey;
     private int type;
-    private String source;
     private Object defaultValue;
     //
     private boolean textArea;//use textArea or textInput
@@ -134,14 +133,6 @@ public class CfgInfo {
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
     }
 
     public Object getDefaultValue() {

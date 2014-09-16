@@ -24,7 +24,7 @@ public class JsonConverter {
         OutputSchemaInfo typeInfo = new OutputSchemaInfo();
         typeInfo.setTargetType(e.getName());//myType
         typeInfo.setName(Dom4jUtil.getText(e, "@name"));
-        typeInfo.setFname(Dom4jUtil.getText(e, "@fname"));
+        typeInfo.setFname(Dom4jUtil.getText(e, "@fname"));//source key
         typeInfo.setFrom(Dom4jUtil.getText(e, "@from"));
         typeInfo.setNotrim(Dom4jUtil.getText(e, "@notrim"));
         typeInfo.setVtype(Dom4jUtil.getText(e, "@vtype"));
