@@ -123,7 +123,7 @@
 
 	<!-- 有idPrefix，则表示定义对象的映射表 -->
 	<monster idPrefix="m">
-		<baseView gview="true" label="基本信息">
+		<baseView label="基本信息" type="vst">
 			<name label="名字" type="s" />
 			<desc label="描述" type="tt" />
 		</baseView>

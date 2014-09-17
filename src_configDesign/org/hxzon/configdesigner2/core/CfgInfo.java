@@ -13,7 +13,8 @@ public class CfgInfo {
     public static final int Type_Struct = 6;
     public static final int Type_Map = 7;
     public static final int Type_List = 8;
-    public static final int Type_End = 9;
+    public static final int Type_ViewStruct = 9;
+    public static final int Type_End = 10;
 
     //
     private String id;
@@ -30,7 +31,6 @@ public class CfgInfo {
     private Object defaultValue;
     private boolean textArea;//use textArea or textInput
     private boolean embed;
-    private boolean groupView;
     private String idPrefix;
 
     //====================
@@ -196,14 +196,6 @@ public class CfgInfo {
 
     public void setEmbed(boolean embed) {
         this.embed = embed;
-    }
-
-    public boolean isGroupView() {
-        return groupView;
-    }
-
-    public void setGroupView(boolean groupView) {
-        this.groupView = groupView;
     }
 
     public String getIdPrefix() {

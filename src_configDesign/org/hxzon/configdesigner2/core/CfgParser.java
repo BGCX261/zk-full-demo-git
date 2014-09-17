@@ -64,18 +64,13 @@ public class CfgParser {
         cfgInfo.setId(id);
         cfgInfo.setLabel(Dom4jUtil.getText(e, "@label"));
 
-        boolean groupView = Dom4jUtil.getText(e, "@gview") != null;
-        if (groupView) {
-            cfgInfo.setGroupView(true);
-            cfgInfo.setType(CfgInfo.Type_Struct);
+        String typeStr = Dom4jUtil.getText(e, "@type");
+        if ("vst".equals(typeStr)) {
+            cfgInfo.setType(CfgInfo.Type_ViewStruct);
             fillPartsInfo(cfgInfo, e);
             return cfgInfo;
         }
         //
-        String embed = Dom4jUtil.getText(e, "@embed");
-        cfgInfo.setEmbed("true".equals(embed));
-        //
-        String typeStr = Dom4jUtil.getText(e, "@type");
         int type = 0;
         CfgInfo typeRef = null;
 
@@ -113,6 +108,8 @@ public class CfgParser {
             String textArea = Dom4jUtil.getText(e, "@textarea");
             cfgInfo.setTextArea("true".equals(textArea));
         }
+        String embed = Dom4jUtil.getText(e, "@embed");
+        cfgInfo.setEmbed("true".equals(embed));
         return cfgInfo;
     }
 
