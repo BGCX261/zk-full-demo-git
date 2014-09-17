@@ -1,17 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root label="配置后台">
 
+	<ti typeDef="true" type="i" value="1" />
+	<tr typeDef="true" type="r" value="1.1" />
+	<type typeDef="true" id="tb" type="b" value="true" />
+	<type typeDef="true" id="ts" type="s" value="default" />
+	<type typeDef="true" id="tt" type="s" textarea="true" />
 
-	<rootA1 label="整数" type="i" value="1" />
-	<rootA2 label="实数" type="r" value="1.1" />
-	<rootA3 label="布尔" type="b" value="true" />
-	<rootA4 label="字符串" type="s" value="default" />
-	<rootA5 label="字符串（文本框）" type="s" textarea="true" />
+	<type typeDef="true" id="user" type="st">
+		<type id="id" label="id" type="ts" />
+		<atkx id="atk" label="攻击力" type="tr" />
+		<desc label="描述" type="tt" />
+	</type>
 
-	<appbase label="简单结构体（内嵌显示）" embed="true">
+	<type typeDef="true" id="useList" type="l">
+		<type type="user" />
+	</type>
+
+	<type typeDef="true" id="userMap" type="m">
+		<type type="user" />
+	</type>
+
+	<type typeDef="true" id="tm2" type="l">
+		<type type="st">
+			<type id="name" type="ts" />
+		</type>
+	</type>
+
+	<type typeDef="true" id="strList" type="l">
+		<type type="s" />
+	</type>
+
+	<rootA1 label="整数" type="ti" />
+	<rootA2 label="实数" type="tr" />
+	<rootA3 label="布尔" type="tb" />
+	<rootA4 label="字符串" type="ts" />
+	<rootA5 label="字符串（文本框）" type="tt" />
+
+	<appbase typeDef="true" label="简单结构体（内嵌显示）">
 		<appname label="应用名" type="s" />
 		<appVersion label="应用版本" type="s" />
 	</appbase>
+
+	<appbase type="appbase" embed="true" />
 
 	<rootS1 label="简单结构体" type="st">
 		<rootS1A1 label="属性1" type="s" />
@@ -36,9 +67,7 @@
 	</rootM2>
 
 	<rootM3 label="映射表（元素为列表）" type="m">
-		<e type="l">
-			<e type="s" />
-		</e>
+		<e type="strList" />
 	</rootM3>
 
 	<rootM4 label="映射表（元素为映射表）" type="m">
@@ -61,9 +90,7 @@
 					<rootL2L1A1 type="s" />
 				</e>
 			</rootL2L1>
-			<rootL2L2 type="l">
-				<e type="s" />
-			</rootL2L2>
+			<rootL2L2 type="strList" />
 			<rootL2M1 type="m">
 				<e type="s" />
 				<!-- 元素类型配置错误，以下结构被忽略 -->
@@ -90,5 +117,5 @@
 		</e>
 	</rootL4>
 
-	<rootE1 label="错误类型" type="xx" />
+	<rootE1 label="错误类型" type="st" />
 </root>

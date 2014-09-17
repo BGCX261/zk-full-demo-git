@@ -1,4 +1,4 @@
-package org.hxzon.configdesigner.util;
+package org.hxzon.configdesigner2.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.hxzon.configdesigner.core.CfgInfo;
-import org.hxzon.configdesigner.core.CfgParser;
-import org.hxzon.configdesigner.core.CfgValue;
+import org.hxzon.configdesigner2.core.CfgInfo;
+import org.hxzon.configdesigner2.core.CfgParser;
+import org.hxzon.configdesigner2.core.CfgValue;
 import org.hxzon.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class CfgUtil {
     static {
         try {
             WebApp webapp = Executions.getCurrent().getDesktop().getWebApp();
-            String xmlStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/configDesigner.xml")), "utf8");
+            String xmlStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/configDesigner2.xml")), "utf8");
             CfgInfo info = CfgParser.parseSchema(xmlStr);
             String jsonStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/config.json")), "utf8");
             Object json = JsonUtil.parseJson(jsonStr);
