@@ -5,7 +5,6 @@ import java.util.List;
 import org.hxzon.util.StringParser;
 
 public class CfgInfo {
-
     public static final int Type_String = 1;
     public static final int Type_Integer = 2;
     public static final int Type_Real = 3;
@@ -15,28 +14,30 @@ public class CfgInfo {
     public static final int Type_Map = 7;
     public static final int Type_List = 8;
     public static final int Type_End = 9;
-    //
-    private List<CfgInfo> parts;//parts info
-    private CfgInfo elementInfo;//element info
+
     //
     private String id;
-    private String label;
-    private String labelKey;
     private int type;
-    private Object defaultValue;
+    private CfgInfo typeRef;
+    //结构体字段
+    private String label;
+    //结构体
+    private List<CfgInfo> partsInfo;
+    private String labelKey;
+    //列表或映射表
+    private CfgInfo elementInfo;
     //
+    private Object defaultValue;
     private boolean textArea;//use textArea or textInput
     private boolean embed;
 
-    //
-    @Override
-    public String toString() {
-        return id + "[" + label + "]" + getTypeStr();
-    }
-
-    //
+    //====================
     public String getLabelOrId() {
-        return label == null ? id : label;
+        String label = getLabel();
+        if (label != null) {
+            return label;
+        }
+        return id;
     }
 
     public String getTypeStr() {
@@ -72,7 +73,7 @@ public class CfgInfo {
             return this;
         }
         if (type == CfgInfo.Type_Struct) {
-            for (CfgInfo part : parts) {
+            for (CfgInfo part : getPartsInfo()) {
                 if (part.getId().equals(token)) {
                     return part.findCfgInfo(parser);
                 }
@@ -80,43 +81,18 @@ public class CfgInfo {
         }
         if (type == CfgInfo.Type_List || type == CfgInfo.Type_Struct) {
             if ("e".equals(token)) {
-                return elementInfo.findCfgInfo(parser);
+                return getElementInfo().findCfgInfo(parser);
             }
         }
         return null;
     }
 
-    //==================
-    public List<CfgInfo> getParts() {
-        return parts;
+    //====================
+    public CfgInfo() {
     }
 
-    public void setParts(List<CfgInfo> parts) {
-        this.parts = parts;
-    }
-
-    public CfgInfo getElementInfo() {
-        return elementInfo;
-    }
-
-    public void setElementInfo(CfgInfo elementInfo) {
-        this.elementInfo = elementInfo;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public String getLabelKey() {
-        return labelKey;
-    }
-
-    public void setLabelKey(String elabel) {
-        this.labelKey = elabel;
+    public CfgInfo(int type) {
+        setType(type);
     }
 
     public String getId() {
@@ -135,7 +111,62 @@ public class CfgInfo {
         this.type = type;
     }
 
+    public CfgInfo getTypeRef() {
+        return typeRef;
+    }
+
+    public void setTypeRef(CfgInfo typeRef) {
+        this.typeRef = typeRef;
+    }
+
+    public String getLabel() {
+        if (label == null && typeRef != null) {
+            return typeRef.getLabel();
+        }
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getLabelKey() {
+        if (labelKey == null && typeRef != null) {
+            return typeRef.getLabelKey();
+        }
+        return labelKey;
+    }
+
+    public void setLabelKey(String labelKey) {
+        this.labelKey = labelKey;
+    }
+
+    public List<CfgInfo> getPartsInfo() {
+        if (typeRef != null) {
+            return typeRef.getPartsInfo();
+        }
+        return partsInfo;
+    }
+
+    public void setPartsInfo(List<CfgInfo> partsInfo) {
+        this.partsInfo = partsInfo;
+    }
+
+    public CfgInfo getElementInfo() {
+        if (typeRef != null) {
+            return typeRef.getElementInfo();
+        }
+        return elementInfo;
+    }
+
+    public void setElementInfo(CfgInfo elementInfo) {
+        this.elementInfo = elementInfo;
+    }
+
     public Object getDefaultValue() {
+        if (defaultValue == null && typeRef != null) {
+            return typeRef.getDefaultValue();
+        }
         return defaultValue;
     }
 
@@ -144,6 +175,9 @@ public class CfgInfo {
     }
 
     public boolean isTextArea() {
+        if (!textArea && typeRef != null) {
+            return typeRef.isTextArea();
+        }
         return textArea;
     }
 
@@ -152,7 +186,10 @@ public class CfgInfo {
     }
 
     public boolean isEmbed() {
-        return embed || type < CfgInfo.Type_Combo;
+        if (!embed && typeRef != null) {
+            return typeRef.isEmbed();
+        }
+        return embed;
     }
 
     public void setEmbed(boolean embed) {

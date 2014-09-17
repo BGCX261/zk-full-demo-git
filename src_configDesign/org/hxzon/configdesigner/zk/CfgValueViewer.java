@@ -100,7 +100,7 @@ public class CfgValueViewer implements CfgValueHolder {
         ((Vlayout) mainPanel).setSpacing("0.5em");
         //
         CfgInfo cfgInfo = cfgValue.getCfgInfo();
-        for (CfgInfo cCfgInfo : cfgInfo.getParts()) {
+        for (CfgInfo cCfgInfo : cfgInfo.getPartsInfo()) {
             CfgValue cCfgValue = cfgValue.getValue(cCfgInfo.getId());
             if (cCfgValue == null) {
                 Button btn = createAddPartBtn(cCfgInfo);

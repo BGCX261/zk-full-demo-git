@@ -31,16 +31,18 @@
 		<type type="s" />
 	</type>
 
-	<rootA1 label="整数" type="i" value="1" />
-	<rootA2 label="实数" type="r" value="1.1" />
-	<rootA3 label="布尔" type="b" value="true" />
-	<rootA4 label="字符串" type="s" value="default" />
-	<rootA5 label="字符串（文本框）" type="s" textarea="true" />
+	<rootA1 label="整数" type="ti" />
+	<rootA2 label="实数" type="tr" />
+	<rootA3 label="布尔" type="tb" />
+	<rootA4 label="字符串" type="ts" />
+	<rootA5 label="字符串（文本框）" type="tt" />
 
-	<appbase label="简单结构体（内嵌显示）" embed="true">
+	<appbase typeDef="true" label="简单结构体（内嵌显示）">
 		<appname label="应用名" type="s" />
 		<appVersion label="应用版本" type="s" />
 	</appbase>
+
+	<appbase type="appbase" embed="true" />
 
 	<rootS1 label="简单结构体" type="st">
 		<rootS1A1 label="属性1" type="s" />
@@ -88,7 +90,7 @@
 					<rootL2L1A1 type="s" />
 				</e>
 			</rootL2L1>
-			<rootL2L2 type="strList"/>
+			<rootL2L2 type="strList" />
 			<rootL2M1 type="m">
 				<e type="s" />
 				<!-- 元素类型配置错误，以下结构被忽略 -->
@@ -115,5 +117,5 @@
 		</e>
 	</rootL4>
 
-	<rootE1 label="错误类型" type="xx" />
+	<rootE1 label="错误类型" type="st" />
 </root>

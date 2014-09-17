@@ -1,7 +1,9 @@
 package org.hxzon.configdesigner.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.dom4j.Element;
@@ -15,9 +17,36 @@ public class CfgParser {
     public static final Object Null = JSONObject.NULL;//有定义，值为null
     public static final Object Undefined = null;//未定义
 
+    private static Map<String, CfgInfo> typeInfos = new HashMap<String, CfgInfo>();
+
     public static CfgInfo parseSchema(String xmlStr) {
         Element root = Dom4jUtil.getRoot(xmlStr);
-        return toCfgInfo(root);
+        return toCfgInfo_root(root);
+    }
+
+    private static CfgInfo toCfgInfo_root(Element e) {
+        CfgInfo cfgInfo = new CfgInfo();
+        String id = Dom4jUtil.getText(e, "@id");
+        if (id == null) {
+            id = e.getName();
+        }
+        cfgInfo.setId(id);
+        cfgInfo.setLabel(Dom4jUtil.getText(e, "@label"));
+        //
+        cfgInfo.setType(CfgInfo.Type_Struct);
+        List<CfgInfo> partsInfo = new ArrayList<CfgInfo>();
+        for (Element ce : Dom4jUtil.getElements(e)) {
+            CfgInfo partCfgInfo = toCfgInfo(ce);
+            String typeDef = Dom4jUtil.getText(ce, "@typeDef");
+            if ("true".equals(typeDef)) {
+                typeInfos.put(partCfgInfo.getId(), partCfgInfo);
+            } else {
+                partsInfo.add(partCfgInfo);
+            }
+        }
+        cfgInfo.setPartsInfo(partsInfo);
+
+        return cfgInfo;
     }
 
     private static CfgInfo toCfgInfo(Element e) {
@@ -31,16 +60,40 @@ public class CfgParser {
         String embed = Dom4jUtil.getText(e, "@embed");
         cfgInfo.setEmbed("true".equals(embed));
         //
-        int type = parseCfgType(Dom4jUtil.getText(e, "@type"));
-        cfgInfo.setType(type);
-        cfgInfo.setDefaultValue(converValue(type, Dom4jUtil.getText(e, "@value")));
-        if (type == CfgInfo.Type_Struct) {
+        String typeStr = Dom4jUtil.getText(e, "@type");
+        int type = 0;
+        CfgInfo typeRef = null;
+
+        if ("st".equals(typeStr) || typeStr == null) {
+            type = CfgInfo.Type_Struct;
             cfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
             fillPartsInfo(cfgInfo, e);
-        }
-        if (type == CfgInfo.Type_List || type == CfgInfo.Type_Map) {
+        } else if ("s".equals(typeStr)) {
+            type = CfgInfo.Type_String;
+        } else if ("i".equals(typeStr)) {
+            type = CfgInfo.Type_Integer;
+        } else if ("r".equals(typeStr)) {
+            type = CfgInfo.Type_Real;
+        } else if ("b".equals(typeStr)) {
+            type = CfgInfo.Type_Boolean;
+        } else if ("l".equals(typeStr)) {
+            type = CfgInfo.Type_List;
             cfgInfo.setElementInfo(toCfgInfo(Dom4jUtil.getElement(e)));
+        } else if ("m".equals(typeStr)) {
+            type = CfgInfo.Type_Map;
+            cfgInfo.setElementInfo(toCfgInfo(Dom4jUtil.getElement(e)));
+        } else {
+            typeRef = typeInfos.get(typeStr);
+            if (typeRef != null) {
+                cfgInfo.setTypeRef(typeRef);
+                type = typeRef.getType();
+            } else {
+                throw new RuntimeException("type error:" + typeStr);
+            }
         }
+        cfgInfo.setType(type);
+        //
+        cfgInfo.setDefaultValue(converValue(type, Dom4jUtil.getText(e, "@value")));
         if (type == CfgInfo.Type_String) {
             String textArea = Dom4jUtil.getText(e, "@textarea");
             cfgInfo.setTextArea("true".equals(textArea));
@@ -52,13 +105,13 @@ public class CfgParser {
         List<CfgInfo> parts = new ArrayList<CfgInfo>();
         List<Element> childrenEle = Dom4jUtil.getElements(e);
         for (Element childEle : childrenEle) {
-            CfgInfo childInfo = toCfgInfo(childEle);
-            parts.add(childInfo);
+            CfgInfo partInfo = toCfgInfo(childEle);
+            parts.add(partInfo);
         }
-        cfgInfo.setParts(parts);
+        cfgInfo.setPartsInfo(parts);
     }
 
-    private static int parseCfgType(String type) {
+    public static int parseCfgType(String type) {
         if ("s".equals(type)) {
             return CfgInfo.Type_String;
         } else if ("i".equals(type)) {
@@ -77,6 +130,22 @@ public class CfgParser {
         return CfgInfo.Type_Struct;
     }
 
+    public static Object converValue(int type, String strValue) {
+        switch (type) {
+        case CfgInfo.Type_Boolean:
+            return "true".equals(strValue);
+        case CfgInfo.Type_Integer:
+            return strValue == null ? 0 : Integer.valueOf(strValue);
+        case CfgInfo.Type_Real:
+            return strValue == null ? 0.0 : Double.valueOf(strValue);
+        case CfgInfo.Type_String:
+            return strValue;
+        default:
+            return Undefined;
+        }
+    }
+
+    //==============
     public static CfgValue buildCfgValue(CfgInfo cfgInfo, Object json, //
             int notNullValueDeep, int nullValueDeep) {
         if (notNullValueDeep <= 0) {
@@ -108,7 +177,7 @@ public class CfgParser {
     private static CfgValue buildStructCfgValue(CfgInfo mapCfgInfo, Object mapJson, //
             int notNullValueDeep, int nullValueDeep) {
         CfgValue cfgValue = new CfgValue(mapCfgInfo, UUID.randomUUID());
-        for (CfgInfo partInfo : mapCfgInfo.getParts()) {
+        for (CfgInfo partInfo : mapCfgInfo.getPartsInfo()) {
             Object partJson = null;
             if (mapJson != null && mapJson instanceof JSONObject) {
                 JSONObject jsonObj = (JSONObject) mapJson;
@@ -210,21 +279,6 @@ public class CfgParser {
         }
     }
 
-    public static Object converValue(int type, String strValue) {
-        switch (type) {
-        case CfgInfo.Type_Boolean:
-            return "true".equals(strValue);
-        case CfgInfo.Type_Integer:
-            return strValue == null ? 0 : Integer.valueOf(strValue);
-        case CfgInfo.Type_Real:
-            return strValue == null ? 0.0 : Double.valueOf(strValue);
-        case CfgInfo.Type_String:
-            return strValue;
-        default:
-            return Undefined;
-        }
-    }
-
     public static CfgValue copy(CfgValue origCfgValue) {
         CfgInfo cfgInfo = origCfgValue.getCfgInfo();
         CfgValue r = new CfgValue(cfgInfo, UUID.randomUUID());
@@ -245,64 +299,4 @@ public class CfgParser {
         }
         return r;
     }
-
-    //=============
-    public static Object convertValue(Object o, CfgInfo cfgInfo) {
-        if (cfgInfo.getType() == CfgInfo.Type_String) {
-            return toString(o, cfgInfo);
-        } else if (cfgInfo.getType() == CfgInfo.Type_Integer) {
-            return toInteger(o, cfgInfo);
-        } else if (cfgInfo.getType() == CfgInfo.Type_Real) {
-            return toDouble(o, cfgInfo);
-        } else if (cfgInfo.getType() == CfgInfo.Type_Boolean) {
-            return toBoolean(o, cfgInfo);
-        }
-        throw new RuntimeException("is not simple type");
-    }
-
-    //-------------------
-    public static Object toString(Object o, CfgInfo cfgInfo) {
-        if (o instanceof String) {
-            return new MyString((String) o);
-        } else if (o instanceof Number) {
-            return o.toString();
-        } else if (o instanceof Boolean) {
-            return o.toString();
-        }
-        return cfgInfo.getDefaultValue();
-    }
-
-    public static Object toInteger(Object o, CfgInfo cfgInfo) {
-        if (o instanceof Long) {
-            return o;
-        } else if (o instanceof Number) {//int,double
-            return ((Number) o).longValue();
-        } else if (o instanceof String) {
-            return Long.valueOf((String) o);
-        }
-        return cfgInfo.getDefaultValue();
-    }
-
-    public static Object toDouble(Object o, CfgInfo cfgInfo) {
-        if (o instanceof Double) {
-            return o;
-        } else if (o instanceof Number) {//int,long
-            return ((Number) o).doubleValue();
-        } else if (o instanceof String) {
-            return Double.valueOf((String) o);
-        }
-        return cfgInfo.getDefaultValue();
-    }
-
-    public static Object toBoolean(Object o, CfgInfo cfgInfo) {
-        if (o instanceof Boolean) {
-            return o;
-        } else if (o instanceof Number) {
-            return ((Number) o).doubleValue() != 0;
-        } else if (o instanceof String) {
-            return Boolean.valueOf((String) o);
-        }
-        return cfgInfo;
-    }
-
 }
