@@ -23,6 +23,11 @@ public class CfgInfo {
     private String idPrefix;
 
     //====================
+    @Override
+    public String toString() {
+        return getLabelOrId() + "," + type.getId();
+    }
+
     public String getLabelOrId() {
         String label = getLabel();
         if (label != null) {

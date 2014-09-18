@@ -35,6 +35,11 @@ public class CfgType {
         return !isCombo();
     }
 
+    @Override
+    public String toString() {
+        return id;
+    }
+
     //=================
     private CfgType(String id, boolean isCombo, boolean isStruct, boolean isElementContainer) {
         this.id = id;

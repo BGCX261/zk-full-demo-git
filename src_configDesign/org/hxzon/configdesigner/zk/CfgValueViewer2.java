@@ -193,14 +193,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
         if (type == CfgType.Boolean) {
             inputComp = new CfgValueCheckbox(cfgValue);
-        }
-        if (type == CfgType.Integer) {
-            inputComp = new CfgValueLongbox(cfgValue);
-        }
-        if (type == CfgType.Real) {
-            inputComp = new CfgValueDoublebox(cfgValue);
-        }
-        if (type == CfgType.String) {
+        } else {
             inputComp = new CfgValueTextbox(cfgValue);
         }
         valueHolders.add((CfgValueHolder) inputComp);
