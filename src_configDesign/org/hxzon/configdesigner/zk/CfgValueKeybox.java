@@ -12,6 +12,7 @@ public class CfgValueKeybox extends Textbox implements CfgValueHolder {
     public CfgValueKeybox(CfgValue cfgValue) {
         this.cfgValue = cfgValue;
         setValue(Dt.toString(cfgValue.getKey(), ""));
+        this.setConstraint("no empty");
     }
 
     @Override

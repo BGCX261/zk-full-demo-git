@@ -21,6 +21,7 @@ public class CfgInfo {
     private boolean textArea;//use textArea or textInput
     private boolean embed;
     private String idPrefix;
+    private CfgValueValidator validator;
 
     //====================
     @Override
@@ -178,6 +179,17 @@ public class CfgInfo {
 
     public void setIdPrefix(String idPrefix) {
         this.idPrefix = idPrefix;
+    }
+
+    public CfgValueValidator getValidator() {
+        if (validator == null && typeRef != null) {
+            return typeRef.getValidator();
+        }
+        return validator;
+    }
+
+    public void setValidator(CfgValueValidator validator) {
+        this.validator = validator;
     }
 
 }

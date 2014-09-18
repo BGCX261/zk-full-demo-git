@@ -78,10 +78,7 @@ public class CfgParser {
             cfgInfo.setType(type);
             if (type == CfgType.ViewStruct) {
                 fillPartsInfo(cfgInfo, e);
-                return cfgInfo;
             }
-            //
-
             if (type == CfgType.Struct) {
                 cfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
                 fillPartsInfo(cfgInfo, e);
@@ -91,6 +88,10 @@ public class CfgParser {
             }
             if (type.isSimple()) {
                 cfgInfo.setDefaultValue(converValue(type, Dom4jUtil.getText(e, "@value")));
+                String limit = Dom4jUtil.getText(e, "limit");
+                if (limit != null) {
+                    cfgInfo.setValidator(new CfgValueValidator(cfgInfo.getType(), limit));
+                }
             }
             if (type == CfgType.String) {
                 String textArea = Dom4jUtil.getText(e, "@textarea");

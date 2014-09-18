@@ -159,8 +159,8 @@ public class CfgValueViewer implements CfgValueHolder {
     }
 
     private Component createTextareaPane(CfgValue cfgValue) {
-        CfgValueTextbox inputComp = new CfgValueTextbox(cfgValue);
-        valueHolders.add(inputComp);
+        CfgValueInputCompHolder inputCompHollder = new CfgValueInputCompHolder(cfgValue);
+        valueHolders.add(inputCompHollder);
         Vlayout pane = new Vlayout();
         Hlayout hlayout = new Hlayout();
         Button delBtn = createDeleteBtn(cfgValue, pane);
@@ -170,25 +170,17 @@ public class CfgValueViewer implements CfgValueHolder {
             hlayout.appendChild(createCopyElementBtn(cfgValue));
         }
         pane.appendChild(hlayout);
-        pane.appendChild(inputComp);
+        pane.appendChild(inputCompHollder.getInputComponent());
         return pane;
     }
 
     private Component createSimpleValuePane(CfgValue cfgValue) {
-        CfgInfo info = cfgValue.getCfgInfo();
-        CfgType type = info.getType();
-        Component inputComp = null;
-
-        if (type == CfgType.Boolean) {
-            inputComp = new CfgValueCheckbox(cfgValue);
-        } else {
-            inputComp = new CfgValueTextbox(cfgValue);
-        }
-        valueHolders.add((CfgValueHolder) inputComp);
+        CfgValueInputCompHolder inputCompHolder = new CfgValueInputCompHolder(cfgValue);
+        valueHolders.add(inputCompHolder);
         Hlayout pane = new Hlayout();
         Button delBtn = createDeleteBtn(cfgValue, pane);
         pane.appendChild(createLabel(cfgValue));
-        pane.appendChild(inputComp);
+        pane.appendChild(inputCompHolder.getInputComponent());
         pane.appendChild(delBtn);
         if (cfgValue.isElement()) {
             pane.appendChild(createCopyElementBtn(cfgValue));

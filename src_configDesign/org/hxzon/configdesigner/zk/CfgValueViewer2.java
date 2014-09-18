@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgParser;
-import org.hxzon.configdesigner.core.CfgType;
 import org.hxzon.configdesigner.core.CfgValue;
 import org.hxzon.util.json.JSONCollection;
 import org.zkoss.zk.ui.Component;
@@ -168,8 +167,8 @@ public class CfgValueViewer2 implements CfgValueHolder {
     }
 
     private Component createTextareaPane(CfgValue cfgValue) {
-        CfgValueTextbox inputComp = new CfgValueTextbox(cfgValue);
-        valueHolders.add(inputComp);
+        CfgValueInputCompHolder inputCompHolder = new CfgValueInputCompHolder(cfgValue);
+        valueHolders.add(inputCompHolder);
         Vlayout pane = new Vlayout();
         Hlayout hlayout = new Hlayout();
         Button delBtn = createDeleteBtn(cfgValue, pane);
@@ -182,21 +181,13 @@ public class CfgValueViewer2 implements CfgValueHolder {
         if (cfgValue.isMapElement()) {
             pane.appendChild(createKeyPane(cfgValue));
         }
-        pane.appendChild(inputComp);
+        pane.appendChild(inputCompHolder.getInputComponent());
         return pane;
     }
 
     private Component createSimpleValuePane(CfgValue cfgValue) {
-        CfgInfo info = cfgValue.getCfgInfo();
-        CfgType type = info.getType();
-        Component inputComp = null;
-
-        if (type == CfgType.Boolean) {
-            inputComp = new CfgValueCheckbox(cfgValue);
-        } else {
-            inputComp = new CfgValueTextbox(cfgValue);
-        }
-        valueHolders.add((CfgValueHolder) inputComp);
+        CfgValueInputCompHolder inputCompHolder = new CfgValueInputCompHolder(cfgValue);
+        valueHolders.add(inputCompHolder);
         Hlayout pane = new Hlayout();
         Button delBtn = createDeleteBtn(cfgValue, pane);
         if (cfgValue.isMapElement()) {
@@ -204,7 +195,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
         } else {
             pane.appendChild(createLabel(cfgValue));
         }
-        pane.appendChild(inputComp);
+        pane.appendChild(inputCompHolder.getInputComponent());
         pane.appendChild(delBtn);
         if (cfgValue.isElement()) {
             pane.appendChild(createCopyElementBtn(cfgValue));
