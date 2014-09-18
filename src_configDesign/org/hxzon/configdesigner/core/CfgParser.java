@@ -18,6 +18,7 @@ public class CfgParser {
     public static final Object Undefined = null;//未定义
 
     private static Map<String, CfgInfo> typeInfos = new HashMap<String, CfgInfo>();
+    private static Map<String, CfgInfo> entityTypeInfos = new HashMap<String, CfgInfo>();
 
     public static CfgInfo parseSchema(String xmlStr) {
         Element root = Dom4jUtil.getRoot(xmlStr);
@@ -33,7 +34,7 @@ public class CfgParser {
         cfgInfo.setId(id);
         cfgInfo.setLabel(Dom4jUtil.getText(e, "@label"));
         //
-        cfgInfo.setType(CfgInfo.Type_Struct);
+        cfgInfo.setType(CfgType.Struct);
         List<CfgInfo> partsInfo = new ArrayList<CfgInfo>();
         for (Element ce : Dom4jUtil.getElements(e)) {
             CfgInfo partCfgInfo = toCfgInfo(ce);
@@ -42,6 +43,12 @@ public class CfgParser {
                 typeInfos.put(partCfgInfo.getId(), partCfgInfo);
             } else {
                 partsInfo.add(partCfgInfo);
+                String idPrefix = Dom4jUtil.getText(ce, "@idPrefix");
+                if (idPrefix != null) {
+                    partCfgInfo.setIdPrefix(idPrefix);
+                    entityTypeInfos.put(partCfgInfo.getId(), partCfgInfo);
+                    //实体不能作为类型，否则导致实体在别处定义？
+                }
             }
         }
         cfgInfo.setPartsInfo(partsInfo);
@@ -57,47 +64,42 @@ public class CfgParser {
         }
         cfgInfo.setId(id);
         cfgInfo.setLabel(Dom4jUtil.getText(e, "@label"));
+
+        String typeStr = Dom4jUtil.getText(e, "@type");
+        CfgInfo typeRef = typeInfos.get(typeStr);
+        if (typeRef != null) {
+            cfgInfo.setTypeRef(typeRef);
+            cfgInfo.setType(typeRef.getType());
+        } else {
+            CfgType type = CfgType.parseCfgType(typeStr);
+            if (type == null) {
+                type = CfgType.Struct;
+            }
+            cfgInfo.setType(type);
+            if (type == CfgType.ViewStruct) {
+                fillPartsInfo(cfgInfo, e);
+                return cfgInfo;
+            }
+            //
+
+            if (type == CfgType.Struct) {
+                cfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
+                fillPartsInfo(cfgInfo, e);
+            }
+            if (type.isElementContainer()) {
+                cfgInfo.setElementInfo(toCfgInfo(Dom4jUtil.getElement(e)));
+            }
+            if (type.isSimple()) {
+                cfgInfo.setDefaultValue(converValue(type, Dom4jUtil.getText(e, "@value")));
+            }
+            if (type == CfgType.String) {
+                String textArea = Dom4jUtil.getText(e, "@textarea");
+                cfgInfo.setTextArea("true".equals(textArea));
+            }
+
+        }
         String embed = Dom4jUtil.getText(e, "@embed");
         cfgInfo.setEmbed("true".equals(embed));
-        //
-        String typeStr = Dom4jUtil.getText(e, "@type");
-        int type = 0;
-        CfgInfo typeRef = null;
-
-        if ("st".equals(typeStr) || typeStr == null) {
-            type = CfgInfo.Type_Struct;
-            cfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
-            fillPartsInfo(cfgInfo, e);
-        } else if ("s".equals(typeStr)) {
-            type = CfgInfo.Type_String;
-        } else if ("i".equals(typeStr)) {
-            type = CfgInfo.Type_Integer;
-        } else if ("r".equals(typeStr)) {
-            type = CfgInfo.Type_Real;
-        } else if ("b".equals(typeStr)) {
-            type = CfgInfo.Type_Boolean;
-        } else if ("l".equals(typeStr)) {
-            type = CfgInfo.Type_List;
-            cfgInfo.setElementInfo(toCfgInfo(Dom4jUtil.getElement(e)));
-        } else if ("m".equals(typeStr)) {
-            type = CfgInfo.Type_Map;
-            cfgInfo.setElementInfo(toCfgInfo(Dom4jUtil.getElement(e)));
-        } else {
-            typeRef = typeInfos.get(typeStr);
-            if (typeRef != null) {
-                cfgInfo.setTypeRef(typeRef);
-                type = typeRef.getType();
-            } else {
-                throw new RuntimeException("type error:" + typeStr);
-            }
-        }
-        cfgInfo.setType(type);
-        //
-        cfgInfo.setDefaultValue(converValue(type, Dom4jUtil.getText(e, "@value")));
-        if (type == CfgInfo.Type_String) {
-            String textArea = Dom4jUtil.getText(e, "@textarea");
-            cfgInfo.setTextArea("true".equals(textArea));
-        }
         return cfgInfo;
     }
 
@@ -111,38 +113,20 @@ public class CfgParser {
         cfgInfo.setPartsInfo(parts);
     }
 
-    public static int parseCfgType(String type) {
-        if ("s".equals(type)) {
-            return CfgInfo.Type_String;
-        } else if ("i".equals(type)) {
-            return CfgInfo.Type_Integer;
-        } else if ("r".equals(type)) {
-            return CfgInfo.Type_Real;
-        } else if ("b".equals(type)) {
-            return CfgInfo.Type_Boolean;
-        } else if ("st".equals(type)) {
-            return CfgInfo.Type_Struct;
-        } else if ("m".equals(type)) {
-            return CfgInfo.Type_Map;
-        } else if ("l".equals(type)) {
-            return CfgInfo.Type_List;
-        }
-        return CfgInfo.Type_Struct;
-    }
-
-    public static Object converValue(int type, String strValue) {
-        switch (type) {
-        case CfgInfo.Type_Boolean:
+    public static Object converValue(CfgType type, String strValue) {
+        if (type == CfgType.Boolean) {
             return "true".equals(strValue);
-        case CfgInfo.Type_Integer:
-            return strValue == null ? 0 : Integer.valueOf(strValue);
-        case CfgInfo.Type_Real:
-            return strValue == null ? 0.0 : Double.valueOf(strValue);
-        case CfgInfo.Type_String:
-            return strValue;
-        default:
-            return Undefined;
         }
+        if (type == CfgType.Integer) {
+            return strValue == null ? 0 : Integer.valueOf(strValue);
+        }
+        if (type == CfgType.Real) {
+            return strValue == null ? 0.0 : Double.valueOf(strValue);
+        }
+        if (type == CfgType.String) {
+            return strValue;
+        }
+        return Undefined;
     }
 
     //==============
@@ -154,14 +138,17 @@ public class CfgParser {
         if (json == null && nullValueDeep <= 0) {
             return null;
         }
-        int type = cfgInfo.getType();
-        if (type < CfgInfo.Type_Combo) {
+        CfgType type = cfgInfo.getType();
+        if (type.isSimple()) {
             return buildSimpleCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
-        } else if (type == CfgInfo.Type_List) {
+        }
+        if (type == CfgType.List) {
             return buildListCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
-        } else if (type == CfgInfo.Type_Map) {
+        }
+        if (type == CfgType.Map) {
             return buildMapCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
-        } else if (type == CfgInfo.Type_Struct) {
+        }
+        if (type.isStruct()) {
             return buildStructCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
         }
         throw new RuntimeException("type error");
@@ -179,7 +166,9 @@ public class CfgParser {
         CfgValue cfgValue = new CfgValue(mapCfgInfo, UUID.randomUUID());
         for (CfgInfo partInfo : mapCfgInfo.getPartsInfo()) {
             Object partJson = null;
-            if (mapJson != null && mapJson instanceof JSONObject) {
+            if (partInfo.getType() == CfgType.ViewStruct) {
+                partJson = mapJson;
+            } else if (mapJson != null && mapJson instanceof JSONObject) {
                 JSONObject jsonObj = (JSONObject) mapJson;
                 partJson = jsonObj.opt(partInfo.getId());
             }
@@ -225,7 +214,7 @@ public class CfgParser {
             return null;
         }
         CfgInfo listCfgInfo = parent.getCfgInfo();
-        if (listCfgInfo.getType() == CfgInfo.Type_List || listCfgInfo.getType() == CfgInfo.Type_Map) {
+        if (listCfgInfo.getType().isElementContainer()) {
             CfgInfo eCfgInfo = listCfgInfo.getElementInfo();
             CfgValue r = buildCfgValue(eCfgInfo, null, 1, deep);
             r.setParent(parent);
@@ -236,62 +225,65 @@ public class CfgParser {
 
     public static Object toJson(CfgValue root, boolean trim) {
         CfgInfo cfgInfo = root.getCfgInfo();
-        int type = cfgInfo.getType();
-        switch (type) {
-        case CfgInfo.Type_Boolean:
+        CfgType type = cfgInfo.getType();
+        if (type == CfgType.Boolean) {
             boolean rb = Dt.toBoolean(root.getValue(), false);
             return (trim && !rb) ? Undefined : rb;
-        case CfgInfo.Type_Integer:
+        }
+        if (type == CfgType.Integer) {
             long rl = Dt.toLong(root.getValue(), 0);
             return (trim && rl == 0) ? Undefined : rl;
-        case CfgInfo.Type_Real:
+        }
+        if (type == CfgType.Real) {
             double rr = Dt.toDouble(root.getValue(), 0);
             return (trim && rr == 0) ? Undefined : rr;
-        case CfgInfo.Type_String:
+        }
+        if (type == CfgType.String) {
             String rs = Dt.toString(root.getValue(), "");
             return (trim && rs.isEmpty()) ? Undefined : new MyString(rs);
-        case CfgInfo.Type_Struct: {
+        }
+        if (type.isStruct()) {
             JSONObject json = new JSONObject();
             for (CfgValue e : root.getChildren()) {
                 Object re = toJson(e, trim);
                 if (!trim || re != Undefined) {
-                    json.put(e.getCfgInfo().getId(), re);
+                    if (e.getCfgInfo().getType() == CfgType.ViewStruct) {
+                        JSONObject jsonRe = (JSONObject) re;
+                        for (String key : jsonRe.keys()) {
+                            json.put(key, jsonRe.get(key));
+                        }
+                    } else {
+                        json.put(e.getCfgInfo().getId(), re);
+                    }
                 }
             }
             return (trim && json.length() == 0) ? Undefined : json;
         }
-        case CfgInfo.Type_List: {
+        if (type == CfgType.List) {
             JSONArray jsonA = new JSONArray();
             for (CfgValue e : root.getChildren()) {
                 jsonA.put(toJson(e, trim));
             }
             return (trim && jsonA.length() == 0) ? Undefined : jsonA;
         }
-        case CfgInfo.Type_Map: {
+        if (type == CfgType.Map) {
             JSONObject json = new JSONObject();
             for (CfgValue e : root.getChildren()) {
                 json.put(e.getKey(), toJson(e, trim));
             }
             return (trim && json.length() == 0) ? Undefined : json;
         }
-        default:
-            return Undefined;
-        }
+        return Undefined;
     }
 
     public static CfgValue copy(CfgValue origCfgValue) {
         CfgInfo cfgInfo = origCfgValue.getCfgInfo();
         CfgValue r = new CfgValue(cfgInfo, UUID.randomUUID());
-        switch (cfgInfo.getType()) {
-        case CfgInfo.Type_List:
-        case CfgInfo.Type_Struct:
-        case CfgInfo.Type_Map: {
+        if (cfgInfo.getType().isCombo()) {
             for (CfgValue childCfgValue : origCfgValue.getChildren()) {
                 r.addValue(copy(childCfgValue));
             }
-            break;
-        }
-        default:
+        } else {
             r.setValue(origCfgValue.getValue());
         }
         if (origCfgValue.isMapElement()) {

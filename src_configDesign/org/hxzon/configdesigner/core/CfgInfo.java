@@ -5,19 +5,9 @@ import java.util.List;
 import org.hxzon.util.StringParser;
 
 public class CfgInfo {
-    public static final int Type_String = 1;
-    public static final int Type_Integer = 2;
-    public static final int Type_Real = 3;
-    public static final int Type_Boolean = 4;
-    public static final int Type_Combo = 5;
-    public static final int Type_Struct = 6;
-    public static final int Type_Map = 7;
-    public static final int Type_List = 8;
-    public static final int Type_End = 9;
 
-    //
     private String id;
-    private int type;
+    private CfgType type;
     private CfgInfo typeRef;
     //结构体字段
     private String label;
@@ -30,6 +20,7 @@ public class CfgInfo {
     private Object defaultValue;
     private boolean textArea;//use textArea or textInput
     private boolean embed;
+    private String idPrefix;
 
     //====================
     public String getLabelOrId() {
@@ -38,26 +29,6 @@ public class CfgInfo {
             return label;
         }
         return id;
-    }
-
-    public String getTypeStr() {
-        switch (type) {
-        case Type_String:
-            return "str";
-        case Type_Integer:
-            return "integer";
-        case Type_Real:
-            return "real";
-        case Type_Boolean:
-            return "bool";
-        case Type_Struct:
-            return "struct";
-        case Type_List:
-            return "list";
-        case Type_Map:
-            return "map";
-        }
-        return "unknown";
     }
 
     public CfgInfo findCfgInfo(String path) {
@@ -72,14 +43,14 @@ public class CfgInfo {
         if (token == null) {
             return this;
         }
-        if (type == CfgInfo.Type_Struct) {
+        if (type.isStruct()) {
             for (CfgInfo part : getPartsInfo()) {
                 if (part.getId().equals(token)) {
                     return part.findCfgInfo(parser);
                 }
             }
         }
-        if (type == CfgInfo.Type_List || type == CfgInfo.Type_Struct) {
+        if (type.isElementContainer()) {
             if ("e".equals(token)) {
                 return getElementInfo().findCfgInfo(parser);
             }
@@ -91,7 +62,7 @@ public class CfgInfo {
     public CfgInfo() {
     }
 
-    public CfgInfo(int type) {
+    public CfgInfo(CfgType type) {
         setType(type);
     }
 
@@ -103,11 +74,11 @@ public class CfgInfo {
         this.id = id;
     }
 
-    public int getType() {
+    public CfgType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(CfgType type) {
         this.type = type;
     }
 
@@ -194,6 +165,14 @@ public class CfgInfo {
 
     public void setEmbed(boolean embed) {
         this.embed = embed;
+    }
+
+    public String getIdPrefix() {
+        return idPrefix;
+    }
+
+    public void setIdPrefix(String idPrefix) {
+        this.idPrefix = idPrefix;
     }
 
 }

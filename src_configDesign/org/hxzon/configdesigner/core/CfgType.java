@@ -1,4 +1,4 @@
-package org.hxzon.configdesigner2.core;
+package org.hxzon.configdesigner.core;
 
 public class CfgType {
 

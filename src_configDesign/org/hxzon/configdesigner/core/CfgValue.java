@@ -22,34 +22,36 @@ public class CfgValue {
 
     public String getFullPath() {
         String parentPath = (parent == null) ? "" : parent.getFullPath() + "/";
-        int parentType = parent == null ? 0 : parent.getCfgInfo().getType();
-        if (parentType == CfgInfo.Type_List) {
+        CfgType parentType = parent == null ? null : parent.getCfgInfo().getType();
+        if (parentType == CfgType.List) {
             return parentPath + parent.getIndex(this);
         }
-        if (parentType == CfgInfo.Type_Map) {
+        if (parentType == CfgType.Map) {
             return parentPath + key;
         }
         return parentPath + getCfgInfo().getId();
     }
 
     public boolean isElement() {
-        int parentType = (parent == null) ? 0 : parent.getCfgInfo().getType();
-        return parentType == CfgInfo.Type_List || parentType == CfgInfo.Type_Map;
+        if (parent == null) {
+            return false;
+        }
+        return parent.getCfgInfo().getType().isElementContainer();
     }
 
     public boolean isMapElement() {
-        int parentType = (parent == null) ? 0 : parent.getCfgInfo().getType();
-        return parentType == CfgInfo.Type_Map;
+        CfgType parentType = (parent == null) ? null : parent.getCfgInfo().getType();
+        return parentType == CfgType.Map;
     }
 
     //全路径
     public String getTitle() {
         String parentTitle = (parent == null) ? "" : parent.getTitle() + "/";
-        int parentType = parent == null ? 0 : parent.getCfgInfo().getType();
-        if (parentType == CfgInfo.Type_List) {
+        CfgType parentType = parent == null ? null : parent.getCfgInfo().getType();
+        if (parentType == CfgType.List) {
             return parentTitle + parent.getIndex(this);
         }
-        if (parentType == CfgInfo.Type_Map) {
+        if (parentType == CfgType.Map) {
             return parentTitle + key;
         }
         return parentTitle + cfgInfo.getLabelOrId();
@@ -57,13 +59,13 @@ public class CfgValue {
 
     //非全路径
     public String getLabel() {
-        int parentType = (parent == null) ? 0 : parent.getCfgInfo().getType();
-        if (parentType == CfgInfo.Type_Struct) {
+        CfgType parentType = (parent == null) ? null : parent.getCfgInfo().getType();
+        if (parentType.isStruct()) {
             return cfgInfo.getLabelOrId();
         }
-        int type = cfgInfo.getType();
-        if (parentType == CfgInfo.Type_List) {
-            if (type != CfgInfo.Type_Struct) {
+        CfgType type = cfgInfo.getType();
+        if (parentType == CfgType.List) {
+            if (type != CfgType.Struct) {
                 return String.valueOf(parent.getIndex(this));
             }
             String labelKey = cfgInfo.getLabelKey();
@@ -75,8 +77,8 @@ public class CfgValue {
             }
             return String.valueOf(parent.getIndex(this));
         }
-        if (parentType == CfgInfo.Type_Map) {
-            if (type != CfgInfo.Type_Struct) {
+        if (parentType == CfgType.Map) {
+            if (type != CfgType.Struct) {
                 return key;
             }
             String labelKey = cfgInfo.getLabelKey();
@@ -93,51 +95,48 @@ public class CfgValue {
 
     @Override
     public String toString() {
-        return cfgInfo.getId() + "[" + cfgInfo.getLabel() + "]" + cfgInfo.getTypeStr();
+        return cfgInfo.getId() + "[" + cfgInfo.getLabel() + "]" + cfgInfo.getType().getId();
     }
 
     public boolean isSimpleValue() {
-        return cfgInfo.getType() < CfgInfo.Type_Combo;
+        return cfgInfo.getType().isSimple();
     }
 
     //
-    private void checkType(int type) {
+    private void checkType(CfgType type) {
         if (cfgInfo.getType() != type) {
             throw new RuntimeException("type error");
         }
     }
 
-    private void checkType(int... types) {
-        int myType = cfgInfo.getType();
-        for (int type : types) {
-            if (myType == type) {
-                return;
-            }
+    private void checkType(boolean right) {
+        if (!right) {
+            throw new RuntimeException("type error");
         }
-        throw new RuntimeException("type error");
     }
 
     public void removeValue(CfgValue cfgValue) {
-        checkType(CfgInfo.Type_Struct, CfgInfo.Type_List, CfgInfo.Type_Map);
+        checkType(cfgInfo.getType().isCombo());
         //cfgValue.setParent(null);//?方便回到上级，即便被删除
         getChildren().remove(cfgValue);
     }
 
     public void addValue(CfgValue cfgValue) {
-        checkType(CfgInfo.Type_Struct, CfgInfo.Type_List, CfgInfo.Type_Map);
+        checkType(cfgInfo.getType().isCombo());
         cfgValue.setParent(this);
         getChildren().add(cfgValue);
     }
 
     public CfgValue getValue(int index) {
-        checkType(CfgInfo.Type_List);
+        checkType(CfgType.List);
         return getChildren().get(index);
     }
 
     public CfgValue getValue(String key) {
-        checkType(CfgInfo.Type_Struct, CfgInfo.Type_Map);
+        CfgType type = cfgInfo.getType();
+        checkType(type.isStruct() || type == CfgType.Map);
         children = getChildren();
-        if (cfgInfo.getType() == CfgInfo.Type_Struct) {
+        if (cfgInfo.getType().isStruct()) {
             for (CfgValue c : children) {
                 if (c.getCfgInfo().getId().equals(key)) {
                     return c;
@@ -154,7 +153,7 @@ public class CfgValue {
     }
 
     public int getIndex(CfgValue c) {
-        checkType(CfgInfo.Type_List);
+        checkType(CfgType.List);
         return getChildren().indexOf(c);
     }
 
@@ -166,7 +165,7 @@ public class CfgValue {
     }
 
     public boolean isNull() {
-        if (cfgInfo.getType() < CfgInfo.Type_Combo) {
+        if (cfgInfo.getType().isSimple()) {
             return value == null;
         }
         return children == null || children.isEmpty();
@@ -184,8 +183,8 @@ public class CfgValue {
         if (token == null) {
             return this;
         }
-        int type = cfgInfo.getType();
-        if (type == CfgInfo.Type_Struct) {
+        CfgType type = cfgInfo.getType();
+        if (type.isStruct()) {
             for (CfgValue child : children) {
                 String id = child.getCfgInfo().getId();
                 if (id.equals(token)) {
@@ -193,7 +192,7 @@ public class CfgValue {
                 }
             }
         }
-        if (type == CfgInfo.Type_Map) {
+        if (type == CfgType.Map) {
             for (CfgValue child : children) {
                 String key = child.getKey();
                 if (key.equals(token)) {
@@ -201,7 +200,7 @@ public class CfgValue {
                 }
             }
         }
-        if (type == CfgInfo.Type_List) {
+        if (type == CfgType.List) {
             int index = Dt.toInt(token, 0);
             CfgValue child = getValue(index);
             if (child != null) {

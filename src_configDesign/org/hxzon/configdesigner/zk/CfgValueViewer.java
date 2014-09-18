@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgParser;
+import org.hxzon.configdesigner.core.CfgType;
 import org.hxzon.configdesigner.core.CfgValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
@@ -52,8 +53,8 @@ public class CfgValueViewer implements CfgValueHolder {
             view = createTextareaPane(cfgValue);
             return;
         }
-        int type = info.getType();
-        if (type < CfgInfo.Type_Combo) {
+        CfgType type = info.getType();
+        if (type.isSimple()) {
             view = createSimpleValuePane(cfgValue);
             return;
         }
@@ -61,7 +62,7 @@ public class CfgValueViewer implements CfgValueHolder {
         view = createComboPane(type);
     }
 
-    private Component createComboPane(int type) {
+    private Component createComboPane(CfgType type) {
         valueHolders = new ArrayList<CfgValueHolder>();
         //
         Vlayout pane = new Vlayout();//for dialog's parent,can't use Panel
@@ -85,8 +86,8 @@ public class CfgValueViewer implements CfgValueHolder {
         return pane;
     }
 
-    private Component createBody(int type) {
-        if (type == CfgInfo.Type_Struct) {
+    private Component createBody(CfgType type) {
+        if (type == CfgType.Struct) {
             return createBody_struct();
         } else {
             return createBody_listOrMap();
@@ -145,8 +146,8 @@ public class CfgValueViewer implements CfgValueHolder {
         if (info.isTextArea()) {
             return createTextareaPane(cfgValue);
         }
-        int type = info.getType();
-        if (type < CfgInfo.Type_Combo) {
+        CfgType type = info.getType();
+        if (type.isSimple()) {
             return createSimpleValuePane(cfgValue);
         }
         if (!info.isEmbed()) {
@@ -175,22 +176,20 @@ public class CfgValueViewer implements CfgValueHolder {
 
     private Component createSimpleValuePane(CfgValue cfgValue) {
         CfgInfo info = cfgValue.getCfgInfo();
-        int type = info.getType();
+        CfgType type = info.getType();
         Component inputComp = null;
 
-        switch (type) {
-        case CfgInfo.Type_Boolean:
+        if (type == CfgType.Boolean) {
             inputComp = new CfgValueCheckbox(cfgValue);
-            break;
-        case CfgInfo.Type_Integer:
+        }
+        if (type == CfgType.Integer) {
             inputComp = new CfgValueLongbox(cfgValue);
-            break;
-        case CfgInfo.Type_Real:
+        }
+        if (type == CfgType.Real) {
             inputComp = new CfgValueDoublebox(cfgValue);
-            break;
-        case CfgInfo.Type_String:
+        }
+        if (type == CfgType.String) {
             inputComp = new CfgValueTextbox(cfgValue);
-            break;
         }
         valueHolders.add((CfgValueHolder) inputComp);
         Hlayout pane = new Hlayout();
@@ -225,8 +224,7 @@ public class CfgValueViewer implements CfgValueHolder {
     private void deleteValue(Component btn) {
         CfgValue deleteCfgValue = (CfgValue) btn.getAttribute("cfgValue");
         CfgValue parent = deleteCfgValue.getParent();
-        int parentType = parent.getCfgInfo().getType();
-        if (parentType == CfgInfo.Type_Struct) {
+        if (parent.getCfgInfo().getType().isStruct()) {
             buttonPanel.appendChild(createAddPartBtn(deleteCfgValue.getCfgInfo()));
             addBtn.setVisible(true);
         }
