@@ -43,14 +43,14 @@ public class CfgInfo {
         if (token == null) {
             return this;
         }
-        if (type == CfgType.Struct) {
+        if (type.isStruct()) {
             for (CfgInfo part : getPartsInfo()) {
                 if (part.getId().equals(token)) {
                     return part.findCfgInfo(parser);
                 }
             }
         }
-        if (type == CfgType.List || type == CfgType.Map) {
+        if (type.isElementContainer()) {
             if ("e".equals(token)) {
                 return getElementInfo().findCfgInfo(parser);
             }

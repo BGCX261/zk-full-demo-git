@@ -148,11 +148,8 @@ public class CfgParser {
         if (type == CfgType.Map) {
             return buildMapCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
         }
-        if (type == CfgType.Struct) {
+        if (type.isStruct()) {
             return buildStructCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
-        }
-        if (type == CfgType.ViewStruct) {
-            return buildViewStructCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
         }
         throw new RuntimeException("type error");
     }
@@ -169,23 +166,12 @@ public class CfgParser {
         CfgValue cfgValue = new CfgValue(mapCfgInfo, UUID.randomUUID());
         for (CfgInfo partInfo : mapCfgInfo.getPartsInfo()) {
             Object partJson = null;
-            if (mapJson != null && mapJson instanceof JSONObject) {
+            if (partInfo.getType() == CfgType.ViewStruct) {
+                partJson = mapJson;
+            } else if (mapJson != null && mapJson instanceof JSONObject) {
                 JSONObject jsonObj = (JSONObject) mapJson;
                 partJson = jsonObj.opt(partInfo.getId());
             }
-            CfgValue part = buildCfgValue(partInfo, partJson, notNullValueDeep - 1, nullValueDeep - 1);
-            if (part != null) {
-                cfgValue.addValue(part);//add part
-            }
-        }
-        return cfgValue;
-    }
-
-    private static CfgValue buildViewStructCfgValue(CfgInfo mapCfgInfo, Object mapJson, //
-            int notNullValueDeep, int nullValueDeep) {//TODO
-        CfgValue cfgValue = new CfgValue(mapCfgInfo, UUID.randomUUID());
-        Object partJson = mapJson;//
-        for (CfgInfo partInfo : mapCfgInfo.getPartsInfo()) {
             CfgValue part = buildCfgValue(partInfo, partJson, notNullValueDeep - 1, nullValueDeep - 1);
             if (part != null) {
                 cfgValue.addValue(part);//add part
@@ -256,21 +242,19 @@ public class CfgParser {
             String rs = Dt.toString(root.getValue(), "");
             return (trim && rs.isEmpty()) ? Undefined : new MyString(rs);
         }
-        if (type == CfgType.Struct) {
+        if (type.isStruct()) {
             JSONObject json = new JSONObject();
             for (CfgValue e : root.getChildren()) {
-                if (e.getCfgInfo().getType() == CfgType.ViewStruct) {
-                    for (CfgValue ee : e.getChildren()) {
-                        Object ree = toJson(ee, trim);
-                        if (!trim || ree != Undefined) {
-                            json.put(ee.getCfgInfo().getId(), ree);
-                        }
-                    }
-                    continue;
-                }
                 Object re = toJson(e, trim);
                 if (!trim || re != Undefined) {
-                    json.put(e.getCfgInfo().getId(), re);
+                    if (e.getCfgInfo().getType() == CfgType.ViewStruct) {
+                        JSONObject jsonRe = (JSONObject) re;
+                        for (String key : jsonRe.keys()) {
+                            json.put(key, jsonRe.get(key));
+                        }
+                    } else {
+                        json.put(e.getCfgInfo().getId(), re);
+                    }
                 }
             }
             return (trim && json.length() == 0) ? Undefined : json;

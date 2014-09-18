@@ -60,7 +60,7 @@ public class CfgValue {
     //非全路径
     public String getLabel() {
         CfgType parentType = (parent == null) ? null : parent.getCfgInfo().getType();
-        if (parentType == CfgType.Struct) {
+        if (parentType.isStruct()) {
             return cfgInfo.getLabelOrId();
         }
         CfgType type = cfgInfo.getType();
@@ -136,7 +136,7 @@ public class CfgValue {
         CfgType type = cfgInfo.getType();
         checkType(type.isStruct() || type == CfgType.Map);
         children = getChildren();
-        if (cfgInfo.getType() == CfgType.Struct) {
+        if (cfgInfo.getType().isStruct()) {
             for (CfgValue c : children) {
                 if (c.getCfgInfo().getId().equals(key)) {
                     return c;
@@ -184,7 +184,7 @@ public class CfgValue {
             return this;
         }
         CfgType type = cfgInfo.getType();
-        if (type == CfgType.Struct) {
+        if (type.isStruct()) {
             for (CfgValue child : children) {
                 String id = child.getCfgInfo().getId();
                 if (id.equals(token)) {

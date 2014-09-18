@@ -14,7 +14,7 @@ public class CfgType {
 
     public static final CfgType Struct = new CfgType("st", true, true, false);
     public static final CfgType ViewStruct = new CfgType("vst", true, true, false);
-    //viewStruct只能作为Struct的子元素
+    //viewStruct只能作为 struct 或 viewStruct 的子元素
 
     public static final CfgType Map = new CfgType("m", true, false, true);
     public static final CfgType List = new CfgType("l", true, false, true);

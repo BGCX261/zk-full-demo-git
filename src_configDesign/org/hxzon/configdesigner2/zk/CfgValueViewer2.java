@@ -32,6 +32,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
     private Component buttonPanel;
     private Button addBtn;
     private Button saveBtn;
+    private Component addPartDialog;
     private List<CfgValueHolder> valueHolders;
 
     public CfgValueViewer2(CfgValue cfgValue, Component viewParent) {
@@ -272,13 +273,14 @@ public class CfgValueViewer2 implements CfgValueHolder {
         btn.setParent(null);
         if (buttonPanel.getChildren().isEmpty()) {
             addBtn.setVisible(false);
+            addPartDialog.setVisible(false);
         }
         addValue_(newPartValue);
     }
 
     private void addValue() {
         if (buttonPanel != null) {
-            createDialog(buttonPanel, "添加字段");
+            addPartDialog = createDialog(buttonPanel, "添加字段");
         } else {
             CfgValue newEle = CfgParser.buildListElementCfgValue(cfgValue, 1);
             if (newEle.isMapElement()) {

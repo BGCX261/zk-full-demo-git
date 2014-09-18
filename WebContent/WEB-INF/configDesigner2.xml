@@ -31,17 +31,17 @@
 		<type type="s" />
 	</type>
 
+	<appbase typeDef="true" label="简单结构体（内嵌显示）">
+		<appname label="应用名" type="s" />
+		<appVersion label="应用版本" type="s" />
+	</appbase>
+
 	<baseInfo label="基本信息">
 		<rootA1 label="整数" type="ti" />
 		<rootA2 label="实数" type="tr" />
 		<rootA3 label="布尔" type="tb" />
 		<rootA4 label="字符串" type="ts" />
 		<rootA5 label="字符串（文本框）" type="tt" />
-
-		<appbase typeDef="true" label="简单结构体（内嵌显示）">
-			<appname label="应用名" type="s" />
-			<appVersion label="应用版本" type="s" />
-		</appbase>
 
 		<appbase type="appbase" embed="true" />
 
@@ -126,6 +126,9 @@
 		<baseView label="基本信息" type="vst">
 			<name label="名字" type="s" />
 			<desc label="描述" type="tt" />
+			<baseMoreView label="更多信息" type="vst">
+				<descMore label="更多描述" type="tt" />
+			</baseMoreView>
 		</baseView>
 		<attrs1 label="属性集1" type="m">
 			<e type="s" />
