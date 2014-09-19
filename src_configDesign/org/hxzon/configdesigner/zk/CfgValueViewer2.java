@@ -38,14 +38,19 @@ public class CfgValueViewer2 implements CfgValueHolder {
         this(cfgValue, viewParent, false);
     }
 
-    protected CfgValueViewer2(CfgValue cfgValue, Component viewParent, boolean embed) {
+    private CfgValueViewer2(CfgValue cfgValue, Component viewParent, boolean embed) {
         this.cfgValue = cfgValue;
         this.viewParent = viewParent;
         this.embed = embed;
-        //
         createView();
+        //
         if (!embed) {
+            Component rootViewOrig = (Component) viewParent.getAttribute("rootView");
+            if (rootViewOrig != null) {
+                viewParent.removeChild(rootViewOrig);
+            }
             viewParent.appendChild(view);
+            viewParent.setAttribute("rootView", view);
         }
     }
 
@@ -239,10 +244,9 @@ public class CfgValueViewer2 implements CfgValueHolder {
     private void deleteValue(Component btn) {
         CfgValue deleteCfgValue = (CfgValue) btn.getAttribute("cfgValue");
         if (deleteCfgValue == cfgValue) {
-            CfgValue parent = deleteCfgValue.getParent();
-            parent.removeValue(deleteCfgValue);
-            viewParent.removeChild(view);
-            new CfgValueViewer2(parent, viewParent);
+            CfgValue parentCfgValue = deleteCfgValue.getParent();
+            parentCfgValue.removeValue(deleteCfgValue);
+            new CfgValueViewer2(parentCfgValue, viewParent);
             return;
         }
 
@@ -296,7 +300,6 @@ public class CfgValueViewer2 implements CfgValueHolder {
         }
         if (origValue == cfgValue) {
             origValue.getParent().addValue(newValue);
-            viewParent.removeChild(view);
             new CfgValueViewer2(newValue, viewParent);
             return;
         }
@@ -317,13 +320,11 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
     private void returnParent() {
         CfgValue parent = cfgValue.getParent();
-        viewParent.removeChild(view);
         new CfgValueViewer2(parent, viewParent);
     }
 
     private void enter(Component btn) {
         CfgValue cfgValue = (CfgValue) btn.getAttribute("cfgValue");
-        viewParent.removeChild(view);
         new CfgValueViewer2(cfgValue, viewParent);
     }
 
