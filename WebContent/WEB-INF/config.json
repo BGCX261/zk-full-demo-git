@@ -1,34 +1,41 @@
 {
   "baseInfo" : {
-    "rootA1" : 1,
-    "rootA2" : 1.1,
-    "rootA3" : true,
-    "rootA4" : "default",
-    "rootA5" : "null",
+    "a1" : 1,
+    "a2" : 2.2,
+    "a3" : true,
+    "a4" : "a4",
+    "a5" : "",
+    "a6" : 6,
+    "a7" : 7.7,
+    "a8" : false,
+    "a9" : "a9",
+    "a10" : "",
     "appbase" : {
       "appname" : "rpggame",
       "appVersion" : "v1.1"
     },
-    "rootS1" : {
-      "rootS1A1" : "null"
+    "s1" : {
+      "s1a1" : "s1a1l"
     },
-    "rootM1" : {
-      "a1" : "a1v",
-      "a2" : "a2v"
+    "attrDefaultValues" : {
+      "atk" : "100",
+      "def" : "200",
+      "hp":"1000"
     },
-    "rootM2" : {
-      "a1" : {
-        "rootM2A1" : 1,
-        "rootM2A2" : "a1v",
-        "rootM2A3" : true
+    "attrDefaultValues2" : {
+      "atk" : {
+        "desc" : "攻击力用于减少敌人的生命值",
+        "name" : "攻击力",
+        "value" : 100
       },
-      "a2" : {
-        "rootM2A2" : "a2v"
+      "def" : {
+        "name" : "防御力",
+        "value":200
       }
     },
-    "rootL1" : [
-      "l1",
-      "l2"
+    "roleInUse" : [
+      "u1",
+      "u2"
     ],
     "rootL2" : [
       {

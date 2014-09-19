@@ -40,7 +40,10 @@ public class CfgParser {
         for (Element ce : Dom4jUtil.getElements(e)) {
             CfgInfo partCfgInfo = toCfgInfo(ce);
             String typeDef = Dom4jUtil.getText(ce, "@typeDef");
-            if ("true".equals(typeDef)) {
+            if (typeDef != null) {
+                if (!typeDef.isEmpty()) {
+                    partCfgInfo.setId(typeDef);
+                }
                 typeInfos.put(partCfgInfo.getId(), partCfgInfo);
             } else {
                 String idPrefix = Dom4jUtil.getText(ce, "@idPrefix");

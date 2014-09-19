@@ -26,7 +26,7 @@ public class CfgUtil {
     static {
         try {
             WebApp webapp = Executions.getCurrent().getDesktop().getWebApp();
-            String xmlStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/configDesigner2.xml")), "utf8");
+            String xmlStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/configDesigner.xml")), "utf8");
             CfgInfo info = CfgParser.parseSchema(xmlStr);
             String jsonStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/config.json")), "utf8");
             Object json = JsonUtil.parseJson(jsonStr);
