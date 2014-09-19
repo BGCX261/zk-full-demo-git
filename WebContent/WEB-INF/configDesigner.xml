@@ -10,19 +10,19 @@
 
 	<!-- 自定义结构类型 -->
 	<type typeDef="user" type="st">
-		<e id="id" label="玩家id" type="ts" />
+		<userId id="id" label="玩家id" type="s" />
 		<atkx id="atk" label="攻击力" type="tr" />
 		<defx id="def" label="防御力" type="tr" />
 		<desc label="描述" type="tt" optional="true" />
 	</type>
 
 	<!-- 自定义列表，映射表类型 -->
-	<type typeDef="useList" type="l" label="列表-玩家">
-		<type type="user" />
+	<type typeDef="userList" type="l" label="列表-玩家">
+		<e type="user" />
 	</type>
 
 	<type typeDef="userMap" type="m" label="映射表-玩家">
-		<type type="user" />
+		<e type="user" />
 	</type>
 
 	<type typeDef="tm2" type="l">
