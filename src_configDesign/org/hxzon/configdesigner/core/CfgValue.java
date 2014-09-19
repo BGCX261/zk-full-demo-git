@@ -2,14 +2,12 @@ package org.hxzon.configdesigner.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.hxzon.util.Dt;
 import org.hxzon.util.StringParser;
 
 public class CfgValue {
 
-    private UUID uuid;
     private CfgInfo cfgInfo;
     private CfgValue parent;
     private String key;
@@ -17,9 +15,15 @@ public class CfgValue {
     private Object value;
 
     public int indexCode() {
-        return uuid.hashCode();
+        return this.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return cfgInfo.getId() + "[" + cfgInfo.getLabel() + "]" + cfgInfo.getType().getId();
+    }
+
+    //====================
     public String getFullPath() {
         String parentPath = (parent == null) ? "" : parent.getFullPath() + "/";
         CfgType parentType = parent == null ? null : parent.getCfgInfo().getType();
@@ -30,18 +34,6 @@ public class CfgValue {
             return parentPath + key;
         }
         return parentPath + getCfgInfo().getId();
-    }
-
-    public boolean isElement() {
-        if (parent == null) {
-            return false;
-        }
-        return parent.getCfgInfo().getType().isElementContainer();
-    }
-
-    public boolean isMapElement() {
-        CfgType parentType = (parent == null) ? null : parent.getCfgInfo().getType();
-        return parentType == CfgType.Map;
     }
 
     //全路径
@@ -93,13 +85,32 @@ public class CfgValue {
         return cfgInfo.getLabel();//root
     }
 
-    @Override
-    public String toString() {
-        return cfgInfo.getId() + "[" + cfgInfo.getLabel() + "]" + cfgInfo.getType().getId();
+    //================
+    public boolean isElement() {
+        if (parent == null) {
+            return false;
+        }
+        return parent.getCfgInfo().getType().isElementContainer();
     }
 
-    public boolean isSimpleValue() {
-        return cfgInfo.getType().isSimple();
+    public boolean isMapElement() {
+        CfgType parentType = (parent == null) ? null : parent.getCfgInfo().getType();
+        return parentType == CfgType.Map;
+    }
+
+    public boolean isDeletable() {
+        if (parent == null) {
+            return false;
+        }
+        CfgType type = parent.getCfgInfo().getType();
+        return type.isElementContainer() || cfgInfo.isOptional();
+    }
+
+    public boolean isNull() {
+        if (cfgInfo.getType().isSimple()) {
+            return value == null;
+        }
+        return children == null || children.isEmpty();
     }
 
     //
@@ -164,13 +175,7 @@ public class CfgValue {
         return children;
     }
 
-    public boolean isNull() {
-        if (cfgInfo.getType().isSimple()) {
-            return value == null;
-        }
-        return children == null || children.isEmpty();
-    }
-
+    //=====================
     public CfgValue findCfgValue(String path) {
         StringParser parser = new StringParser(path);
         parser.setWithDefaultWps(true);
@@ -211,9 +216,8 @@ public class CfgValue {
     }
 
     //==================
-    public CfgValue(CfgInfo cfgInfo, UUID uuid) {
+    public CfgValue(CfgInfo cfgInfo) {
         this.cfgInfo = cfgInfo;
-        this.uuid = uuid;
     }
 
     //

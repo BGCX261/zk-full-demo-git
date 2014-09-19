@@ -118,22 +118,32 @@
 			</e>
 		</rootL4>
 
-		<rootE1 label="错误类型" type="st" />
+		<rootE1 label="错误类型" type="xx" />
 	</baseInfo>
 
-	<!-- 有idPrefix，则表示定义对象的映射表 -->
+	<!-- 拥有idPrefix，特殊处理：本身变成实体结构，所在位置转为映射表，元素的id自动生成 -->
 	<monster idPrefix="m">
-		<baseView label="基本信息" type="vst">
+		<baseView label="基本信息" type="vst" embed="true">
 			<name label="名字" type="s" />
 			<desc label="描述" type="tt" />
-			<baseMoreView label="更多信息" type="vst">
+			<baseMoreView label="更多信息" type="vst" embed="true">
 				<descMore label="更多描述" type="tt" />
 			</baseMoreView>
 		</baseView>
+		<modelView label="模型信息" type="vst">
+			<modelL label="模型长度" type="r" />
+			<modelH label="模型高度" type="r" />
+			<modelW label="模型宽度" type="r" />
+			<modelMoreView label="速度" type="vst">
+				<runSpeed label="跑步速度" type="r" />
+				<walkSpeed label="走路速度" type="r" />
+				<jumpSpeed label="跳走速度（可选）" type="r" optional="true" />
+			</modelMoreView>
+		</modelView>
 		<attrs1 label="属性集1" type="m">
 			<e type="s" />
 		</attrs1>
-		<attrs2 label="属性集2" type="m" embed="true">
+		<attrs2 label="属性集2（可选）" type="m" embed="true" optional="true">
 			<e type="s" />
 		</attrs2>
 	</monster>

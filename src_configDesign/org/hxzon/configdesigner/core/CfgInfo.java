@@ -18,10 +18,15 @@ public class CfgInfo {
     private CfgInfo elementInfo;
     //
     private Object defaultValue;
-    private boolean textArea;//use textArea or textInput
-    private boolean embed;
-    private String idPrefix;
     private CfgValueValidator validator;
+    private String idPrefix;
+    //三态值，默认为false
+    private String textArea;//use textArea or textInput
+    private String embed;
+    private String optional;
+
+    public static final String True = "true";
+    public static final String False = "false";
 
     //====================
     @Override
@@ -151,28 +156,6 @@ public class CfgInfo {
         this.defaultValue = defaultValue;
     }
 
-    public boolean isTextArea() {
-        if (!textArea && typeRef != null) {
-            return typeRef.isTextArea();
-        }
-        return textArea;
-    }
-
-    public void setTextArea(boolean textArea) {
-        this.textArea = textArea;
-    }
-
-    public boolean isEmbed() {
-        if (!embed && typeRef != null) {
-            return typeRef.isEmbed();
-        }
-        return embed;
-    }
-
-    public void setEmbed(boolean embed) {
-        this.embed = embed;
-    }
-
     public String getIdPrefix() {
         return idPrefix;
     }
@@ -192,4 +175,37 @@ public class CfgInfo {
         this.validator = validator;
     }
 
+    //=========================
+    public boolean isTextArea() {
+        if (textArea == null && typeRef != null) {
+            return typeRef.isTextArea();
+        }
+        return textArea == True;
+    }
+
+    public void setTextArea(String textArea) {
+        this.textArea = textArea;
+    }
+
+    public boolean isEmbed() {
+        if (embed == null && typeRef != null) {
+            return typeRef.isEmbed();
+        }
+        return embed == True;
+    }
+
+    public void setEmbed(String embed) {
+        this.embed = embed;
+    }
+
+    public boolean isOptional() {
+        if (optional == null && typeRef != null) {
+            return typeRef.isOptional();
+        }
+        return optional == True;
+    }
+
+    public void setOptional(String optional) {
+        this.optional = optional;
+    }
 }
