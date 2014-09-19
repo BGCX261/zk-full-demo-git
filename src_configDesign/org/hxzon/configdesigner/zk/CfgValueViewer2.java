@@ -34,6 +34,8 @@ public class CfgValueViewer2 implements CfgValueHolder {
     private Component addPartDialog;
     private List<CfgValueHolder> valueHolders;
 
+    //
+
     public CfgValueViewer2(CfgValue cfgValue, Component viewParent) {
         this(cfgValue, viewParent, false);
     }
@@ -51,6 +53,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
             }
             viewParent.appendChild(view);
             viewParent.setAttribute("rootView", view);
+            viewParent.setAttribute("rootValue", cfgValue);
         }
     }
 
@@ -71,12 +74,13 @@ public class CfgValueViewer2 implements CfgValueHolder {
     private Component createComboPane() {
         valueHolders = new ArrayList<CfgValueHolder>();
         //
+        Window window = new Window();
         Vlayout pane = new Vlayout();
         Hlayout titleLayout = new Hlayout();
 
         titleLayout.appendChild(embed ? createLabel(cfgValue) : createTitle(cfgValue));
         if (cfgValue.isDeletable()) {
-            Button delBtn = createDeleteBtn(cfgValue, pane);
+            Button delBtn = createDeleteBtn(cfgValue, window);
             titleLayout.appendChild(delBtn);
         }
         addBtn = createAddBtn();
@@ -89,6 +93,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
             titleLayout.appendChild(returnBtn);
         }
         titleLayout.appendChild(createViewDataBtn(cfgValue));
+        titleLayout.setStyle("background-color:#eee");
         pane.appendChild(titleLayout);
         pane.appendChild(new Space());
         if (cfgValue.isMapElement()) {
@@ -97,7 +102,9 @@ public class CfgValueViewer2 implements CfgValueHolder {
         Component body = createBody(cfgValue);
         pane.appendChild(body);
         //
-        return pane;
+        window.appendChild(pane);
+        window.setBorder(true);
+        return window;
     }
 
     private Component createBody(CfgValue cfgValue) {
@@ -212,11 +219,11 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
     private Component createLinkPane(CfgValue cfgValue) {
         Hlayout pane = new Hlayout();
-        pane.appendChild(createLabel(cfgValue));
+        //pane.appendChild(createLabel(cfgValue));
+        pane.appendChild(createEnterBtn(cfgValue));
         if (cfgValue.isDeletable()) {
             pane.appendChild(createDeleteBtn(cfgValue, pane));
         }
-        pane.appendChild(createEnterBtn(cfgValue));
         pane.appendChild(createViewDataBtn(cfgValue));
         return pane;
     }
@@ -243,7 +250,8 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
     private void deleteValue(Component btn) {
         CfgValue deleteCfgValue = (CfgValue) btn.getAttribute("cfgValue");
-        if (deleteCfgValue == cfgValue) {
+        CfgValue rootValue = (CfgValue) viewParent.getAttribute("rootValue");
+        if (deleteCfgValue == rootValue) {
             CfgValue parentCfgValue = deleteCfgValue.getParent();
             parentCfgValue.removeValue(deleteCfgValue);
             new CfgValueViewer2(parentCfgValue, viewParent);
@@ -298,7 +306,8 @@ public class CfgValueViewer2 implements CfgValueHolder {
                 newValue.setKey(newValue.getKey() + "_copy");
             }
         }
-        if (origValue == cfgValue) {
+        CfgValue rootValue = (CfgValue) viewParent.getAttribute("rootValue");
+        if (origValue == rootValue) {
             origValue.getParent().addValue(newValue);
             new CfgValueViewer2(newValue, viewParent);
             return;
@@ -440,6 +449,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
         Button btn = new Button();
         btn.setAttribute("cfgValue", cfgValue);
         btn.setImage("images/easyicon_enter.png");
+        btn.setLabel(cfgValue.getLabel());
         btn.setTooltiptext("进入");
         btn.addEventListener(Events.ON_CLICK, EnterBtnEventListener);
         return btn;

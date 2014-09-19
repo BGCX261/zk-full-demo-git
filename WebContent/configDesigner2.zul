@@ -1,5 +1,2 @@
-<?page title="Zk Full Demo"?>
-<panel title="后台配置" border="normal" width="100%"
-	style="overflow:auto;" sizable="true">
-	<panelchildren apply="org.hxzon.configdesigner.zk.ConfigDesignerComposer2" />
-</panel>
+<?page title="游戏设计后台"?>
+<window apply="org.hxzon.configdesigner.zk.ConfigDesignerComposer2" />

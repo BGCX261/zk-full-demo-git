@@ -10,18 +10,22 @@
     "a8" : false,
     "a9" : "a9",
     "a10" : "",
+
     "appbase" : {
       "appname" : "rpggame",
       "appVersion" : "v1.1"
     },
+
     "s1" : {
-      "s1a1" : "s1a1l"
+      "s1a1" : "s1a1"
     },
+
     "attrDefaultValues" : {
       "atk" : "100",
       "def" : "200",
       "hp":"1000"
     },
+
     "attrDefaultValues2" : {
       "atk" : {
         "desc" : "攻击力用于减少敌人的生命值",
@@ -33,10 +37,24 @@
         "value":200
       }
     },
+
+    "attrDefaultValues3" : {
+      "atk" : {
+        "desc" : "攻击力用于减少敌人的生命值",
+        "name" : "攻击力",
+        "value" : 100
+      },
+      "def" : {
+        "name" : "防御力",
+        "value":200
+      }
+    },
+
     "roleInUse" : [
       "u1",
       "u2"
     ],
+
     "l_l_st" : [
     [
       [
@@ -48,6 +66,7 @@
       ]
     ]
   ],
+
     "rootL2" : [
       {
         "rootL2A1" : "l1",

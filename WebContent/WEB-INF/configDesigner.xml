@@ -18,7 +18,7 @@
 
 	<!-- 自定义列表，映射表类型 -->
 	<type typeDef="userList" type="l" label="列表-玩家">
-		<e type="user" />
+		<e type="user" embed="true"/>
 	</type>
 
 	<type typeDef="userMap" type="m" label="映射表-玩家">
@@ -48,14 +48,20 @@
 			<a3 label="布尔" type="tb" />
 			<a4 label="字符串" type="ts" />
 			<a5 label="字符串（文本框）" type="tt" />
-			<vst1_1 label="分组" type="vst">
+			<vst1_1 label="视觉分组1（新页面）" type="vst">
 				<a6 label="整数" type="ti" />
 				<a7 label="实数" type="tr" />
+			</vst1_1>
+			<vst1_2 label="视觉分组2（内嵌）" type="vst" embed="true">
 				<!-- 覆盖自定义类型的默认值 -->
 				<a8 label="布尔" type="tb" value="false" />
 				<a9 label="字符串（文本框）" type="ts" textarea="true" />
 				<a10 label="字符串" type="tt" textarea="false" />
-			</vst1_1>
+			</vst1_2>
+			<st label="内嵌结构" type="st" embed="true">
+				<a1 label="属性1" type="s" />
+				<a2 label="属性2" type="b" />
+			</st>
 		</vst1>
 
 		<!-- 引用自定义类型，内嵌结构体 -->
@@ -75,7 +81,7 @@
 
 		<!-- 映射表 -->
 		<attrDefaultValues label="属性默认值" type="m" embed="true">
-			<e type="s"/>
+			<e type="s" />
 			<!-- 以下结构被忽略 -->
 			<rootM3A1 label="属性1" type="s" />
 			<rootM3A2 label="属性2" type="i" />
@@ -89,6 +95,15 @@
 				<value label="属性值" type="i" />
 			</e>
 		</attrDefaultValues2>
+
+		<!-- 元素内嵌显示 -->
+		<attrDefaultValues3 label="属性默认值3（元素内嵌显示）" type="m">
+			<e type="st" labelKey="name" embed="true">
+				<desc label="备注" type="tt" optional="true" />
+				<name label="属性名" type="s" />
+				<value label="属性值" type="i" />
+			</e>
+		</attrDefaultValues3>
 
 		<m_l_s label="映射表-列表-字符串" type="m">
 			<e type="strList" />
@@ -108,8 +123,8 @@
 		</roleInUse>
 
 		<l_l_st label="列表-列表-列表-玩家" type="l">
-			<e type="l">
-				<e type="userList" />
+			<e type="l" embed="true">
+				<e type="userList" embed="true"/>
 			</e>
 		</l_l_st>
 

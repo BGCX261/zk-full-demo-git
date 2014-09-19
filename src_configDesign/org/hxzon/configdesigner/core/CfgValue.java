@@ -51,7 +51,10 @@ public class CfgValue {
 
     //非全路径
     public String getLabel() {
-        CfgType parentType = (parent == null) ? null : parent.getCfgInfo().getType();
+        if (parent == null) {
+            return cfgInfo.getLabel();
+        }
+        CfgType parentType = parent.getCfgInfo().getType();
         if (parentType.isStruct()) {
             return cfgInfo.getLabelOrId();
         }
