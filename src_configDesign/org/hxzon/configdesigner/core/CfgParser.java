@@ -97,17 +97,17 @@ public class CfgParser {
             if (type.isElementContainer()) {
                 cfgInfo.setElementInfo(toCfgInfo(Dom4jUtil.getElement(e)));
             }
-            if (type.isSimple()) {
-                cfgInfo.setDefaultValue(converValue(type, Dom4jUtil.getText(e, "@value")));
-                String limit = Dom4jUtil.getText(e, "limit");
-                if (limit != null) {
-                    cfgInfo.setValidator(new CfgValueValidator(cfgInfo.getType(), limit));
-                }
+        }
+        CfgType type = cfgInfo.getType();
+        if (type.isSimple()) {
+            cfgInfo.setDefaultValue(converValue(type, Dom4jUtil.getText(e, "@value")));
+            String limit = Dom4jUtil.getText(e, "@limit");
+            if (limit != null) {
+                cfgInfo.setValidator(new CfgValueValidator(cfgInfo.getType(), limit));
             }
-            if (type == CfgType.String) {
-                cfgInfo.setTextArea(tristateValue(e, "@textarea"));
-            }
-
+        }
+        if (type == CfgType.String) {
+            cfgInfo.setTextArea(tristateValue(e, "@textarea"));
         }
         cfgInfo.setEmbed(tristateValue(e, "@embed"));
         cfgInfo.setOptional(tristateValue(e, "@optional"));

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root label="游戏设计后台">
 
-	<!-- 自定义简单类型，用于设置默认值 -->
-	<ti typeDef="" type="i" value="1" />
-	<tr typeDef="" type="r" value="1.1" />
-	<type typeDef="tb" type="b" value="true" />
-	<type typeDef="ts" type="s" value="default" />
-	<type typeDef="tt" type="s" textarea="true" />
+	<!-- 自定义简单类型，用于统一设定默认值，约束等 -->
+	<i_1_10 typeDef="" type="i" value="1" limit="min 1 max 10" label="整数（1到10之间）"/>
+	<r_0_1 typeDef="" type="r" value="0.1" limit="min 0 max 1"/>
+	<type typeDef="b_true" type="b" value="true" />
+	<type typeDef="str" type="s" limit="maxlen 8" />
+	<type typeDef="text" type="s" textarea="true" />
 
 	<!-- 自定义结构类型 -->
 	<type typeDef="user" type="st">
 		<userId id="id" label="玩家id" type="s" />
-		<atkx id="atk" label="攻击力" type="tr" />
-		<defx id="def" label="防御力" type="tr" />
-		<desc label="描述" type="tt" optional="true" />
+		<atkx id="atk" label="攻击力" type="r" />
+		<defx id="def" label="防御力" type="r" />
+		<desc label="描述" type="text" optional="true" />
 	</type>
 
 	<!-- 自定义列表，映射表类型 -->
@@ -27,7 +27,7 @@
 
 	<type typeDef="tm2" type="l">
 		<type type="st">
-			<type id="name" type="ts" />
+			<type id="name" type="str" />
 		</type>
 	</type>
 
@@ -43,20 +43,20 @@
 	<baseInfo label="公共信息">
 		<!-- 视觉上的分组 -->
 		<vst1 label="基本类型" type="vst" embed="true">
-			<a1 label="整数" type="ti" />
-			<a2 label="实数" type="tr" />
-			<a3 label="布尔" type="tb" />
-			<a4 label="字符串" type="ts" />
-			<a5 label="字符串（文本框）" type="tt" />
+			<a1 label="整数（1到10）" type="i_1_10" />
+			<a2 label="实数（0到1）" type="r_0_1" />
+			<a3 label="布尔" type="b_true" />
+			<a4 label="字符串" type="str" />
+			<a5 label="字符串（文本框）" type="text" />
 			<vst1_1 label="视觉分组1（新页面）" type="vst">
-				<a6 label="整数" type="ti" />
-				<a7 label="实数" type="tr" />
+				<a6 label="整数（最大值5）" type="i_1_10" limit="max 5"/>
+				<a7 label="实数" type="r_0_1" limit="none"/>
 			</vst1_1>
 			<vst1_2 label="视觉分组2（内嵌）" type="vst" embed="true">
-				<!-- 覆盖自定义类型的默认值 -->
-				<a8 label="布尔" type="tb" value="false" />
-				<a9 label="字符串（文本框）" type="ts" textarea="true" />
-				<a10 label="字符串" type="tt" textarea="false" />
+				<!-- 覆盖自定义类型的设定-->
+				<a8 label="布尔" type="b_true" value="false" />
+				<a9 label="字符串（文本框）" type="str" textarea="true" />
+				<a10 label="字符串" type="text" textarea="false" />
 			</vst1_2>
 			<st label="内嵌结构" type="st" embed="true">
 				<a1 label="属性1" type="s" />
@@ -90,7 +90,7 @@
 
 		<attrDefaultValues2 label="属性默认值2" type="m">
 			<e type="st" labelKey="name">
-				<desc label="备注" type="tt" optional="true" />
+				<desc label="备注" type="text" optional="true" />
 				<name label="属性名" type="s" />
 				<value label="属性值" type="i" />
 			</e>
@@ -99,7 +99,7 @@
 		<!-- 元素内嵌显示 -->
 		<attrDefaultValues3 label="属性默认值3（元素内嵌显示）" type="m">
 			<e type="st" labelKey="name" embed="true">
-				<desc label="备注" type="tt" optional="true" />
+				<desc label="备注" type="text" optional="true" />
 				<name label="属性名" type="s" />
 				<value label="属性值" type="i" />
 			</e>
@@ -166,9 +166,9 @@
 	<monster idPrefix="m">
 		<baseView label="基本信息" type="vst" embed="true">
 			<name label="名字" type="s" />
-			<desc label="描述" type="tt" />
+			<desc label="描述" type="text" />
 			<baseMoreView label="更多信息" type="vst" embed="true">
-				<descMore label="更多描述" type="tt" />
+				<descMore label="更多描述" type="text" />
 			</baseMoreView>
 		</baseView>
 		<modelView label="模型信息" type="vst">
@@ -192,9 +192,9 @@
 	<item idPrefix="i">
 		<baseView label="基本信息" type="vst" embed="true">
 			<name label="名字" type="s" />
-			<desc label="描述" type="tt" />
+			<desc label="描述" type="text" />
 			<baseMoreView label="更多信息" type="vst">
-				<descMore label="更多描述" type="tt" />
+				<descMore label="更多描述" type="text" />
 			</baseMoreView>
 		</baseView>
 		<attrs label="属性集" type="m">

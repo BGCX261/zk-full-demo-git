@@ -17,6 +17,10 @@ public class CfgValueValidator {
 
     public CfgValueValidator(CfgType type, String vstr) {
         this.type = type;
+        parse(vstr);
+    }
+
+    private void parse(String vstr) {
         StringParserEx parser = new StringParserEx(vstr);
         DefaultStringParserExMatcher matcher = new DefaultStringParserExMatcher();
         parser.setMatcher(matcher);
@@ -24,10 +28,9 @@ public class CfgValueValidator {
         parser.setTrimInBracket(true);
         matcher.setWithDefaultWps(true);
         matcher.setWps(new char[] { ',', '，', ';', '；', ':', '：' });
-        parse(parser, vstr);
-    }
-
-    private void parse(StringParserEx parser, String vstr) {
+        matcher.setWithDefaultDelimiters(true);
+        matcher.setDelimiters(new String[] { ",", "，", ";", "；", ":", "：" });
+        //
         String token = parser.nextToken();
         if ("select".equals(token)) {
             return;

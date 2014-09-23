@@ -34,13 +34,13 @@ public class CfgValueInputConstraint implements Constraint {
                     return;
                 }
                 if (vl > validator.getMaxInteger()) {
-                    throw new WrongValueException(comp, "请不要大于" + validator.getMaxInteger());
+                    throw new WrongValueException(comp, "错误：数字不能大于" + validator.getMaxInteger());
                 }
                 if (vl < validator.getMinInteger()) {
-                    throw new WrongValueException(comp, "请不要小于" + validator.getMinInteger());
+                    throw new WrongValueException(comp, "错误：数字不能小于" + validator.getMinInteger());
                 }
             } catch (NumberFormatException e) {
-                throw new WrongValueException(comp, "请输入整数");
+                throw new WrongValueException(comp, "错误：不是整数");
             }
         }
         if (type == CfgType.Real) {
@@ -50,13 +50,13 @@ public class CfgValueInputConstraint implements Constraint {
                     return;
                 }
                 if (vd > validator.getMaxDouble()) {
-                    throw new WrongValueException(comp, "请不要大于" + validator.getMaxDouble());
+                    throw new WrongValueException(comp, "错误：数字不能大于" + validator.getMaxDouble());
                 }
                 if (vd < validator.getMinDouble()) {
-                    throw new WrongValueException(comp, "请不要小于" + validator.getMinDouble());
+                    throw new WrongValueException(comp, "错误：数字不能小于" + validator.getMinDouble());
                 }
             } catch (NumberFormatException e) {
-                throw new WrongValueException(comp, "请输入数字");
+                throw new WrongValueException(comp, "错误：不是数字");
             }
         }
         if (type == CfgType.String) {
@@ -64,10 +64,10 @@ public class CfgValueInputConstraint implements Constraint {
                 return;
             }
             if (value.length() > validator.getMaxlen()) {
-                throw new WrongValueException(comp, "字符串的最大长度为" + validator.getMaxlen());
+                throw new WrongValueException(comp, "错误：字符串长度不能大于" + validator.getMaxlen());
             }
             if (value.length() < validator.getMinlen()) {
-                throw new WrongValueException(comp, "字符串的最小长度为" + validator.getMinlen());
+                throw new WrongValueException(comp, "错误：字符串长度不能小于" + validator.getMinlen());
             }
         }
     }
