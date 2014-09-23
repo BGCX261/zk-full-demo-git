@@ -8,8 +8,8 @@ public class CfgValueValidator {
 
     private CfgType type;
     private boolean required;
-    private long minInt = Long.MIN_VALUE;
-    private long maxInt = Long.MAX_VALUE;
+    private long minInteger = Long.MIN_VALUE;
+    private long maxInteger = Long.MAX_VALUE;
     private double minDouble = Double.MIN_VALUE;
     private double maxDouble = Double.MAX_VALUE;
     private int minlen = 0;
@@ -38,7 +38,7 @@ public class CfgValueValidator {
             }
             if ("min".equals(token)) {
                 if (type == CfgType.Integer) {
-                    minInt = Dt.toLong(parser.nextToken(), 0);
+                    minInteger = Dt.toLong(parser.nextToken(), 0);
                 }
                 if (type == CfgType.Real) {
                     minDouble = Dt.toDouble(parser.nextToken(), 0.0);
@@ -46,7 +46,7 @@ public class CfgValueValidator {
             }
             if ("max".equals(token)) {
                 if (type == CfgType.Integer) {
-                    maxInt = Dt.toLong(parser.nextToken(), 0);
+                    maxInteger = Dt.toLong(parser.nextToken(), 0);
                 }
                 if (type == CfgType.Real) {
                     maxDouble = Dt.toDouble(parser.nextToken(), 0.0);
@@ -62,27 +62,32 @@ public class CfgValueValidator {
         }
     }
 
-    public Object convert(String str) {
-        if (str == null || str.isEmpty()) {
-            return str;
-        }
-        if (type == CfgType.Integer) {
-            try {
-                Long tmpV = Long.parseLong(str);
-            } catch (Exception e) {
-
-            }
-        }
-        return null;
+    public boolean isRequired() {
+        return required;
     }
 
-    public static class ValidateResult {
-        public final String errorMsg;
-        public final Object value;
-
-        private ValidateResult(String errorMsg, Object value) {
-            this.errorMsg = errorMsg;
-            this.value = value;
-        }
+    public long getMinInteger() {
+        return minInteger;
     }
+
+    public long getMaxInteger() {
+        return maxInteger;
+    }
+
+    public double getMinDouble() {
+        return minDouble;
+    }
+
+    public double getMaxDouble() {
+        return maxDouble;
+    }
+
+    public int getMinlen() {
+        return minlen;
+    }
+
+    public int getMaxlen() {
+        return maxlen;
+    }
+
 }

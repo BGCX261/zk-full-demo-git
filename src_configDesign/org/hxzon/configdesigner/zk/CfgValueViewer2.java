@@ -280,6 +280,10 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
     private void addValue() {
         if (buttonPanel != null) {
+            //复用buttonPanel，所以cfgInfo新增字段时，不会立即反映出来，需刷新页面
+            //更新buttonPanel只解决新增“可选字段”的问题，新增“必填”字段，需要更新view面板
+            //所以，让用户自己刷新页面，毕竟修改模式的情况不频繁
+            //另一用户添加或删除了字段（或元素），目前也需要用户自己刷新页面
             addPartDialog = createDialog(buttonPanel, "添加字段");
         } else {
             CfgValue newEle = CfgParser.buildListElementCfgValue(cfgValue, 1);

@@ -5,8 +5,6 @@ import org.hxzon.configdesigner.core.CfgValue;
 import org.hxzon.util.Dt;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Doublebox;
-import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Textbox;
 
 public class CfgValueInputCompHolder implements CfgValueHolder {
@@ -25,6 +23,7 @@ public class CfgValueInputCompHolder implements CfgValueHolder {
         if (type == CfgType.String) {
             Textbox textbox = new Textbox();
             textbox.setValue(Dt.toString(cfgValue.getValue(), ""));
+            textbox.setConstraint(new CfgValueInputConstraint(cfgValue.getCfgInfo()));
             textbox.setMultiline(cfgValue.getCfgInfo().isTextArea());
             if (textbox.isMultiline()) {
                 textbox.setRows(8);
@@ -34,15 +33,11 @@ public class CfgValueInputCompHolder implements CfgValueHolder {
             }
             inputComponent = textbox;
         }
-        if (type == CfgType.Integer) {
-            Longbox longbox = new Longbox();
-            longbox.setValue(Dt.toLong(cfgValue.getValue(), 0));
-            inputComponent = longbox;
-        }
-        if (type == CfgType.Real) {
-            Doublebox doublebox = new Doublebox();
-            doublebox.setValue(Dt.toDouble(cfgValue.getValue(), 0));
-            inputComponent = doublebox;
+        if (type == CfgType.Integer || type == CfgType.Real) {
+            Textbox textbox = new Textbox();
+            textbox.setValue(Dt.toString(cfgValue.getValue(), ""));
+            textbox.setConstraint(new CfgValueInputConstraint(cfgValue.getCfgInfo()));
+            inputComponent = textbox;
         }
     }
 
@@ -53,18 +48,7 @@ public class CfgValueInputCompHolder implements CfgValueHolder {
             return;
         } else if (inputComponent instanceof Textbox) {
             cfgValue.setValue(((Textbox) inputComponent).getValue());
-        } else if (inputComponent instanceof Longbox) {
-            cfgValue.setValue(((Longbox) inputComponent).getValue());
-        } else if (inputComponent instanceof Doublebox) {
-            cfgValue.setValue(((Doublebox) inputComponent).getValue());
         }
-//        CfgValueValidator validator = cfgValue.getCfgInfo().getValidator();
-//        String value = getValue();
-//        if (validator != null) {
-//            cfgValue.setValue(validator.convert(value));
-//        } else {
-//            cfgValue.setValue(value);
-//        }
     }
 
     //============

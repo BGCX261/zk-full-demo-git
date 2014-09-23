@@ -16,10 +16,12 @@ public class CfgInfo {
     private String labelKey;
     //列表或映射表
     private CfgInfo elementInfo;
-    //
+    //简单类型
     private Object defaultValue;
     private CfgValueValidator validator;
+    //实体
     private String idPrefix;
+    private String groupKey;
     //三态值，默认为false
     private String textArea;//use textArea or textInput
     private String embed;
@@ -156,14 +158,6 @@ public class CfgInfo {
         this.defaultValue = defaultValue;
     }
 
-    public String getIdPrefix() {
-        return idPrefix;
-    }
-
-    public void setIdPrefix(String idPrefix) {
-        this.idPrefix = idPrefix;
-    }
-
     public CfgValueValidator getValidator() {
         if (validator == null && typeRef != null) {
             return typeRef.getValidator();
@@ -173,6 +167,23 @@ public class CfgInfo {
 
     public void setValidator(CfgValueValidator validator) {
         this.validator = validator;
+    }
+
+    //========================
+    public String getIdPrefix() {
+        return idPrefix;
+    }
+
+    public void setIdPrefix(String idPrefix) {
+        this.idPrefix = idPrefix;
+    }
+
+    public String getGroupKey() {
+        return groupKey;
+    }
+
+    public void setGroupKey(String groupKey) {
+        this.groupKey = groupKey;
     }
 
     //=========================
