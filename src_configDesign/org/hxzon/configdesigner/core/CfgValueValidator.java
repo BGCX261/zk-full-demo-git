@@ -14,6 +14,7 @@ public class CfgValueValidator {
     private double maxDouble = Double.MAX_VALUE;
     private int minlen = 0;
     private int maxlen = Integer.MAX_VALUE;
+    private String regex = null;
 
     public CfgValueValidator(CfgType type, String vstr) {
         this.type = type;
@@ -61,6 +62,9 @@ public class CfgValueValidator {
             if ("maxlen".equals(token) && type == CfgType.String) {
                 maxlen = Dt.toInt(parser.nextToken(), 0);
             }
+            if ("regex".equals(token) && type == CfgType.String) {
+                regex = parser.nextToken();
+            }
             token = parser.nextToken();
         }
     }
@@ -91,6 +95,10 @@ public class CfgValueValidator {
 
     public int getMaxlen() {
         return maxlen;
+    }
+
+    public String getRegex() {
+        return regex;
     }
 
 }

@@ -36,44 +36,27 @@ public class CfgParser {
         cfgInfo.setLabel(Dom4jUtil.getText(e, "@label"));
         //
         cfgInfo.setType(CfgType.Struct);
-        List<CfgInfo> partsInfo = new ArrayList<CfgInfo>();
-        for (Element ce : Dom4jUtil.getElements(e)) {
-            CfgInfo partCfgInfo = toCfgInfo(ce);
-            String typeDef = Dom4jUtil.getText(ce, "@typeDef");
-            if (typeDef != null) {
-                if (!typeDef.isEmpty()) {
-                    partCfgInfo.setId(typeDef);
-                }
-                typeInfos.put(partCfgInfo.getId(), partCfgInfo);
-            } else {
-                String idPrefix = Dom4jUtil.getText(ce, "@idPrefix");
-                if (idPrefix != null) {
-                    partCfgInfo.setIdPrefix(idPrefix);
-                    entityTypeInfos.put(partCfgInfo.getId(), partCfgInfo);
-                    entityIdSeqs.put(idPrefix, new AtomicInteger(0));
-                    //实体不能作为类型，否则导致实体在别处定义？
-                    CfgInfo mapInfo = new CfgInfo(CfgType.Map);
-                    mapInfo.setElementInfo(partCfgInfo);
-                    mapInfo.setId(partCfgInfo.getId());
-                    mapInfo.setLabel(partCfgInfo.getLabel());
-                    partsInfo.add(mapInfo);
-                } else {
-                    partsInfo.add(partCfgInfo);
-                }
-            }
-        }
-        cfgInfo.setPartsInfo(partsInfo);
-
+        fillPartsInfo(cfgInfo, e);
         return cfgInfo;
     }
 
     private static CfgInfo toCfgInfo(Element e) {
         CfgInfo cfgInfo = new CfgInfo();
-        String id = Dom4jUtil.getText(e, "@id");
-        if (id == null) {
-            id = e.getName();
+        String typeDef = Dom4jUtil.getText(e, "@typeDef");
+        if (typeDef != null) {//类型定义
+            if (!typeDef.isEmpty()) {
+                cfgInfo.setId(typeDef);
+            } else {
+                cfgInfo.setId(e.getName());
+            }
+            typeInfos.put(cfgInfo.getId(), cfgInfo);
+        } else {//非类型定义
+            String id = Dom4jUtil.getText(e, "@id");
+            if (id == null || id.isEmpty()) {
+                id = e.getName();
+            }
+            cfgInfo.setId(id);
         }
-        cfgInfo.setId(id);
         cfgInfo.setLabel(Dom4jUtil.getText(e, "@label"));
 
         String typeStr = Dom4jUtil.getText(e, "@type");
@@ -111,6 +94,23 @@ public class CfgParser {
         }
         cfgInfo.setEmbed(tristateValue(e, "@embed"));
         cfgInfo.setOptional(tristateValue(e, "@optional"));
+        //
+        if (typeDef != null) {
+            return null;//not part
+        }
+        //实体定义
+        String idPrefix = Dom4jUtil.getText(e, "@idPrefix");
+        if (idPrefix != null) {
+            cfgInfo.setIdPrefix(idPrefix);
+            entityTypeInfos.put(cfgInfo.getId(), cfgInfo);
+            entityIdSeqs.put(idPrefix, new AtomicInteger(0));
+            //实体不能作为类型，否则导致实体在别处定义？
+            CfgInfo mapInfo = new CfgInfo(CfgType.Map);
+            mapInfo.setElementInfo(cfgInfo);
+            mapInfo.setId(cfgInfo.getId());
+            mapInfo.setLabel(cfgInfo.getLabel());
+            return mapInfo;
+        }
         return cfgInfo;
     }
 
@@ -127,7 +127,9 @@ public class CfgParser {
         List<Element> childrenEle = Dom4jUtil.getElements(e);
         for (Element childEle : childrenEle) {
             CfgInfo partInfo = toCfgInfo(childEle);
-            parts.add(partInfo);
+            if (partInfo != null) {
+                parts.add(partInfo);
+            }
         }
         cfgInfo.setPartsInfo(parts);
     }

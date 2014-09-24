@@ -2,8 +2,9 @@
 <root label="游戏设计后台">
 
 	<!-- 自定义简单类型，用于统一设定默认值，约束等 -->
-	<i_1_10 typeDef="" type="i" value="1" limit="min 1 max 10" label="整数（1到10之间）"/>
-	<r_0_1 typeDef="" type="r" value="0.1" limit="min 0 max 1"/>
+	<i_1_10 typeDef="" type="i" value="1" limit="min 1 max 10"
+		label="整数（1到10之间）" />
+	<r_0_1 typeDef="" type="r" value="0.1" limit="min 0 max 1" />
 	<type typeDef="b_true" type="b" value="true" />
 	<type typeDef="str" type="s" limit="maxlen 8" />
 	<type typeDef="text" type="s" textarea="true" />
@@ -18,7 +19,7 @@
 
 	<!-- 自定义列表，映射表类型 -->
 	<type typeDef="userList" type="l" label="列表-玩家">
-		<e type="user" embed="true"/>
+		<e type="user" embed="true" labelKey="userId"/>
 	</type>
 
 	<type typeDef="userMap" type="m" label="映射表-玩家">
@@ -35,10 +36,6 @@
 		<type type="s" />
 	</type>
 
-	<appbase typeDef="appbase" label="应用程序版本信息" embed="true">
-		<appname label="应用名" type="s" />
-		<appVersion label="应用版本" type="s" />
-	</appbase>
 
 	<baseInfo label="公共信息">
 		<!-- 视觉上的分组 -->
@@ -49,11 +46,11 @@
 			<a4 label="字符串" type="str" />
 			<a5 label="字符串（文本框）" type="text" />
 			<vst1_1 label="视觉分组1（新页面）" type="vst">
-				<a6 label="整数（最大值5）" type="i_1_10" limit="max 5"/>
-				<a7 label="实数" type="r_0_1" limit="none"/>
+				<a6 label="整数（最大值5）" type="i_1_10" limit="max 5" />
+				<a7 label="实数" type="r_0_1" limit="none" />
 			</vst1_1>
 			<vst1_2 label="视觉分组2（内嵌）" type="vst" embed="true">
-				<!-- 覆盖自定义类型的设定-->
+				<!-- 覆盖自定义类型的设定 -->
 				<a8 label="布尔" type="b_true" value="false" />
 				<a9 label="字符串（文本框）" type="str" textarea="true" />
 				<a10 label="字符串" type="text" textarea="false" />
@@ -63,6 +60,11 @@
 				<a2 label="属性2" type="b" />
 			</st>
 		</vst1>
+
+		<appbase typeDef="appbase" label="应用程序版本信息" embed="true">
+			<appname label="应用名" type="s" />
+			<appVersion label="应用版本" type="s" />
+		</appbase>
 
 		<!-- 引用自定义类型，内嵌结构体 -->
 		<appbase type="appbase" />
@@ -124,7 +126,7 @@
 
 		<l_l_st label="列表-列表-列表-玩家" type="l">
 			<e type="l" embed="true">
-				<e type="userList" embed="true"/>
+				<e type="userList" embed="true" />
 			</e>
 		</l_l_st>
 
@@ -163,7 +165,7 @@
 	</baseInfo>
 
 	<!-- 拥有idPrefix，特殊处理：本身变成实体结构，所在位置转为映射表，元素的id自动生成 -->
-	<monster idPrefix="m">
+	<monster idPrefix="m" label="怪物" labelKey="baseView/name">
 		<baseView label="基本信息" type="vst" embed="true">
 			<name label="名字" type="s" />
 			<desc label="描述" type="text" />
@@ -189,18 +191,22 @@
 		</attrs2>
 	</monster>
 
-	<item idPrefix="i">
-		<baseView label="基本信息" type="vst" embed="true">
-			<name label="名字" type="s" />
-			<desc label="描述" type="text" />
-			<baseMoreView label="更多信息" type="vst">
-				<descMore label="更多描述" type="text" />
-			</baseMoreView>
-		</baseView>
-		<attrs label="属性集" type="m">
-			<attrGroup type="m" embed="true">
-				<attrValue type="s" />
-			</attrGroup>
-		</attrs>
-	</item>
+	<!-- 实体定义内嵌在一个映射表中，相当于给实体分组 -->
+	<items type="m" label="物品">
+		<item idPrefix="i" labelKey="baseView/name">
+			<baseView label="基本信息" type="vst" embed="true">
+				<name label="名字" type="s" />
+				<desc label="描述" type="text" />
+				<baseMoreView label="更多信息" type="vst">
+					<descMore label="更多描述" type="text" />
+				</baseMoreView>
+			</baseView>
+			<attrs label="属性集" type="m">
+				<attrGroup type="m" embed="true">
+					<attrValue type="s" />
+				</attrGroup>
+			</attrs>
+		</item>
+	</items>
+
 </root>

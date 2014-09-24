@@ -60,17 +60,18 @@ public class CfgValue {
         }
         CfgType type = cfgInfo.getType();
         if (parentType == CfgType.List) {
+            String index = String.valueOf(parent.getIndex(this));
             if (type != CfgType.Struct) {
-                return String.valueOf(parent.getIndex(this));
+                return index;
             }
             String labelKey = cfgInfo.getLabelKey();
             if (labelKey != null) {
-                CfgValue labelValue = getValue(labelKey);
+                CfgValue labelValue = findCfgValue(labelKey);
                 if (labelValue != null) {
-                    return String.valueOf(labelValue.getValue());
+                    return index + ":" + String.valueOf(labelValue.getValue());
                 }
             }
-            return String.valueOf(parent.getIndex(this));
+            return index;
         }
         if (parentType == CfgType.Map) {
             if (type != CfgType.Struct) {
@@ -78,9 +79,9 @@ public class CfgValue {
             }
             String labelKey = cfgInfo.getLabelKey();
             if (labelKey != null) {
-                CfgValue labelValue = getValue(labelKey);
+                CfgValue labelValue = findCfgValue(labelKey);
                 if (labelValue != null) {
-                    return String.valueOf(labelValue.getValue());
+                    return key + ":" + String.valueOf(labelValue.getValue());
                 }
             }
             return key;
