@@ -19,7 +19,7 @@
 
 	<!-- 自定义列表，映射表类型 -->
 	<type typeDef="userList" type="l" label="列表-玩家">
-		<e type="user" embed="true" labelKey="userId"/>
+		<e type="user" embed="true" labelKey="id"/>
 	</type>
 
 	<type typeDef="userMap" type="m" label="映射表-玩家">

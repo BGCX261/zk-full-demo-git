@@ -144,6 +144,13 @@ public class CfgValue {
 
     public CfgValue getValue(int index) {
         checkType(CfgType.List);
+        children = getChildren();
+        if (index < 0) {
+            index = children.size() - index;
+        }
+        if (index < 0 || index > children.size()) {
+            return null;
+        }
         return getChildren().get(index);
     }
 

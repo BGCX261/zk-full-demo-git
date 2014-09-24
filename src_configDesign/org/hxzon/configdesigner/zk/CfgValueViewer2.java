@@ -86,7 +86,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
         addBtn = createAddBtn();
         titleLayout.appendChild(addBtn);
         if (cfgValue.isElement()) {
-            titleLayout.appendChild(createCopyElementBtn(cfgValue));
+            titleLayout.appendChild(createCopyElementBtn(cfgValue, window));
         }
         if (!embed && cfgValue.getParent() != null) {
             Button returnBtn = createReturnBtn();
@@ -159,6 +159,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
             });
             mainPanel.appendChild(saveBtn);
+            mainPanel.setAttribute("saveBtn", saveBtn);
         }
     }
 
@@ -188,7 +189,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
             hlayout.appendChild(createDeleteBtn(cfgValue, pane));
         }
         if (cfgValue.isElement()) {
-            hlayout.appendChild(createCopyElementBtn(cfgValue));
+            hlayout.appendChild(createCopyElementBtn(cfgValue, pane));
         }
         pane.appendChild(hlayout);
         if (cfgValue.isMapElement()) {
@@ -212,7 +213,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
             pane.appendChild(createDeleteBtn(cfgValue, pane));
         }
         if (cfgValue.isElement()) {
-            pane.appendChild(createCopyElementBtn(cfgValue));
+            pane.appendChild(createCopyElementBtn(cfgValue, pane));
         }
         return pane;
     }
@@ -275,7 +276,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
             addBtn.setVisible(false);
             addPartDialog.setVisible(false);
         }
-        addValue_(newPartValue);
+        addPartValue_(newPartValue);
     }
 
     private void addValue() {
@@ -295,7 +296,19 @@ public class CfgValueViewer2 implements CfgValueHolder {
                     newEle.setKey("_new");
                 }
             }
-            addValue_(newEle);
+            addPartValue_(newEle);
+        }
+    }
+
+    private void addPartValue_(CfgValue newPartValue) {
+        cfgValue.addValue(newPartValue);
+        if (!embed) {
+            mainPanel.removeChild(saveBtn);
+        }
+        Component partPane = createPane(newPartValue);
+        mainPanel.appendChild(partPane);
+        if (!embed) {
+            mainPanel.appendChild(saveBtn);
         }
     }
 
@@ -310,24 +323,24 @@ public class CfgValueViewer2 implements CfgValueHolder {
                 newValue.setKey(newValue.getKey() + "_copy");
             }
         }
+        origValue.getParent().addValue(newValue);
+        //
         CfgValue rootValue = (CfgValue) viewParent.getAttribute("rootValue");
         if (origValue == rootValue) {
-            origValue.getParent().addValue(newValue);
             new CfgValueViewer2(newValue, viewParent);
             return;
         }
-        addValue_(newValue);
-    }
-
-    private void addValue_(CfgValue newValue) {
-        cfgValue.addValue(newValue);
-        if (!embed) {
-            mainPanel.removeChild(saveBtn);
-        }
+        //
         Component elePane = createPane(newValue);
-        mainPanel.appendChild(elePane);
-        if (!embed) {
-            mainPanel.appendChild(saveBtn);
+        Component origValuePane = (Component) btn.getAttribute("partPane");
+        Component parentComp = origValuePane.getParent();
+        Component saveBtn = (Component) parentComp.getAttribute("saveBtn");
+        if (saveBtn != null) {
+            parentComp.removeChild(saveBtn);
+        }
+        parentComp.appendChild(elePane);
+        if (saveBtn != null) {
+            parentComp.appendChild(saveBtn);
         }
     }
 
@@ -432,12 +445,13 @@ public class CfgValueViewer2 implements CfgValueHolder {
         return btn;
     }
 
-    private Button createCopyElementBtn(CfgValue origValue) {
+    private Button createCopyElementBtn(CfgValue origValue, Component partPane) {
         Button btn = new Button();
         btn.setAttribute("cfgValue", origValue);
         btn.setImage("images/easyicon_copy.png");
         btn.setTooltiptext("复制");
         btn.addEventListener(Events.ON_CLICK, CopyValueBtnEventListener);
+        btn.setAttribute("partPane", partPane);
         return btn;
     }
 

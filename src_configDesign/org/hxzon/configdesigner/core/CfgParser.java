@@ -70,11 +70,7 @@ public class CfgParser {
                 type = CfgType.Struct;
             }
             cfgInfo.setType(type);
-            if (type == CfgType.ViewStruct) {
-                fillPartsInfo(cfgInfo, e);
-            }
-            if (type == CfgType.Struct) {
-                cfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
+            if (type.isStruct()) {
                 fillPartsInfo(cfgInfo, e);
             }
             if (type.isElementContainer()) {
@@ -88,6 +84,10 @@ public class CfgParser {
             if (limit != null) {
                 cfgInfo.setValidator(new CfgValueValidator(cfgInfo.getType(), limit));
             }
+        }
+        if (type == CfgType.Struct) {
+            //vst不能直接作为元素的类型，所以不需要 labelKey
+            cfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
         }
         if (type == CfgType.String) {
             cfgInfo.setTextArea(tristateValue(e, "@textarea"));
