@@ -93,6 +93,7 @@
 		</property>
 	</bean>
 
+	<context:component-scan base-package="org.hxzon.admcmd.service.impl" />
 	<context:component-scan base-package="org.hxzon.easywork.service.impl" />
 
 	<context:annotation-config />

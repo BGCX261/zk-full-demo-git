@@ -45,7 +45,7 @@ public class CfgUtil {
     public static void indexCfg(CfgValue cfg) {
         indexer.put(cfg.indexCode(), cfg);
         if (cfg.getCfgInfo().getType().isCombo()) {
-            for (CfgValue childCfg : cfg.getChildren()) {
+            for (CfgValue childCfg : cfg.getValues()) {
                 indexCfg(childCfg);
             }
         }

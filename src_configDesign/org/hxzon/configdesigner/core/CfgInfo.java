@@ -76,10 +76,6 @@ public class CfgInfo {
     public CfgInfo() {
     }
 
-    public CfgInfo(CfgType type) {
-        setType(type);
-    }
-
     public String getId() {
         return id;
     }

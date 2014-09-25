@@ -1,5 +1,7 @@
 package org.hxzon.configdesigner.core;
 
+import java.util.regex.Pattern;
+
 import org.hxzon.util.DefaultStringParserExMatcher;
 import org.hxzon.util.Dt;
 import org.hxzon.util.StringParserEx;
@@ -8,13 +10,16 @@ public class CfgValueValidator {
 
     private CfgType type;
     private boolean required;
+    //
     private long minInteger = Long.MIN_VALUE;
     private long maxInteger = Long.MAX_VALUE;
+    //
     private double minDouble = Double.MIN_VALUE;
     private double maxDouble = Double.MAX_VALUE;
+    //
     private int minlen = 0;
     private int maxlen = Integer.MAX_VALUE;
-    private String regex = null;
+    private Pattern regex = null;
 
     public CfgValueValidator(CfgType type, String vstr) {
         this.type = type;
@@ -63,7 +68,8 @@ public class CfgValueValidator {
                 maxlen = Dt.toInt(parser.nextToken(), 0);
             }
             if ("regex".equals(token) && type == CfgType.String) {
-                regex = parser.nextToken();
+                String regexStr = parser.remainString();
+                regex = Pattern.compile(regexStr);
             }
             token = parser.nextToken();
         }
@@ -97,7 +103,7 @@ public class CfgValueValidator {
         return maxlen;
     }
 
-    public String getRegex() {
+    public Pattern getRegex() {
         return regex;
     }
 

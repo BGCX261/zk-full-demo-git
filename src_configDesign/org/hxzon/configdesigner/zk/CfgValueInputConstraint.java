@@ -1,5 +1,7 @@
 package org.hxzon.configdesigner.zk;
 
+import java.util.regex.Pattern;
+
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgType;
 import org.hxzon.configdesigner.core.CfgValueValidator;
@@ -68,6 +70,10 @@ public class CfgValueInputConstraint implements Constraint {
             }
             if (value.length() < validator.getMinlen()) {
                 throw new WrongValueException(comp, "错误：字符串长度不能小于" + validator.getMinlen());
+            }
+            Pattern regex = validator.getRegex();
+            if (regex != null && regex.matcher(value).matches()) {
+                throw new WrongValueException(comp, "错误：字符串不匹配正则表达式：" + regex.pattern());
             }
         }
     }

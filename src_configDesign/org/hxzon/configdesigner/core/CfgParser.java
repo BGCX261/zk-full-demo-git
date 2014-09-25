@@ -106,7 +106,8 @@ public class CfgParser {
             entityTypeInfos.put(cfgInfo.getId(), cfgInfo);
             entityIdSeqs.put(idPrefix, new AtomicInteger(0));
             //实体不能作为类型，否则导致实体在别处定义？
-            CfgInfo listMapInfo = new CfgInfo(CfgType.ListMap);
+            CfgInfo listMapInfo = new CfgInfo();
+            listMapInfo.setType(CfgType.ListMap);
             listMapInfo.setElementInfo(cfgInfo);
             listMapInfo.setId(cfgInfo.getId());
             listMapInfo.setLabel(cfgInfo.getLabel());
@@ -124,15 +125,15 @@ public class CfgParser {
     }
 
     private static void fillPartsInfo(CfgInfo cfgInfo, Element e) {
-        List<CfgInfo> parts = new ArrayList<CfgInfo>();
+        List<CfgInfo> partsInfo = new ArrayList<CfgInfo>();
         List<Element> childrenEle = Dom4jUtil.getElements(e);
         for (Element childEle : childrenEle) {
             CfgInfo partInfo = toCfgInfo(childEle);
             if (partInfo != null) {
-                parts.add(partInfo);
+                partsInfo.add(partInfo);
             }
         }
-        cfgInfo.setPartsInfo(parts);
+        cfgInfo.setPartsInfo(partsInfo);
     }
 
     public static Object converValue(CfgType type, String strValue) {
@@ -284,7 +285,7 @@ public class CfgParser {
         }
         if (type.isStruct()) {
             JSONObject json = new JSONObject();
-            for (CfgValue e : root.getChildren()) {
+            for (CfgValue e : root.getValues()) {
                 Object re = toJson(e, trim);
                 if (!trim || re != Undefined) {
                     if (e.getCfgInfo().getType() == CfgType.ViewStruct) {
@@ -301,21 +302,21 @@ public class CfgParser {
         }
         if (type == CfgType.List) {
             JSONArray jsonA = new JSONArray();
-            for (CfgValue e : root.getChildren()) {
+            for (CfgValue e : root.getValues()) {
                 jsonA.put(toJson(e, trim));
             }
             return (trim && jsonA.length() == 0) ? Undefined : jsonA;
         }
         if (type == CfgType.Map) {
             JSONObject json = new JSONObject();
-            for (CfgValue e : root.getChildren()) {
+            for (CfgValue e : root.getValues()) {
                 json.put(e.getKey(), toJson(e, trim));
             }
             return (trim && json.length() == 0) ? Undefined : json;
         }
         if (type == CfgType.ListMap) {
             JSONObject json = new JSONObject();
-            for (CfgValue e : root.getChildren()) {
+            for (CfgValue e : root.getValues()) {
                 CfgValue keyValue = e.findCfgValue(cfgInfo.getElementInfo().getKeyKey());
                 Object key = (keyValue == null) ? null : keyValue.getValue();
                 json.put(Dt.toString(key, "error"), toJson(e, trim));
@@ -329,7 +330,7 @@ public class CfgParser {
         CfgInfo cfgInfo = origCfgValue.getCfgInfo();
         CfgValue r = new CfgValue(cfgInfo);
         if (cfgInfo.getType().isCombo()) {
-            for (CfgValue childCfgValue : origCfgValue.getChildren()) {
+            for (CfgValue childCfgValue : origCfgValue.getValues()) {
                 r.addValue(copy(childCfgValue));
             }
         } else {

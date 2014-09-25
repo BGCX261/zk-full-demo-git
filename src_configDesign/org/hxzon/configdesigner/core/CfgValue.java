@@ -11,8 +11,8 @@ public class CfgValue {
     private CfgInfo cfgInfo;
     private CfgValue parent;
     private String key;
-    private List<CfgValue> children;//对于列表，好维护序号变更
     private Object value;
+    private List<CfgValue> values;//对于列表，好维护序号变更，value也指向values
 
     public int indexCode() {
         return this.hashCode();
@@ -117,15 +117,15 @@ public class CfgValue {
         if (parent == null) {
             return false;
         }
-        CfgType type = parent.getCfgInfo().getType();
-        return type.isElementContainer() || cfgInfo.isOptional();
+        CfgType parentType = parent.getCfgInfo().getType();
+        return parentType.isElementContainer() || cfgInfo.isOptional();
     }
 
     public boolean isNull() {
         if (cfgInfo.getType().isSimple()) {
             return value == null;
         }
-        return children == null || children.isEmpty();
+        return values == null || values.isEmpty();
     }
 
     //
@@ -144,40 +144,38 @@ public class CfgValue {
     public void removeValue(CfgValue cfgValue) {
         checkType(cfgInfo.getType().isCombo());
         //cfgValue.setParent(null);//?方便回到上级，即便被删除
-        getChildren().remove(cfgValue);
+        values.remove(cfgValue);
     }
 
     public void addValue(CfgValue cfgValue) {
         checkType(cfgInfo.getType().isCombo());
         cfgValue.setParent(this);
-        getChildren().add(cfgValue);
+        values.add(cfgValue);
     }
 
     public CfgValue getValue(int index) {
         checkType(CfgType.List);
-        children = getChildren();
         if (index < 0) {
-            index = children.size() - index;
+            index = values.size() - index;
         }
-        if (index < 0 || index > children.size()) {
+        if (index < 0 || index > values.size()) {
             return null;
         }
-        return getChildren().get(index);
+        return values.get(index);
     }
 
     public CfgValue getValue(String key) {
         CfgType type = cfgInfo.getType();
         checkType(type.isStruct() || type == CfgType.Map);
-        children = getChildren();
         if (cfgInfo.getType().isStruct()) {
-            for (CfgValue c : children) {
+            for (CfgValue c : values) {
                 if (c.getCfgInfo().getId().equals(key)) {
                     return c;
                 }
             }
             return null;
         }
-        for (CfgValue c : children) {
+        for (CfgValue c : values) {
             if (c.getKey().equals(key)) {
                 return c;
             }
@@ -188,14 +186,7 @@ public class CfgValue {
     public int getIndex(CfgValue c) {
         CfgType type = cfgInfo.getType();
         checkType(type == CfgType.List || type == CfgType.ListMap);
-        return getChildren().indexOf(c);
-    }
-
-    public List<CfgValue> getChildren() {
-        if (children == null) {
-            children = new ArrayList<CfgValue>();
-        }
-        return children;
+        return values.indexOf(c);
     }
 
     //=====================
@@ -213,7 +204,7 @@ public class CfgValue {
         }
         CfgType type = cfgInfo.getType();
         if (type.isStruct()) {
-            for (CfgValue child : children) {
+            for (CfgValue child : values) {
                 String id = child.getCfgInfo().getId();
                 if (id.equals(token)) {
                     return child.findCfgValue(parser);
@@ -221,7 +212,7 @@ public class CfgValue {
             }
         }
         if (type == CfgType.Map) {
-            for (CfgValue child : children) {
+            for (CfgValue child : values) {
                 String key = child.getKey();
                 if (key.equals(token)) {
                     return child.findCfgValue(parser);
@@ -236,7 +227,7 @@ public class CfgValue {
             }
         }
         if (type == CfgType.ListMap) {
-            for (CfgValue child : children) {
+            for (CfgValue child : values) {
                 CfgValue keyValue = child.findCfgValue(child.getCfgInfo().getKeyKey());
                 if (keyValue != null && token.equals(Dt.toString(keyValue.getValue(), null))) {
                     return child.findCfgValue(parser);
@@ -249,6 +240,10 @@ public class CfgValue {
     //==================
     public CfgValue(CfgInfo cfgInfo) {
         this.cfgInfo = cfgInfo;
+        if (cfgInfo.getType().isCombo()) {
+            values = new ArrayList<CfgValue>();
+            value = values;
+        }
     }
 
     //
@@ -258,6 +253,10 @@ public class CfgValue {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    public List<CfgValue> getValues() {
+        return values;
     }
 
     public CfgInfo getCfgInfo() {

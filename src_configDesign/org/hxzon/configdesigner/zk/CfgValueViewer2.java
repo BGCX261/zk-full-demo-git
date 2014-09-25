@@ -139,7 +139,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
 
     private Component createBody_listOrMap() {
         mainPanel = new Vlayout();
-        for (CfgValue cCfgValue : cfgValue.getChildren()) {
+        for (CfgValue cCfgValue : cfgValue.getValues()) {
             Component elePane = createPane(cCfgValue);
             mainPanel.appendChild(elePane);
         }
