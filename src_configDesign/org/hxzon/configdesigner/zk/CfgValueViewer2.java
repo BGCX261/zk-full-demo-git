@@ -289,11 +289,16 @@ public class CfgValueViewer2 implements CfgValueHolder {
         } else {
             CfgValue newEle = CfgParser.buildListElementCfgValue(cfgValue, 1);
             if (newEle.isMapElement()) {
-                String idPrefix = newEle.getCfgInfo().getIdPrefix();
-                if (idPrefix != null) {
-                    newEle.setKey(idPrefix + CfgParser.nextEntityId(idPrefix));
-                } else {
-                    newEle.setKey("_new");
+                newEle.setKey("_new");
+            }
+            String idPrefix = newEle.getCfgInfo().getIdPrefix();
+            String keyKey = newEle.getCfgInfo().getKeyKey();
+            if (idPrefix != null && keyKey != null) {
+                CfgValue keyValue = newEle.findCfgValue(keyKey);
+                if (keyValue != null) {
+                    String nextId = idPrefix + CfgParser.nextEntityId(idPrefix);
+                    keyValue.setValue(nextId);
+                    newEle.setKey(nextId);
                 }
             }
             addPartValue_(newEle);
@@ -316,11 +321,16 @@ public class CfgValueViewer2 implements CfgValueHolder {
         CfgValue origValue = (CfgValue) btn.getAttribute("cfgValue");
         CfgValue newValue = CfgParser.copy(origValue);
         if (origValue.isMapElement()) {
-            String idPrefix = newValue.getCfgInfo().getIdPrefix();
-            if (idPrefix != null) {
-                newValue.setKey(idPrefix + CfgParser.nextEntityId(idPrefix));
-            } else {
-                newValue.setKey(newValue.getKey() + "_copy");
+            newValue.setKey(newValue.getKey() + "_copy");
+        }
+        String idPrefix = newValue.getCfgInfo().getIdPrefix();
+        String keyKey = newValue.getCfgInfo().getKeyKey();
+        if (idPrefix != null && keyKey != null) {
+            CfgValue keyValue = newValue.findCfgValue(keyKey);
+            if (keyValue != null) {
+                String nextId = idPrefix + CfgParser.nextEntityId(idPrefix);
+                keyValue.setValue(nextId);
+                newValue.setKey(nextId);
             }
         }
         origValue.getParent().addValue(newValue);

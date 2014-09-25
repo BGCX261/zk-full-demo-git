@@ -171,6 +171,7 @@
 
 	<!-- 自定义viewStruct -->
 	<commonInfo typeDef="" label="基本信息" type="vst" embed="true">
+		<id label="id" type="s" />
 		<name label="名字" type="s" />
 		<desc label="描述" type="text" />
 		<baseMoreView label="更多信息" type="vst">
@@ -178,8 +179,8 @@
 		</baseMoreView>
 	</commonInfo>
 
-	<!-- 拥有idPrefix，特殊处理：本身变成实体结构，所在位置转为映射表，元素的id自动生成 -->
-	<monster idPrefix="m" label="怪物" labelKey="baseView/name">
+	<!-- 拥有idPrefix，特殊处理：本身变成实体结构，所在位置转为listMap，元素的id自动生成 -->
+	<monster idPrefix="m" label="怪物" labelKey="baseView/name" keyKey="baseView/id">
 		<baseView type="commonInfo" />
 		<modelView label="模型信息" type="vst">
 			<modelL label="模型长度" type="r" />
@@ -201,7 +202,7 @@
 
 	<!-- 实体定义内嵌在一个映射表中，相当于给实体分组，但是这个分组值不存在于实体字段中 -->
 	<items type="m" label="物品">
-		<item idPrefix="i" labelKey="baseView/name">
+		<item idPrefix="i" labelKey="baseView/name" keyKey="baseView/id">
 			<baseView type="commonInfo" />
 			<attrs label="属性集" type="m">
 				<attrGroup type="m" embed="true">

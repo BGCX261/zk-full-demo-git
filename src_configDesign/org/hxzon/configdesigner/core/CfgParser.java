@@ -106,11 +106,11 @@ public class CfgParser {
             entityTypeInfos.put(cfgInfo.getId(), cfgInfo);
             entityIdSeqs.put(idPrefix, new AtomicInteger(0));
             //实体不能作为类型，否则导致实体在别处定义？
-            CfgInfo mapInfo = new CfgInfo(CfgType.Map);
-            mapInfo.setElementInfo(cfgInfo);
-            mapInfo.setId(cfgInfo.getId());
-            mapInfo.setLabel(cfgInfo.getLabel());
-            return mapInfo;
+            CfgInfo listMapInfo = new CfgInfo(CfgType.ListMap);
+            listMapInfo.setElementInfo(cfgInfo);
+            listMapInfo.setId(cfgInfo.getId());
+            listMapInfo.setLabel(cfgInfo.getLabel());
+            return listMapInfo;
         }
         return cfgInfo;
     }
@@ -316,7 +316,7 @@ public class CfgParser {
         if (type == CfgType.ListMap) {
             JSONObject json = new JSONObject();
             for (CfgValue e : root.getChildren()) {
-                CfgValue keyValue = e.findCfgValue(cfgInfo.getKeyKey());
+                CfgValue keyValue = e.findCfgValue(cfgInfo.getElementInfo().getKeyKey());
                 Object key = (keyValue == null) ? null : keyValue.getValue();
                 json.put(Dt.toString(key, "error"), toJson(e, trim));
             }
