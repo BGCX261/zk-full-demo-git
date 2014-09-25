@@ -220,7 +220,7 @@ public class CfgValue {
                 }
             }
         }
-        if (type == CfgType.Map || type == CfgType.ListMap) {
+        if (type == CfgType.Map) {
             for (CfgValue child : children) {
                 String key = child.getKey();
                 if (key.equals(token)) {
@@ -233,6 +233,14 @@ public class CfgValue {
             CfgValue child = getValue(index);
             if (child != null) {
                 return child.findCfgValue(parser);
+            }
+        }
+        if (type == CfgType.ListMap) {
+            for (CfgValue child : children) {
+                CfgValue keyValue = child.findCfgValue(child.getCfgInfo().getKeyKey());
+                if (keyValue != null && token.equals(Dt.toString(keyValue.getValue(), null))) {
+                    return child.findCfgValue(parser);
+                }
             }
         }
         return null;

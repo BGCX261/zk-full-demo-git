@@ -242,7 +242,7 @@ public class CfgParser {
             JSONObject jsonObj = (JSONObject) mapsJson;
             for (String key : jsonObj.keys()) {
                 CfgValue e = buildCfgValue(eCfgInfo, jsonObj.get(key), notNullValueDeep - 1, nullValueDeep - 1);
-                e.setKey(key);
+                //e.setKey(key);//not use
                 listMapsCfgValue.addValue(e);//add element
             }
         }
