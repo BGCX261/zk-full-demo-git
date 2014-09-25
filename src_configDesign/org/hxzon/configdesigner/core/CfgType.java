@@ -19,9 +19,11 @@ public class CfgType {
 
     public static final CfgType Map = new CfgType("m", true, false, true);
     public static final CfgType List = new CfgType("l", true, false, true);
+    public static final CfgType ListMap = new CfgType("lm", true, false, true);
+    //本身为list，但导出时，为map
 
     public static final CfgType[] Types = new CfgType[] { //
-    String, Integer, Real, Boolean, Struct, ViewStruct, Map, List };
+    String, Integer, Real, Boolean, Struct, ViewStruct, Map, List, ListMap };
 
     public static CfgType parseCfgType(String type) {
         for (CfgType cfgType : Types) {

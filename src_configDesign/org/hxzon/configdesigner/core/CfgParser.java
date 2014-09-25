@@ -88,6 +88,7 @@ public class CfgParser {
         if (type == CfgType.Struct) {
             //vst不能直接作为元素的类型，所以不需要 labelKey
             cfgInfo.setLabelKey(Dom4jUtil.getText(e, "@labelKey"));
+            cfgInfo.setKeyKey(Dom4jUtil.getText(e, "@keyKey"));
         }
         if (type == CfgType.String) {
             cfgInfo.setTextArea(tristateValue(e, "@textarea"));
@@ -166,6 +167,9 @@ public class CfgParser {
         if (type == CfgType.List) {
             return buildListCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
         }
+        if (type == CfgType.ListMap) {
+            return buildListMapCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
+        }
         if (type == CfgType.Map) {
             return buildMapCfgValue(cfgInfo, json, notNullValueDeep, nullValueDeep);
         }
@@ -230,6 +234,21 @@ public class CfgParser {
         return mapsCfgValue;
     }
 
+    private static CfgValue buildListMapCfgValue(CfgInfo listMapsCfgInfo, Object mapsJson, //
+            int notNullValueDeep, int nullValueDeep) {
+        CfgValue listMapsCfgValue = new CfgValue(listMapsCfgInfo);
+        CfgInfo eCfgInfo = listMapsCfgInfo.getElementInfo();
+        if (mapsJson != null && mapsJson instanceof JSONObject) {
+            JSONObject jsonObj = (JSONObject) mapsJson;
+            for (String key : jsonObj.keys()) {
+                CfgValue e = buildCfgValue(eCfgInfo, jsonObj.get(key), notNullValueDeep - 1, nullValueDeep - 1);
+                e.setKey(key);
+                listMapsCfgValue.addValue(e);//add element
+            }
+        }
+        return listMapsCfgValue;
+    }
+
     public static CfgValue buildListElementCfgValue(CfgValue parent, int deep) {
         if (deep <= 0) {
             return null;
@@ -291,6 +310,15 @@ public class CfgParser {
             JSONObject json = new JSONObject();
             for (CfgValue e : root.getChildren()) {
                 json.put(e.getKey(), toJson(e, trim));
+            }
+            return (trim && json.length() == 0) ? Undefined : json;
+        }
+        if (type == CfgType.ListMap) {
+            JSONObject json = new JSONObject();
+            for (CfgValue e : root.getChildren()) {
+                CfgValue keyValue = e.findCfgValue(cfgInfo.getKeyKey());
+                Object key = (keyValue == null) ? null : keyValue.getValue();
+                json.put(Dt.toString(key, "error"), toJson(e, trim));
             }
             return (trim && json.length() == 0) ? Undefined : json;
         }

@@ -19,7 +19,7 @@
 
 	<!-- 自定义列表，映射表类型 -->
 	<type typeDef="userList" type="l" label="列表-玩家">
-		<e type="user" embed="true" labelKey="id"/>
+		<e type="user" embed="true" labelKey="id" />
 	</type>
 
 	<type typeDef="userMap" type="m" label="映射表-玩家">
@@ -140,6 +140,11 @@
 			</e>
 		</l_m_st>
 
+		<!-- lm的元素类型只能是结构体类型 -->
+		<lm_user label="lm-玩家" type="lm">
+			<e type="user" keyKey="id" />
+		</lm_user>
+
 		<error_type label="未知类型" type="xx" />
 
 		<rootL2 label="列表（元素为结构体）" type="l">
@@ -164,15 +169,18 @@
 		</rootL2>
 	</baseInfo>
 
+	<!-- 自定义viewStruct -->
+	<commonInfo typeDef="" label="基本信息" type="vst" embed="true">
+		<name label="名字" type="s" />
+		<desc label="描述" type="text" />
+		<baseMoreView label="更多信息" type="vst">
+			<descMore label="更多描述" type="text" />
+		</baseMoreView>
+	</commonInfo>
+
 	<!-- 拥有idPrefix，特殊处理：本身变成实体结构，所在位置转为映射表，元素的id自动生成 -->
 	<monster idPrefix="m" label="怪物" labelKey="baseView/name">
-		<baseView label="基本信息" type="vst" embed="true">
-			<name label="名字" type="s" />
-			<desc label="描述" type="text" />
-			<baseMoreView label="更多信息" type="vst" embed="true">
-				<descMore label="更多描述" type="text" />
-			</baseMoreView>
-		</baseView>
+		<baseView type="commonInfo" />
 		<modelView label="模型信息" type="vst">
 			<modelL label="模型长度" type="r" />
 			<modelH label="模型高度" type="r" />
@@ -191,16 +199,10 @@
 		</attrs2>
 	</monster>
 
-	<!-- 实体定义内嵌在一个映射表中，相当于给实体分组 -->
+	<!-- 实体定义内嵌在一个映射表中，相当于给实体分组，但是这个分组值不存在于实体字段中 -->
 	<items type="m" label="物品">
 		<item idPrefix="i" labelKey="baseView/name">
-			<baseView label="基本信息" type="vst" embed="true">
-				<name label="名字" type="s" />
-				<desc label="描述" type="text" />
-				<baseMoreView label="更多信息" type="vst">
-					<descMore label="更多描述" type="text" />
-				</baseMoreView>
-			</baseView>
+			<baseView type="commonInfo" />
 			<attrs label="属性集" type="m">
 				<attrGroup type="m" embed="true">
 					<attrValue type="s" />

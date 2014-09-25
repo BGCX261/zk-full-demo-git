@@ -73,6 +73,17 @@ public class CfgValue {
             }
             return index;
         }
+        if (parentType == CfgType.ListMap) {
+            String index = String.valueOf(parent.getIndex(this));
+            String keyKey = cfgInfo.getKeyKey();
+            if (keyKey != null) {
+                CfgValue keyValue = findCfgValue(keyKey);
+                if (keyValue != null) {
+                    return index + ":" + String.valueOf(keyValue.getValue());
+                }
+            }
+            return index;
+        }
         if (parentType == CfgType.Map) {
             if (type != CfgType.Struct) {
                 return key;
@@ -175,7 +186,8 @@ public class CfgValue {
     }
 
     public int getIndex(CfgValue c) {
-        checkType(CfgType.List);
+        CfgType type = cfgInfo.getType();
+        checkType(type == CfgType.List || type == CfgType.ListMap);
         return getChildren().indexOf(c);
     }
 
@@ -208,7 +220,7 @@ public class CfgValue {
                 }
             }
         }
-        if (type == CfgType.Map) {
+        if (type == CfgType.Map || type == CfgType.ListMap) {
             for (CfgValue child : children) {
                 String key = child.getKey();
                 if (key.equals(token)) {

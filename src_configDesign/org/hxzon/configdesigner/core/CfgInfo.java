@@ -13,7 +13,8 @@ public class CfgInfo {
     private String label;
     //结构体
     private List<CfgInfo> partsInfo;
-    private String labelKey;
+    private String labelKey;//结构体作为map元素
+    private String keyKey;//结构体作为listMap元素
     //列表或映射表
     private CfgInfo elementInfo;
     //简单类型
@@ -145,6 +146,17 @@ public class CfgInfo {
 
     public void setElementInfo(CfgInfo elementInfo) {
         this.elementInfo = elementInfo;
+    }
+
+    public String getKeyKey() {
+        if (keyKey == null && typeRef != null) {
+            return typeRef.getKeyKey();
+        }
+        return keyKey;
+    }
+
+    public void setKeyKey(String keyKey) {
+        this.keyKey = keyKey;
     }
 
     public Object getDefaultValue() {
