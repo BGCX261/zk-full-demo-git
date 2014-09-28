@@ -11,11 +11,12 @@ import org.apache.commons.io.FileUtils;
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgParser;
 import org.hxzon.configdesigner.core.CfgValue;
-import org.hxzon.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WebApp;
+
+import com.alibaba.fastjson.JSON;
 
 public class CfgUtil {
 
@@ -29,7 +30,7 @@ public class CfgUtil {
             String xmlStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/configDesigner.xml")), "utf8");
             CfgInfo info = CfgParser.parseSchema(xmlStr);
             String jsonStr = FileUtils.readFileToString(new File(webapp.getRealPath("/WEB-INF/config.json")), "utf8");
-            Object json = JsonUtil.parseJson(jsonStr);
+            Object json = JSON.parse(jsonStr);
             configer = CfgParser.buildCfgValue(info, json, 1000, 1);
             indexCfg(configer);
         } catch (IOException e) {

@@ -9,12 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.dom4j.Element;
 import org.hxzon.util.Dom4jUtil;
 import org.hxzon.util.Dt;
-import org.hxzon.util.json.JSONArray;
-import org.hxzon.util.json.JSONObject;
-import org.hxzon.util.json.MyString;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class CfgParser {
-    public static final Object Null = JSONObject.NULL;//有定义，值为null
+    public static final Object Null = null;//JSONObject.NULL;//有定义，值为null
     public static final Object Undefined = null;//未定义
 
     private static Map<String, CfgInfo> typeInfos = new HashMap<String, CfgInfo>();
@@ -196,7 +196,7 @@ public class CfgParser {
                 partJson = mapJson;
             } else if (mapJson != null && mapJson instanceof JSONObject) {
                 JSONObject jsonObj = (JSONObject) mapJson;
-                partJson = jsonObj.opt(partInfo.getId());
+                partJson = jsonObj.get(partInfo.getId());
             }
             CfgValue part = buildCfgValue(partInfo, partJson, notNullValueDeep - 1, nullValueDeep - 1);
             if (part != null) {
@@ -226,7 +226,7 @@ public class CfgParser {
         CfgInfo eCfgInfo = mapsCfgInfo.getElementInfo();
         if (mapsJson != null && mapsJson instanceof JSONObject) {
             JSONObject jsonObj = (JSONObject) mapsJson;
-            for (String key : jsonObj.keys()) {
+            for (String key : jsonObj.keySet()) {
                 CfgValue e = buildCfgValue(eCfgInfo, jsonObj.get(key), notNullValueDeep - 1, nullValueDeep - 1);
                 e.setKey(key);
                 mapsCfgValue.addValue(e);//add element
@@ -241,7 +241,7 @@ public class CfgParser {
         CfgInfo eCfgInfo = listMapsCfgInfo.getElementInfo();
         if (mapsJson != null && mapsJson instanceof JSONObject) {
             JSONObject jsonObj = (JSONObject) mapsJson;
-            for (String key : jsonObj.keys()) {
+            for (String key : jsonObj.keySet()) {
                 CfgValue e = buildCfgValue(eCfgInfo, jsonObj.get(key), notNullValueDeep - 1, nullValueDeep - 1);
                 //e.setKey(key);//not use
                 listMapsCfgValue.addValue(e);//add element
@@ -281,7 +281,7 @@ public class CfgParser {
         }
         if (type == CfgType.String) {
             String rs = Dt.toString(root.getValue(), "");
-            return (trim && rs.isEmpty()) ? Undefined : new MyString(rs);
+            return (trim && rs.isEmpty()) ? Undefined : rs;//new MyString(rs);
         }
         if (type.isStruct()) {
             JSONObject json = new JSONObject();
@@ -290,7 +290,7 @@ public class CfgParser {
                 if (!trim || re != Undefined) {
                     if (e.getCfgInfo().getType() == CfgType.ViewStruct) {
                         JSONObject jsonRe = (JSONObject) re;
-                        for (String key : jsonRe.keys()) {
+                        for (String key : jsonRe.keySet()) {
                             json.put(key, jsonRe.get(key));
                         }
                     } else {
@@ -298,21 +298,21 @@ public class CfgParser {
                     }
                 }
             }
-            return (trim && json.length() == 0) ? Undefined : json;
+            return (trim && json.isEmpty()) ? Undefined : json;
         }
         if (type == CfgType.List) {
             JSONArray jsonA = new JSONArray();
             for (CfgValue e : root.getValues()) {
-                jsonA.put(toJson(e, trim));
+                jsonA.add(toJson(e, trim));
             }
-            return (trim && jsonA.length() == 0) ? Undefined : jsonA;
+            return (trim && jsonA.isEmpty()) ? Undefined : jsonA;
         }
         if (type == CfgType.Map) {
             JSONObject json = new JSONObject();
             for (CfgValue e : root.getValues()) {
                 json.put(e.getKey(), toJson(e, trim));
             }
-            return (trim && json.length() == 0) ? Undefined : json;
+            return (trim && json.isEmpty()) ? Undefined : json;
         }
         if (type == CfgType.ListMap) {
             JSONObject json = new JSONObject();
@@ -321,7 +321,7 @@ public class CfgParser {
                 Object key = (keyValue == null) ? null : keyValue.getValue();
                 json.put(Dt.toString(key, "error"), toJson(e, trim));
             }
-            return (trim && json.length() == 0) ? Undefined : json;
+            return (trim && json.isEmpty()) ? Undefined : json;
         }
         return Undefined;
     }

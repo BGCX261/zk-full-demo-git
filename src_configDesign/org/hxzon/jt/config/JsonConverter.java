@@ -8,12 +8,13 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Element;
 import org.hxzon.util.Dom4jUtil;
-import org.hxzon.util.json.JSONArray;
-import org.hxzon.util.json.JSONObject;
-import org.hxzon.util.json.MyString;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class JsonConverter {
-    private static final Object Null = JSONObject.NULL;
+    private static final Object Null = null;//JSONObject.NULL;
 
     public static OutputSchemaInfo readOutputSchema(String xmlStr) {
         Element root = Dom4jUtil.getRoot(xmlStr);
@@ -62,20 +63,20 @@ public class JsonConverter {
         if (origObj instanceof JSONObject) {
             JSONObject origAmap = (JSONObject) origObj;
             JSONObject newAmap = new JSONObject();
-            Set<String> keys = origAmap.keys();
+            Set<String> keys = origAmap.keySet();
             for (String key : keys) {
                 if ("map".equals(typeInfo.getVtype())) {
                     //origValue is map
-                    JSONObject origValue = (JSONObject) origAmap.opt(key);
+                    JSONObject origValue = (JSONObject) origAmap.get(key);
                     JSONObject newValue = new JSONObject();
                     for (OutputSchemaInfo valueTypeInfo : typeInfo.getChildren()) {
-                        Object origValueValue = origValue.opt(valueTypeInfo.getFname());
+                        Object origValueValue = origValue.get(valueTypeInfo.getFname());
                         Object newValueValue = convert(origValueValue, valueTypeInfo);
                         newValue.put(valueTypeInfo.getName(), newValueValue);
                     }
                     newAmap.put(key, newValue);
                 } else {//vtype is simple type
-                    Object origValue = origAmap.opt(key);
+                    Object origValue = origAmap.get(key);
                     Object newValue = convertAttr(origValue, typeInfo);
                     newAmap.put(key, newValue);
                 }
@@ -93,7 +94,7 @@ public class JsonConverter {
             JSONObject origMap = (JSONObject) origObj;
             JSONObject newMap = new JSONObject();
             for (OutputSchemaInfo valueTypeInfo : typeInfo.getChildren()) {
-                Object origValue = origMap.opt(valueTypeInfo.getFname());
+                Object origValue = origMap.get(valueTypeInfo.getFname());
                 Object newValue = convert(origValue, valueTypeInfo);
                 newMap.put(valueTypeInfo.getName(), newValue);
             }
@@ -114,16 +115,16 @@ public class JsonConverter {
                     JSONObject origEleMap = (JSONObject) origEle;
                     JSONObject newEleMap = new JSONObject();
                     for (OutputSchemaInfo eleValueTypeInfo : typeInfo.getChildren()) {
-                        Object origEleValue = origEleMap.opt(eleValueTypeInfo.getFname());
+                        Object origEleValue = origEleMap.get(eleValueTypeInfo.getFname());
                         Object newEleValue = convert(origEleValue, eleValueTypeInfo);
                         newEleMap.put(eleValueTypeInfo.getName(), newEleValue);
                     }
-                    newArray.put(newEleMap);
+                    newArray.add(newEleMap);
                 }
             } else {//vtype is simple type
                 for (Object origEle : origArray) {
                     Object newEle = convertAttr(origEle, typeInfo);
-                    newArray.put(newEle);
+                    newArray.add(newEle);
                 }
             }
             return newArray;
@@ -132,15 +133,15 @@ public class JsonConverter {
             JSONObject origAmap = (JSONObject) origObj;
             if (typeInfo.haveFrom()) {//vtype is simple type
                 if ("key".equals(typeInfo.getFrom())) {
-                    for (String key : origAmap.keys()) {
-                        newArray.put(key);
+                    for (String key : origAmap.keySet()) {
+                        newArray.add(key);
                     }
                 } else if (typeInfo.getFrom().startsWith("value.")) {
-                    for (String key : origAmap.keys()) {
+                    for (String key : origAmap.keySet()) {
                         JSONObject origEleMap = (JSONObject) origAmap.get(key);
                         String valueKey = typeInfo.getFrom().substring(6);
-                        Object newEle = convertAttr(origEleMap.opt(valueKey), typeInfo);
-                        newArray.put(newEle);
+                        Object newEle = convertAttr(origEleMap.get(valueKey), typeInfo);
+                        newArray.add(newEle);
                     }
                 }
             }
@@ -165,7 +166,7 @@ public class JsonConverter {
     //-------------------
     public static Object toString(Object o, OutputSchemaInfo typeInfo) {
         if (o instanceof String) {
-            return new MyString((String) o);
+            return o;//new MyString((String) o);
         } else if (o instanceof Number) {
             return o.toString();
         } else if (o instanceof Boolean) {
@@ -218,11 +219,11 @@ public class JsonConverter {
     //--------------
     public static void main(String args[]) throws IOException {
         String jsonS = IOUtils.toString(JsonConverter.class.getResource("test/s18.o"), "utf8");
-        JSONObject json = new JSONObject(jsonS);
+        Object json = JSON.parse(jsonS);
         String xmlStr = IOUtils.toString(JsonConverter.class.getResource("test/s18.xml"), "utf8");
         OutputSchemaInfo typeInfo = readOutputSchema(xmlStr);
         JSONObject newJson = (JSONObject) convert(json, typeInfo);
-        System.out.println(newJson.toString(false));
+        System.out.println(JSON.toJSONString(newJson, true));
     }
 
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import org.hxzon.configdesigner.core.CfgInfo;
 import org.hxzon.configdesigner.core.CfgParser;
 import org.hxzon.configdesigner.core.CfgValue;
-import org.hxzon.util.json.JSONCollection;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -18,6 +17,8 @@ import org.zkoss.zul.Space;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Window;
+
+import com.alibaba.fastjson.JSON;
 
 public class CfgValueViewer2 implements CfgValueHolder {
 
@@ -367,8 +368,7 @@ public class CfgValueViewer2 implements CfgValueHolder {
     private void viewData(Component btn) {
         CfgValue cfgValue = (CfgValue) btn.getAttribute("cfgValue");
         Object json = CfgParser.toJson(cfgValue, true);
-        String jsonStr = json == null ? "" : //
-                (json instanceof JSONCollection) ? ((JSONCollection) json).toString(false) : json.toString();
+        String jsonStr = json == null ? "" : JSON.toJSONString(json, true);
         Textbox v = new Textbox();
         v.setMultiline(true);
         v.setReadonly(true);
